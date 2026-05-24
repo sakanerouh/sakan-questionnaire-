@@ -2,22 +2,22 @@
 
 import { motion } from "framer-motion";
 import { archetypes } from "@/lib/archetypes";
-import type { Answers, SakanResult } from "@/lib/schemas";
-import { buildReportBlocks } from "@/lib/report";
+import type { SakanResult } from "@/lib/schemas";
 import { ArchetypeChart } from "./ArchetypeChart";
 import { LockedPreviewCard } from "./LockedPreviewCard";
 import { PaymentWall } from "./PaymentWall";
 
 export function ResultTeaser({
   result,
-  answers,
 }: {
   result: SakanResult;
-  answers: Answers;
 }) {
   const dominant = archetypes[result.dominant];
+  const secondary = archetypes[result.secondary];
   const Icon = dominant.icon;
-  const opening = buildReportBlocks(answers, result)[0];
+  const opening =
+    result.keyPatterns[0] ??
+    `Your AI analysis identified ${dominant.name} as the dominant protection pattern, with ${secondary.name} shaping the secondary layer.`;
 
   return (
     <motion.div
@@ -47,9 +47,9 @@ export function ResultTeaser({
           </div>
           <div className="sakan-gradient-soft mt-6 rounded-[8px] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
-              Free insight
+              AI pattern note
             </p>
-            <p className="mt-3 text-base leading-8 text-[#5d402d]">{opening.body}</p>
+            <p className="mt-3 text-base leading-8 text-[#5d402d]">{opening}</p>
           </div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">

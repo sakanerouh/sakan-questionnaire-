@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { questionnaireScreens, totalQuestionCount } from "@/lib/questionnaire";
-import { reportStorageKey, useQuestionnaireStore } from "@/lib/questionnaireStore";
-import { calculateResult } from "@/lib/scoring";
+import { useQuestionnaireStore } from "@/lib/questionnaireStore";
+import type { SakanResult } from "@/lib/schemas";
 import { ProgressBar } from "./ProgressBar";
 import { QuestionScreen } from "./QuestionScreen";
 import { SectionIntro } from "./SectionIntro";
@@ -72,21 +72,35 @@ export function QuestionnaireFlow() {
   }, [answers, screen]);
 
   const finish = useCallback(async () => {
-    const result = calculateResult(sessionId, answers);
-    setResult(result);
-    window.localStorage.setItem(
-      reportStorageKey(result.id),
-      JSON.stringify({ answers, result }),
-    );
-
-    await fetch("/api/questionnaire/session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId, email, answers, result, completed: true }),
-    }).catch(() => undefined);
-
     setAnalyzing(true);
-    window.setTimeout(() => router.push("/questionnaire/result"), 2600);
+
+    try {
+      const response = await fetch("/api/questionnaire/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId, email, answers, completed: true }),
+      });
+      const data = (await response.json()) as { result?: SakanResult; error?: string };
+
+      if (!response.ok || !data.result) {
+        throw new Error(data.error || "AI archetype analysis failed.");
+      }
+
+      setResult(data.result);
+      router.push("/questionnaire/result");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "AI archetype analysis failed.";
+
+      setAnalyzing(false);
+      await Swal.fire({
+        title: "AI analysis did not complete.",
+        text: message,
+        icon: "warning",
+        confirmButtonColor: "#7C3C60",
+        background: "#fffaf2",
+        color: "#352317",
+      });
+    }
   }, [answers, email, router, sessionId, setResult]);
 
   const next = useCallback(async () => {

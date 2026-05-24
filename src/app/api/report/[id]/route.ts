@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { reportContentSchema } from "@/lib/generatedReport";
 import { resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
-
-const reportBlockSchema = z.object({
-  title: z.string(),
-  body: z.string(),
-  bullets: z.array(z.string()).optional(),
-});
 
 const resultRowSchema = z.object({
   id: z.string(),
@@ -39,7 +34,9 @@ export async function GET(
   const { id } = await params;
   const { data: report, error: reportError } = await supabase
     .from("reports")
-    .select("id, session_id, result_id, payment_status, content")
+    .select(
+      "id, session_id, result_id, payment_status, content, content_source, generation_status, generated_at, generation_error",
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -93,14 +90,19 @@ export async function GET(
     protectionThemes: resultData.protection_themes,
     completedAt: resultData.created_at,
   });
+  const content = reportContentSchema.safeParse(report.content);
 
   return NextResponse.json({
     ok: true,
     report: {
       id: report.id,
       paymentStatus: report.payment_status,
+      contentSource: report.content_source,
+      generationStatus: report.generation_status,
+      generatedAt: report.generated_at,
+      generationError: report.generation_error,
       result,
-      blocks: z.array(reportBlockSchema).parse(report.content),
+      content: content.success ? content.data : null,
     },
   });
 }

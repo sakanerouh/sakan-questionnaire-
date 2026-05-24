@@ -47,9 +47,19 @@ create table if not exists reports (
   result_id text references archetype_results(id) on delete set null,
   payment_status text not null default 'locked',
   content jsonb not null default '{}',
+  content_source text not null default 'template',
+  generation_status text not null default 'not_started',
+  generated_at timestamptz,
+  generation_error text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table reports
+  add column if not exists content_source text not null default 'template',
+  add column if not exists generation_status text not null default 'not_started',
+  add column if not exists generated_at timestamptz,
+  add column if not exists generation_error text;
 
 alter table anonymous_sessions enable row level security;
 alter table questionnaire_responses enable row level security;
