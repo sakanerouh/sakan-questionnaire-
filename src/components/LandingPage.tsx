@@ -246,17 +246,13 @@ function HeroScene() {
 
       <nav className="mx-auto flex max-w-7xl items-center justify-between py-4">
         <Link href="/" className="text-base font-semibold tracking-[0.24em] text-[#7C3C60] sm:text-lg">
-          SAKAN eROUH
+          SAKAN EROUH
         </Link>
         <PrimaryCTA>Begin</PrimaryCTA>
       </nav>
 
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-10 py-10 lg:grid-cols-[0.95fr_1.05fr]">
         <div ref={copyRef}>
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#7C3C60] backdrop-blur">
-            <Sparkles className="h-3.5 w-3.5" aria-hidden />
-            A self-discovery ritual
-          </p>
           <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] text-[#352317] sm:text-5xl lg:text-7xl">
             What if your pattern is not the problem?
           </h1>
