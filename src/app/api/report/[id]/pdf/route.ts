@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { chromium } from "playwright";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { z } from "zod";
 import { archetypeOrder, archetypes } from "@/lib/archetypes";
 import {
@@ -12,6 +12,8 @@ import {
 } from "@/lib/generatedReport";
 import { normalizeProtectiveRoleCopy, roleScoreValue } from "@/lib/protectiveRoleCopy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+
+export const runtime = "nodejs";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 
@@ -45,19 +47,6 @@ type PdfContent = {
   disclaimer: string;
 };
 
-const escapeHtml = (value: string | number) =>
-  String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-
-const listItems = (items: string[]) =>
-  items
-    .map((item) => `<li>${escapeHtml(normalizeProtectiveRoleCopy(item))}</li>`)
-    .join("");
-
 const legacyToPdfContent = (
   blocks: LegacyReportBlock[],
   result: PdfResult,
@@ -68,10 +57,10 @@ const legacyToPdfContent = (
 
   return {
     reportTitle: dominant.name,
-    reportSubtitle: `${dominant.short} Your secondary protective role is ${secondary.name}, creating a nuanced blend of protection and becoming.`,
+    reportSubtitle: `${dominant.short} Your secondary protective role is ${secondary.name}.`,
     openingLetter: opening?.body ?? "Your answers have been gathered into this SakanBody Audit report.",
     blocks: rest.map((block) => ({
-      title: block.title,
+      title: normalizeProtectiveRoleCopy(block.title),
       body: normalizeProtectiveRoleCopy(block.body),
       reflectionPrompts: [],
       practices: (block.bullets ?? []).map(normalizeProtectiveRoleCopy),
@@ -87,243 +76,147 @@ const toPdfContent = (content: ReportContent, result: PdfResult): PdfContent =>
     ? (content as GeneratedReport)
     : legacyToPdfContent(z.array(legacyReportBlockSchema).parse(content), result);
 
-const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
+const collectPdf = (doc: PDFKit.PDFDocument) =>
+  new Promise<Buffer>((resolve, reject) => {
+    const chunks: Buffer[] = [];
+
+    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+  });
+
+const writeHeading = (doc: PDFKit.PDFDocument, text: string) => {
+  doc.moveDown(0.8);
+  doc.fillColor("#7c3c60").font("Helvetica-Bold").fontSize(20);
+  doc.text(normalizeProtectiveRoleCopy(text), { lineGap: 3 });
+  doc.moveDown(0.35);
+};
+
+const writeBody = (doc: PDFKit.PDFDocument, text: string, options: PDFKit.Mixins.TextOptions = {}) => {
+  doc.fillColor("#352317").font("Helvetica").fontSize(11.5);
+  doc.text(normalizeProtectiveRoleCopy(text), { lineGap: 4, ...options });
+};
+
+const ensureSpace = (doc: PDFKit.PDFDocument, height = 120) => {
+  if (doc.y + height > doc.page.height - doc.page.margins.bottom) {
+    doc.addPage();
+  }
+};
+
+const writeList = (doc: PDFKit.PDFDocument, items: string[]) => {
+  for (const item of items) {
+    ensureSpace(doc, 42);
+    doc.fillColor("#6c4b37").font("Helvetica").fontSize(10.5);
+    doc.text(`- ${normalizeProtectiveRoleCopy(item)}`, {
+      indent: 10,
+      lineGap: 3,
+    });
+    doc.moveDown(0.25);
+  }
+};
+
+const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult) => {
+  writeHeading(doc, "Protective Role Scores");
+
+  for (const id of archetypeOrder) {
+    const meta = archetypes[id];
+    const score = roleScoreValue(result.scores[id] ?? result.distribution[id]);
+    const x = doc.page.margins.left;
+    const y = doc.y + 4;
+    const width = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+    const barY = y + 22;
+
+    ensureSpace(doc, 54);
+    doc.fillColor("#352317").font("Helvetica-Bold").fontSize(10.5);
+    doc.text(meta.name, x, y, { continued: true });
+    doc.text(`${score}/100`, { align: "right" });
+    doc.roundedRect(x, barY, width, 8, 4).fill("#eadbc5");
+    doc.roundedRect(x, barY, (width * score) / 100, 8, 4).fill(meta.color);
+    doc.y = barY + 22;
+  }
+};
+
+const buildPdf = async (content: PdfContent, result: PdfResult) => {
+  const doc = new PDFDocument({
+    autoFirstPage: false,
+    margin: 54,
+    size: "A4",
+  });
   const dominant = archetypes[result.dominant];
   const secondary = archetypes[result.secondary];
-  const scoreRows = archetypeOrder
-    .map((id) => {
-      const score = roleScoreValue(result.scores[id] ?? result.distribution[id]);
-      const meta = archetypes[id];
+  const pdf = collectPdf(doc);
 
-      return `
-        <div class="score-row">
-          <div class="score-label">
-            <span>${escapeHtml(meta.name)}</span>
-            <strong>${escapeHtml(score)}/100</strong>
-          </div>
-          <div class="score-track"><div class="score-fill" style="width: ${score}%; background: ${meta.color};"></div></div>
-        </div>
-      `;
-    })
-    .join("");
+  doc.addPage({ margin: 0 });
+  doc.rect(0, 0, doc.page.width, doc.page.height).fill("#7c3c60");
+  doc.fillColor("#f8d7ea").font("Helvetica-Bold").fontSize(11);
+  doc.text("SAKANBODY AUDIT REPORT", 54, 76, { characterSpacing: 2 });
+  doc.fillColor("#fffaf2").font("Helvetica-Bold").fontSize(42);
+  doc.text(normalizeProtectiveRoleCopy(content.reportTitle), 54, 142, {
+    lineGap: 8,
+    width: doc.page.width - 108,
+  });
+  doc.fillColor("#f8ead7").font("Helvetica").fontSize(16);
+  doc.text(normalizeProtectiveRoleCopy(content.reportSubtitle), 54, 300, {
+    lineGap: 7,
+    width: doc.page.width - 108,
+  });
+  doc.fillColor("#f8ead7").font("Helvetica").fontSize(13);
+  doc.text(`Dominant protective role: ${dominant.name}`, 54, 706);
+  doc.text(`Secondary protective role: ${secondary.name}`, 54, 728);
 
-  const sections = content.blocks
-    .map(
-      (block) => `
-        <section class="section">
-          <h2>${escapeHtml(normalizeProtectiveRoleCopy(block.title))}</h2>
-          <p>${escapeHtml(normalizeProtectiveRoleCopy(block.body))}</p>
-          ${
-            block.reflectionPrompts.length || block.practices.length
-              ? `<div class="two-col">
-                  ${
-                    block.reflectionPrompts.length
-                      ? `<div>
-                          <h3>Reflection prompts</h3>
-                          <ul>${listItems(block.reflectionPrompts)}</ul>
-                        </div>`
-                      : ""
-                  }
-                  ${
-                    block.practices.length
-                      ? `<div>
-                          <h3>Practices</h3>
-                          <ul>${listItems(block.practices)}</ul>
-                        </div>`
-                      : ""
-                  }
-                </div>`
-              : ""
-          }
-        </section>
-      `,
-    )
-    .join("");
+  doc.addPage();
+  writeHeading(doc, "Opening Letter");
+  writeBody(doc, content.openingLetter);
+  writeScoreRows(doc, result);
 
-  const plan = content.sevenDayPlan
-    .map(
-      (item) => `
-        <div class="plan-item">
-          <strong>Day ${escapeHtml(item.day)}: ${escapeHtml(normalizeProtectiveRoleCopy(item.title))}</strong>
-          <p>${escapeHtml(normalizeProtectiveRoleCopy(item.practice))}</p>
-          <em>${escapeHtml(normalizeProtectiveRoleCopy(item.reflection))}</em>
-        </div>
-      `,
-    )
-    .join("");
+  for (const block of content.blocks) {
+    ensureSpace(doc, 180);
+    writeHeading(doc, block.title);
+    writeBody(doc, block.body);
 
-  return `<!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <style>
-          * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          body {
-            margin: 0;
-            background: #fbf7ef;
-            color: #352317;
-            font-family: Georgia, "Times New Roman", serif;
-            line-height: 1.55;
-          }
-          .cover {
-            min-height: 920px;
-            padding: 78px 64px;
-            background: linear-gradient(140deg, #7c3c60, #a95888 58%, #352317);
-            color: #fffaf2;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
-          .eyebrow {
-            color: #f8d7ea;
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.24em;
-            text-transform: uppercase;
-          }
-          h1 {
-            margin: 28px 0 18px;
-            font-size: 54px;
-            line-height: 1;
-          }
-          .subtitle {
-            max-width: 680px;
-            color: #f8ead7;
-            font-size: 21px;
-          }
-          .blend {
-            border-top: 1px solid rgba(255, 250, 242, 0.28);
-            padding-top: 28px;
-            color: #f8ead7;
-            font-size: 18px;
-          }
-          .page {
-            padding: 46px 54px;
-            break-after: page;
-          }
-          .letter {
-            border: 1px solid #e4cda9;
-            background: #fffaf2;
-            padding: 30px;
-            border-radius: 8px;
-            font-size: 18px;
-          }
-          .scores {
-            margin-top: 28px;
-            border: 1px solid #e4cda9;
-            background: #fffaf2;
-            padding: 24px;
-            border-radius: 8px;
-          }
-          .score-row { margin: 14px 0; }
-          .score-label {
-            display: flex;
-            justify-content: space-between;
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-          }
-          .score-track {
-            height: 10px;
-            margin-top: 7px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: #eadbc5;
-          }
-          .score-fill { height: 100%; border-radius: 999px; }
-          .section {
-            padding: 42px 54px;
-            break-inside: avoid;
-            border-bottom: 1px solid #e4cda9;
-          }
-          h2 {
-            margin: 0 0 16px;
-            color: #7c3c60;
-            font-size: 28px;
-            line-height: 1.15;
-          }
-          h3 {
-            margin: 0 0 10px;
-            color: #6c4b37;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-          }
-          p { margin: 0; font-size: 16px; }
-          ul { margin: 0; padding-left: 18px; }
-          li { margin: 0 0 8px; }
-          .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 24px;
-          }
-          .plan {
-            padding: 42px 54px 54px;
-          }
-          .plan-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 22px;
-          }
-          .plan-item {
-            border: 1px solid #e4cda9;
-            background: #fffaf2;
-            border-radius: 8px;
-            padding: 16px;
-            break-inside: avoid;
-          }
-          .plan-item strong {
-            display: block;
-            color: #7c3c60;
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-          }
-          .plan-item p { margin: 10px 0; font-size: 14px; }
-          .plan-item em { color: #6c4b37; font-size: 13px; }
-          .disclaimer {
-            margin-top: 28px;
-            color: #6c4b37;
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="cover">
-          <div>
-            <div class="eyebrow">SakanBody Audit Report</div>
-            <h1>${escapeHtml(normalizeProtectiveRoleCopy(content.reportTitle))}</h1>
-            <p class="subtitle">${escapeHtml(normalizeProtectiveRoleCopy(content.reportSubtitle))}</p>
-          </div>
-          <div class="blend">
-            Dominant protective role: ${escapeHtml(dominant.name)}<br />
-            Secondary protective role: ${escapeHtml(secondary.name)}
-          </div>
-        </div>
-        <main>
-          <div class="page">
-            <div class="letter">${escapeHtml(normalizeProtectiveRoleCopy(content.openingLetter))}</div>
-            <div class="scores">${scoreRows}</div>
-          </div>
-          ${sections}
-          ${
-            content.sevenDayPlan.length
-              ? `<section class="plan">
-                  <h2>Seven-Day Integration Plan</h2>
-                  <div class="plan-grid">${plan}</div>
-                  <p class="disclaimer">${escapeHtml(normalizeProtectiveRoleCopy(content.disclaimer))}</p>
-                </section>`
-              : `<section class="plan">
-                  <p class="disclaimer">${escapeHtml(normalizeProtectiveRoleCopy(content.disclaimer))}</p>
-                </section>`
-          }
-        </main>
-      </body>
-    </html>`;
+    if (block.reflectionPrompts.length) {
+      writeHeading(doc, "Reflection");
+      writeList(doc, block.reflectionPrompts);
+    }
+
+    if (block.practices.length) {
+      writeHeading(doc, "Practices");
+      writeList(doc, block.practices);
+    }
+  }
+
+  if (content.sevenDayPlan.length) {
+    doc.addPage();
+    writeHeading(doc, "Seven-Day Integration Plan");
+
+    for (const item of content.sevenDayPlan) {
+      ensureSpace(doc, 78);
+      doc.fillColor("#7c3c60").font("Helvetica-Bold").fontSize(12);
+      doc.text(`Day ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`);
+      writeBody(doc, item.practice);
+      doc.fillColor("#6c4b37").font("Helvetica-Oblique").fontSize(10.5);
+      doc.text(normalizeProtectiveRoleCopy(item.reflection), { lineGap: 3 });
+      doc.moveDown(0.7);
+    }
+  }
+
+  ensureSpace(doc, 80);
+  doc.moveDown();
+  doc.fillColor("#6c4b37").font("Helvetica").fontSize(9.5);
+  doc.text(normalizeProtectiveRoleCopy(content.disclaimer), { lineGap: 3 });
+  doc.end();
+
+  return pdf;
 };
+
+const pdfResponse = (pdf: Buffer, id: string) =>
+  new Response(new Uint8Array(pdf), {
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Disposition": `attachment; filename="sakanbody-report-${id}.pdf"`,
+      "Content-Type": "application/pdf",
+    },
+  });
 
 export async function GET(
   _request: Request,
@@ -359,10 +252,7 @@ export async function GET(
     );
   }
 
-  if (
-    report.content_source === "ai" &&
-    report.generation_status !== "ready"
-  ) {
+  if (report.content_source === "ai" && report.generation_status !== "ready") {
     return NextResponse.json(
       { ok: false, error: "AI report is not ready yet." },
       { status: 409 },
@@ -384,30 +274,9 @@ export async function GET(
   }
 
   const result = resultRowSchema.parse(resultRow);
-  const browser = await chromium.launch();
+  const pdf = await buildPdf(toPdfContent(content, result), result);
 
-  try {
-    const page = await browser.newPage();
-    await page.setContent(buildPdfHtml(toPdfContent(content, result), result), {
-      waitUntil: "networkidle",
-    });
-    await page.emulateMedia({ media: "screen" });
-    const pdf = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "0", right: "0", bottom: "0", left: "0" },
-    });
-
-    return new Response(new Uint8Array(pdf), {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="sakanbody-report-${id}.pdf"`,
-        "Cache-Control": "no-store",
-      },
-    });
-  } finally {
-    await browser.close();
-  }
+  return pdfResponse(pdf, id);
 }
 
 export async function POST(
@@ -425,28 +294,7 @@ export async function POST(
   }
 
   const { content, result } = parsed.data;
-  const browser = await chromium.launch();
+  const pdf = await buildPdf(toPdfContent(content, result), result);
 
-  try {
-    const page = await browser.newPage();
-    await page.setContent(buildPdfHtml(toPdfContent(content, result), result), {
-      waitUntil: "networkidle",
-    });
-    await page.emulateMedia({ media: "screen" });
-    const pdf = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "0", right: "0", bottom: "0", left: "0" },
-    });
-
-    return new Response(new Uint8Array(pdf), {
-      headers: {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="sakanbody-report-${id}.pdf"`,
-        "Cache-Control": "no-store",
-      },
-    });
-  } finally {
-    await browser.close();
-  }
+  return pdfResponse(pdf, id);
 }

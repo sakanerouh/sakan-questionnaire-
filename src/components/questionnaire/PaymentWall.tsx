@@ -41,10 +41,10 @@ export function PaymentWall({ reportId }: { reportId: string }) {
           email: parsed.data.email,
         }),
       });
-      const data = (await response.json()) as { url?: string; demo?: boolean };
+      const data = (await response.json()) as { error?: string; url?: string; demo?: boolean };
 
       if (!response.ok || !data.url) {
-        throw new Error("Checkout could not be created.");
+        throw new Error(data.error || "Checkout could not be created.");
       }
 
       if (data.demo) {
@@ -59,10 +59,10 @@ export function PaymentWall({ reportId }: { reportId: string }) {
       }
 
       window.location.assign(data.url);
-    } catch {
+    } catch (error) {
       Swal.fire({
         title: "The payment door did not open.",
-        text: "Please try again in a moment.",
+        text: error instanceof Error ? error.message : "Please try again in a moment.",
         icon: "warning",
         confirmButtonColor: "#7C3C60",
         background: "#fffaf2",

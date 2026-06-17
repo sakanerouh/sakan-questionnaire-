@@ -2,15 +2,8 @@ import { NextResponse } from "next/server";
 import { generateAiResult } from "@/lib/aiReportGenerator";
 import { calculateResult } from "@/lib/scoring";
 import { sessionPayloadSchema } from "@/lib/schemas";
+import { databaseErrorMessage, isSupabaseUnavailable } from "@/lib/supabase/errors";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
-
-const databaseErrorMessage = (fallback: string, error: { message?: string; details?: string; code?: string }) =>
-  [fallback, error.message, error.details, error.code].filter(Boolean).join(" ");
-
-const isSupabaseUnavailable = (error: { message?: string; details?: string; code?: string }) =>
-  [error.message, error.details, error.code]
-    .filter(Boolean)
-    .some((value) => /fetch failed|ENOTFOUND|ECONNREFUSED|ECONNRESET|ETIMEDOUT/i.test(value ?? ""));
 
 export async function POST(request: Request) {
   const parsed = sessionPayloadSchema.safeParse(await request.json());

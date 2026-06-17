@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { z } from "zod";
+import {
+  databaseErrorMessage,
+  isSupabaseUnavailable,
+  supabaseUnavailableMessage,
+} from "@/lib/supabase/errors";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const checkoutSchema = z.object({
@@ -34,8 +39,12 @@ export async function POST(request: Request) {
     });
 
     if (sessionError) {
+      const error = isSupabaseUnavailable(sessionError)
+        ? supabaseUnavailableMessage
+        : databaseErrorMessage("Could not prepare checkout session.", sessionError);
+
       return NextResponse.json(
-        { error: "Could not prepare checkout session." },
+        { error },
         { status: 500 },
       );
     }
@@ -50,8 +59,12 @@ export async function POST(request: Request) {
       });
 
       if (paymentError) {
+        const error = isSupabaseUnavailable(paymentError)
+          ? supabaseUnavailableMessage
+          : databaseErrorMessage("Could not save demo payment.", paymentError);
+
         return NextResponse.json(
-          { error: "Could not save demo payment." },
+          { error },
           { status: 500 },
         );
       }
@@ -62,8 +75,12 @@ export async function POST(request: Request) {
         .eq("id", payload.reportId);
 
       if (reportError) {
+        const error = isSupabaseUnavailable(reportError)
+          ? supabaseUnavailableMessage
+          : databaseErrorMessage("Could not unlock report.", reportError);
+
         return NextResponse.json(
-          { error: "Could not unlock report." },
+          { error },
           { status: 500 },
         );
       }
@@ -77,17 +94,29 @@ export async function POST(request: Request) {
 
   const stripe = new Stripe(stripeSecret);
 
-  const checkout = await stripe.checkout.sessions.create({
-    mode: "payment",
-    customer_email: payload.email || undefined,
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/report/${payload.reportId}?checkout=success`,
-    cancel_url: `${origin}/questionnaire/result?checkout=cancelled`,
-    metadata: {
-      sessionId: payload.sessionId,
-      reportId: payload.reportId,
-    },
-  });
+  let checkout: Stripe.Checkout.Session;
+
+  try {
+    checkout = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: payload.email || undefined,
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${origin}/report/${payload.reportId}?checkout=success`,
+      cancel_url: `${origin}/questionnaire/result?checkout=cancelled`,
+      metadata: {
+        sessionId: payload.sessionId,
+        reportId: payload.reportId,
+      },
+    });
+  } catch {
+    return NextResponse.json(
+      {
+        error:
+          "Stripe checkout could not be created. Check STRIPE_SECRET_KEY and STRIPE_PRICE_ID in production.",
+      },
+      { status: 500 },
+    );
+  }
 
   if (supabase) {
     const { error: paymentError } = await supabase.from("payments").insert({
@@ -99,8 +128,12 @@ export async function POST(request: Request) {
     });
 
     if (paymentError) {
+      const error = isSupabaseUnavailable(paymentError)
+        ? supabaseUnavailableMessage
+        : databaseErrorMessage("Checkout was created, but payment could not be saved.", paymentError);
+
       return NextResponse.json(
-        { error: "Checkout was created, but payment could not be saved." },
+        { error },
         { status: 500 },
       );
     }

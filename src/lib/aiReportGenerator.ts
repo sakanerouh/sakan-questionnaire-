@@ -112,6 +112,8 @@ const createOpenAIClient = () => {
 };
 
 const getReportModel = () => process.env.OPENAI_REPORT_MODEL?.trim() || "gpt-5.5";
+const getReportMaxOutputTokens = () =>
+  Number(process.env.OPENAI_REPORT_MAX_OUTPUT_TOKENS ?? 9000);
 
 export async function generateAiResult({
   sessionId,
@@ -235,7 +237,7 @@ export async function generateAiReport({
         }),
       },
     ],
-    max_output_tokens: 9000,
+    max_output_tokens: getReportMaxOutputTokens(),
     reasoning: { effort: "medium" },
     text: {
       format: zodTextFormat(generatedReportSchema, "sakanbody_generated_report"),

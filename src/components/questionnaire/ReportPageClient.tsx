@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Download, Sparkles } from "lucide-react";
+import { ArrowLeft, Download, Loader2, Sparkles } from "lucide-react";
 import { archetypes } from "@/lib/archetypes";
 import {
   isGeneratedReport,
@@ -28,10 +28,80 @@ type ReportApiResponse = {
   report?: LoadedReport;
 };
 
+function GeneratingReportPanel({
+  error,
+  generating,
+  onRetry,
+}: {
+  error?: string | null;
+  generating: boolean;
+  onRetry: () => void;
+}) {
+  const steps = [
+    "Reading your answers",
+    "Mapping protective roles",
+    "Writing deep sections",
+    "Preparing the integration plan",
+  ];
+
+  return (
+    <section className="mt-6 overflow-hidden rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/58 px-4 py-2 text-sm font-semibold text-[#7C3C60]">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            Writing in progress
+          </div>
+          <h2 className="mt-5 text-3xl font-semibold text-[#352317]">
+            Your full report is being written.
+          </h2>
+          <p className="mt-4 text-base leading-8 text-[#5d402d]">
+            This can take a little time because the report is generated from your exact
+            answers. Keep this page open and the finished report will appear here.
+          </p>
+          {error && (
+            <p className="mt-4 rounded-[8px] border border-[#DDA8C8]/60 bg-white/60 p-4 text-sm font-semibold leading-6 text-[#A95888]">
+              {error}
+            </p>
+          )}
+        </div>
+        <div className="grid min-h-36 w-full max-w-sm place-items-center rounded-[8px] border border-[#ead5e2] bg-white/58">
+          <div className="relative h-24 w-24">
+            <div className="absolute inset-0 rounded-full border-4 border-[#eadbc5]" />
+            <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-[#A95888]" />
+            <Sparkles className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 text-[#7C3C60]" />
+          </div>
+        </div>
+      </div>
+      <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((step) => (
+          <div
+            key={step}
+            className="rounded-[8px] border border-[#ead5e2] bg-white/58 p-4 text-sm font-semibold text-[#6c4b37]"
+          >
+            {step}
+          </div>
+        ))}
+      </div>
+      {error && (
+        <button
+          type="button"
+          onClick={onRetry}
+          disabled={generating}
+          className="sakan-gradient mt-6 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold text-[#fffaf2] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Retry generation
+        </button>
+      )}
+    </section>
+  );
+}
+
 export function ReportPageClient({ id }: { id: string }) {
   const mountedRef = useRef(true);
   const [report, setReport] = useState<LoadedReport | null>(null);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [generationAttempted, setGenerationAttempted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -121,7 +191,11 @@ export function ReportPageClient({ id }: { id: string }) {
     } catch (error) {
       const latest = await fetchReport({ quiet: true });
 
-      if (latest && isGeneratedReport(latest.content)) {
+      if (
+        latest &&
+        latest.contentSource !== "fallback" &&
+        isGeneratedReport(latest.content)
+      ) {
         return;
       }
 
@@ -152,7 +226,10 @@ export function ReportPageClient({ id }: { id: string }) {
   }, [fetchReport]);
 
   const generatedContent = useMemo(
-    () => (report && isGeneratedReport(report.content) ? report.content : null),
+    () =>
+      report && report.contentSource !== "fallback" && isGeneratedReport(report.content)
+        ? report.content
+        : null,
     [report],
   );
   const unlocked = report
@@ -244,6 +321,7 @@ export function ReportPageClient({ id }: { id: string }) {
     if (!pdfAvailable || downloadingPdf) return;
 
     setDownloadingPdf(true);
+    setPdfError(null);
 
     try {
       const response = await fetch(`/api/report/${encodeURIComponent(id)}/pdf`, {
@@ -256,7 +334,8 @@ export function ReportPageClient({ id }: { id: string }) {
       });
 
       if (!response.ok) {
-        throw new Error("Could not create PDF.");
+        const data = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(data?.error || "Could not create PDF.");
       }
 
       const blob = await response.blob();
@@ -268,6 +347,8 @@ export function ReportPageClient({ id }: { id: string }) {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
+    } catch (error) {
+      setPdfError(error instanceof Error ? error.message : "Could not create PDF.");
     } finally {
       setDownloadingPdf(false);
     }
@@ -295,6 +376,11 @@ export function ReportPageClient({ id }: { id: string }) {
             {downloadingPdf ? "Preparing PDF..." : "Download PDF"}
           </button>
         </div>
+        {pdfError && (
+          <p className="-mt-4 mb-6 text-right text-sm font-semibold text-[#A95888]">
+            {pdfError}
+          </p>
+        )}
 
         <section className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/45 p-6 text-[#fffaf2] shadow-[0_28px_80px_rgba(124,60,96,0.28)] sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#f8d7ea]">
@@ -317,25 +403,11 @@ export function ReportPageClient({ id }: { id: string }) {
         </div>
 
         {!generatedContent && unlocked && (
-          <section className="mt-6 rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8">
-            <h2 className="text-2xl font-semibold text-[#352317]">
-              {generating ? "Writing your custom report..." : "Your custom report is not ready yet."}
-            </h2>
-            <p className="mt-4 text-base leading-8 text-[#5d402d]">
-              {report.generationError ??
-                "The full report is generated after unlock using your exact answers and scored protective role blend."}
-            </p>
-            {report.generationStatus === "failed" && (
-              <button
-                type="button"
-                onClick={generateReport}
-                disabled={generating}
-                className="sakan-gradient mt-6 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold text-[#fffaf2] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                Retry generation
-              </button>
-            )}
-          </section>
+          <GeneratingReportPanel
+            error={report.generationStatus === "failed" ? report.generationError : null}
+            generating={generating}
+            onRetry={generateReport}
+          />
         )}
 
         {!generatedContent && !unlocked && report.paymentStatus !== "local" && (

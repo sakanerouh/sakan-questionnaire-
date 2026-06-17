@@ -7,6 +7,8 @@ import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 
+export const maxDuration = 300;
+
 const resultRowSchema = z.object({
   id: z.string(),
   session_id: z.string(),
