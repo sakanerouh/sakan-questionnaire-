@@ -106,7 +106,7 @@ export async function POST(
 
   if (resultError || !resultRow) {
     return NextResponse.json(
-      { ok: false, error: "Could not read archetype result." },
+      { ok: false, error: "Could not read protective role result." },
       { status: resultError ? 500 : 404 },
     );
   }

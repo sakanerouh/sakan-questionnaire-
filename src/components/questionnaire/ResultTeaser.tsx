@@ -17,7 +17,7 @@ export function ResultTeaser({
   const Icon = dominant.icon;
   const opening =
     result.keyPatterns[0] ??
-    `Your AI analysis identified ${dominant.name} as the dominant protection pattern, with ${secondary.name} shaping the secondary layer.`;
+    `Your AI analysis identified ${dominant.name} as the dominant protective role, with ${secondary.name} shaping the secondary layer.`;
 
   return (
     <motion.div
@@ -28,7 +28,7 @@ export function ResultTeaser({
     >
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
-          Your dominant archetype has been identified.
+          Your dominant protective role has been identified.
         </p>
         <div className="mt-5 rounded-[8px] border border-[#dfc59b] bg-[#fffaf2]/82 p-6 shadow-[0_28px_80px_rgba(75,47,32,0.12)] sm:p-8">
           <div className="flex items-start gap-4">
@@ -43,7 +43,7 @@ export function ResultTeaser({
             </div>
           </div>
           <div className="mt-8">
-            <ArchetypeChart distribution={result.distribution} />
+            <ArchetypeChart scores={result.scores} />
           </div>
           <div className="sakan-gradient-soft mt-6 rounded-[8px] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">

@@ -10,6 +10,7 @@ import {
   type LegacyReportBlock,
   type ReportContent,
 } from "@/lib/generatedReport";
+import { normalizeProtectiveRoleCopy, roleScoreValue } from "@/lib/protectiveRoleCopy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
@@ -17,6 +18,7 @@ const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 const resultRowSchema = z.object({
   dominant: z.enum(["anticipator", "performer", "harmonizer", "quiter"]),
   secondary: z.enum(["anticipator", "performer", "harmonizer", "quiter"]),
+  scores: z.record(z.string(), z.number()).default({}),
   distribution: z.record(z.string(), z.number()),
 });
 
@@ -52,7 +54,9 @@ const escapeHtml = (value: string | number) =>
     .replaceAll("'", "&#039;");
 
 const listItems = (items: string[]) =>
-  items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+  items
+    .map((item) => `<li>${escapeHtml(normalizeProtectiveRoleCopy(item))}</li>`)
+    .join("");
 
 const legacyToPdfContent = (
   blocks: LegacyReportBlock[],
@@ -64,13 +68,13 @@ const legacyToPdfContent = (
 
   return {
     reportTitle: dominant.name,
-    reportSubtitle: `${dominant.short} Your secondary pattern is ${secondary.name}, creating a nuanced blend of protection and becoming.`,
+    reportSubtitle: `${dominant.short} Your secondary protective role is ${secondary.name}, creating a nuanced blend of protection and becoming.`,
     openingLetter: opening?.body ?? "Your answers have been gathered into this SakanBody Audit report.",
     blocks: rest.map((block) => ({
       title: block.title,
-      body: block.body,
+      body: normalizeProtectiveRoleCopy(block.body),
       reflectionPrompts: [],
-      practices: block.bullets ?? [],
+      practices: (block.bullets ?? []).map(normalizeProtectiveRoleCopy),
     })),
     sevenDayPlan: [],
     disclaimer:
@@ -88,14 +92,14 @@ const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
   const secondary = archetypes[result.secondary];
   const scoreRows = archetypeOrder
     .map((id) => {
-      const score = result.distribution[id] ?? 0;
+      const score = roleScoreValue(result.scores[id] ?? result.distribution[id]);
       const meta = archetypes[id];
 
       return `
         <div class="score-row">
           <div class="score-label">
             <span>${escapeHtml(meta.name)}</span>
-            <strong>${escapeHtml(score)}%</strong>
+            <strong>${escapeHtml(score)}/100</strong>
           </div>
           <div class="score-track"><div class="score-fill" style="width: ${score}%; background: ${meta.color};"></div></div>
         </div>
@@ -107,8 +111,8 @@ const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
     .map(
       (block) => `
         <section class="section">
-          <h2>${escapeHtml(block.title)}</h2>
-          <p>${escapeHtml(block.body)}</p>
+          <h2>${escapeHtml(normalizeProtectiveRoleCopy(block.title))}</h2>
+          <p>${escapeHtml(normalizeProtectiveRoleCopy(block.body))}</p>
           ${
             block.reflectionPrompts.length || block.practices.length
               ? `<div class="two-col">
@@ -140,9 +144,9 @@ const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
     .map(
       (item) => `
         <div class="plan-item">
-          <strong>Day ${escapeHtml(item.day)}: ${escapeHtml(item.title)}</strong>
-          <p>${escapeHtml(item.practice)}</p>
-          <em>${escapeHtml(item.reflection)}</em>
+          <strong>Day ${escapeHtml(item.day)}: ${escapeHtml(normalizeProtectiveRoleCopy(item.title))}</strong>
+          <p>${escapeHtml(normalizeProtectiveRoleCopy(item.practice))}</p>
+          <em>${escapeHtml(normalizeProtectiveRoleCopy(item.reflection))}</em>
         </div>
       `,
     )
@@ -291,17 +295,17 @@ const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
         <div class="cover">
           <div>
             <div class="eyebrow">SakanBody Audit Report</div>
-            <h1>${escapeHtml(content.reportTitle)}</h1>
-            <p class="subtitle">${escapeHtml(content.reportSubtitle)}</p>
+            <h1>${escapeHtml(normalizeProtectiveRoleCopy(content.reportTitle))}</h1>
+            <p class="subtitle">${escapeHtml(normalizeProtectiveRoleCopy(content.reportSubtitle))}</p>
           </div>
           <div class="blend">
-            Dominant pattern: ${escapeHtml(dominant.name)}<br />
-            Secondary pattern: ${escapeHtml(secondary.name)}
+            Dominant protective role: ${escapeHtml(dominant.name)}<br />
+            Secondary protective role: ${escapeHtml(secondary.name)}
           </div>
         </div>
         <main>
           <div class="page">
-            <div class="letter">${escapeHtml(content.openingLetter)}</div>
+            <div class="letter">${escapeHtml(normalizeProtectiveRoleCopy(content.openingLetter))}</div>
             <div class="scores">${scoreRows}</div>
           </div>
           ${sections}
@@ -310,10 +314,10 @@ const buildPdfHtml = (content: PdfContent, result: PdfResult) => {
               ? `<section class="plan">
                   <h2>Seven-Day Integration Plan</h2>
                   <div class="plan-grid">${plan}</div>
-                  <p class="disclaimer">${escapeHtml(content.disclaimer)}</p>
+                  <p class="disclaimer">${escapeHtml(normalizeProtectiveRoleCopy(content.disclaimer))}</p>
                 </section>`
               : `<section class="plan">
-                  <p class="disclaimer">${escapeHtml(content.disclaimer)}</p>
+                  <p class="disclaimer">${escapeHtml(normalizeProtectiveRoleCopy(content.disclaimer))}</p>
                 </section>`
           }
         </main>
@@ -368,7 +372,7 @@ export async function GET(
   const content = reportContentSchema.parse(report.content);
   const { data: resultRow, error: resultError } = await supabase
     .from("archetype_results")
-    .select("dominant, secondary, distribution")
+    .select("dominant, secondary, scores, distribution")
     .eq("id", report.result_id ?? report.id)
     .maybeSingle();
 

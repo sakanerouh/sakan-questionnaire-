@@ -9,6 +9,7 @@ import {
   type GeneratedReport,
   type ReportContent,
 } from "@/lib/generatedReport";
+import { normalizeProtectiveRoleCopy } from "@/lib/protectiveRoleCopy";
 import type { SakanResult } from "@/lib/schemas";
 import { ArchetypeChart } from "./ArchetypeChart";
 import { PracticeCard } from "./PracticeCard";
@@ -300,16 +301,19 @@ export function ReportPageClient({ id }: { id: string }) {
             SakanBody Audit Report
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">
-            {generatedContent?.reportTitle ?? dominant.name}
+            {generatedContent
+              ? normalizeProtectiveRoleCopy(generatedContent.reportTitle)
+              : dominant.name}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#f8ead7]">
-            {generatedContent?.reportSubtitle ??
-              `${dominant.short} Your secondary pattern is ${secondary.name}, creating a nuanced blend of protection and becoming.`}
+            {generatedContent
+              ? normalizeProtectiveRoleCopy(generatedContent.reportSubtitle)
+              : `${dominant.short} Your secondary protective role is ${secondary.name}, creating a nuanced blend of protection and becoming.`}
           </p>
         </section>
 
         <div className="mt-6 rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-5">
-          <ArchetypeChart distribution={report.result.distribution} />
+          <ArchetypeChart scores={report.result.scores} />
         </div>
 
         {!generatedContent && unlocked && (
@@ -319,7 +323,7 @@ export function ReportPageClient({ id }: { id: string }) {
             </h2>
             <p className="mt-4 text-base leading-8 text-[#5d402d]">
               {report.generationError ??
-                "The full report is generated after unlock using your exact answers and scored archetype blend."}
+                "The full report is generated after unlock using your exact answers and scored protective role blend."}
             </p>
             {report.generationStatus === "failed" && (
               <button
@@ -349,7 +353,7 @@ export function ReportPageClient({ id }: { id: string }) {
               <ReportSection
                 block={{
                   title: "Opening Letter",
-                  body: generatedContent.openingLetter,
+                  body: normalizeProtectiveRoleCopy(generatedContent.openingLetter),
                 }}
               />
               {generatedContent.blocks.map((block) => (
@@ -357,8 +361,12 @@ export function ReportPageClient({ id }: { id: string }) {
                   key={block.title}
                   className="rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8"
                 >
-                  <h2 className="text-2xl font-semibold text-[#352317]">{block.title}</h2>
-                  <p className="mt-4 text-base leading-8 text-[#5d402d]">{block.body}</p>
+                  <h2 className="text-2xl font-semibold text-[#352317]">
+                    {normalizeProtectiveRoleCopy(block.title)}
+                  </h2>
+                  <p className="mt-4 text-base leading-8 text-[#5d402d]">
+                    {normalizeProtectiveRoleCopy(block.body)}
+                  </p>
                   <div className="mt-5 grid gap-4 lg:grid-cols-2">
                     <div>
                       <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
@@ -370,7 +378,7 @@ export function ReportPageClient({ id }: { id: string }) {
                             key={prompt}
                             className="rounded-[8px] bg-white/58 p-4 text-sm leading-6 text-[#6c4b37]"
                           >
-                            {prompt}
+                            {normalizeProtectiveRoleCopy(prompt)}
                           </li>
                         ))}
                       </ul>
@@ -381,7 +389,10 @@ export function ReportPageClient({ id }: { id: string }) {
                       </h3>
                       <div className="mt-3 grid gap-3">
                         {block.practices.map((practice) => (
-                          <PracticeCard key={practice} practice={practice} />
+                          <PracticeCard
+                            key={practice}
+                            practice={normalizeProtectiveRoleCopy(practice)}
+                          />
                         ))}
                       </div>
                     </div>
@@ -399,19 +410,19 @@ export function ReportPageClient({ id }: { id: string }) {
                       className="rounded-[8px] border border-[#e4cda9] bg-white/58 p-5"
                     >
                       <p className="text-sm font-semibold text-[#7C3C60]">
-                        Day {item.day}: {item.title}
+                        Day {item.day}: {normalizeProtectiveRoleCopy(item.title)}
                       </p>
                       <p className="mt-3 text-base leading-7 text-[#5d402d]">
-                        {item.practice}
+                        {normalizeProtectiveRoleCopy(item.practice)}
                       </p>
                       <p className="mt-3 text-sm leading-6 text-[#6c4b37]">
-                        {item.reflection}
+                        {normalizeProtectiveRoleCopy(item.reflection)}
                       </p>
                     </div>
                   ))}
                 </div>
                 <p className="mt-6 text-sm leading-6 text-[#6c4b37]">
-                  {generatedContent.disclaimer}
+                  {normalizeProtectiveRoleCopy(generatedContent.disclaimer)}
                 </p>
               </section>
             </>

@@ -62,23 +62,26 @@ const compactAnswers = (answers: Answers) =>
 const systemPrompt = `You write premium SakanBody Audit reports.
 
 Rules:
-- Preserve the supplied dominant and secondary archetypes exactly. Do not invent a new archetype.
+- Preserve the supplied dominant and secondary protective roles exactly. Do not invent a new role.
 - Ground every insight in the supplied questionnaire answers and score data.
 - Use direct, soulful, specific language. Be profound without becoming vague.
 - Use phrases like "your answers suggest", "this may point to", and "one possible pattern is".
 - Do not diagnose, treat, or claim to provide therapy or medical advice.
 - Do not invent childhood events, trauma, identities, or facts not present in the answers.
+- Use the supplied protective role names exactly. Do not use retired names like The Anticipator, The Performer, or The Quiter.
+- If you mention numeric role strength, use only the supplied 0-100 intensity scores. Do not call them percentages, do not add percent signs, and do not mention distribution shares.
 - Avoid generic filler. Make the report useful, concrete, and compassionate.
 - Return only structured JSON that matches the schema.`;
 
-const archetypePrompt = `You are an expert SakanBody archetype analyst.
+const archetypePrompt = `You are an expert SakanBody protective role analyst.
 
 Rules:
-- Choose the dominant and secondary archetypes from the four provided archetypes only.
+- Choose the dominant and secondary protective roles from the four provided roles only.
 - Base the choice on the user's questionnaire answers, not on a precomputed score.
-- The secondary archetype must be different from the dominant archetype.
+- The secondary protective role must be different from the dominant protective role.
 - Scores should be comparative intensity scores from 0 to 100.
 - Distribution should be percentages that roughly total 100.
+- Scores and distribution are different metrics. If explanatory prose is generated later, it should cite scores as 0-100 intensity scores, not percentages.
 - Extract concrete patterns from the answers. Do not diagnose, treat, or claim medical or therapeutic authority.
 - Return only structured JSON that matches the schema.`;
 
@@ -90,6 +93,8 @@ const archetypeReference = Object.fromEntries(
       short: meta.short,
       coreProtection: meta.coreProtection,
       bodyStrategy: meta.bodyStrategy,
+      coreFear: meta.coreFear,
+      strategy: meta.strategy,
       promise: meta.promise,
       currency: meta.currency,
     },
@@ -126,8 +131,8 @@ export async function generateAiResult({
         role: "user",
         content: JSON.stringify({
           task:
-            "Analyze these questionnaire answers and decide the SakanBody archetype result.",
-          archetypes: archetypeReference,
+            "Analyze these questionnaire answers and decide the SakanBody protective role result.",
+          protectiveRoles: archetypeReference,
           answers: compactAnswers(answers),
         }),
       },
@@ -142,7 +147,7 @@ export async function generateAiResult({
   const parsed = response.output_parsed;
 
   if (!parsed) {
-    throw new Error("The model did not return a structured archetype result.");
+    throw new Error("The model did not return a structured protective role result.");
   }
 
   const result = aiResultSchema.parse(parsed);
@@ -154,7 +159,7 @@ export async function generateAiResult({
       : result.secondary;
 
   if (!secondary) {
-    throw new Error("The model did not identify a valid secondary archetype.");
+    throw new Error("The model did not identify a valid secondary protective role.");
   }
 
   return {
@@ -206,6 +211,8 @@ export async function generateAiReport({
               short: dominant.short,
               coreProtection: dominant.coreProtection,
               bodyStrategy: dominant.bodyStrategy,
+              coreFear: dominant.coreFear,
+              strategy: dominant.strategy,
               promise: dominant.promise,
             },
             secondary: {
@@ -214,10 +221,11 @@ export async function generateAiReport({
               short: secondary.short,
               coreProtection: secondary.coreProtection,
               bodyStrategy: secondary.bodyStrategy,
+              coreFear: secondary.coreFear,
+              strategy: secondary.strategy,
               promise: secondary.promise,
             },
             scores: result.scores,
-            distribution: result.distribution,
             keyPatterns: result.keyPatterns,
             shadowThemes: result.shadowThemes,
             dreamSabotageThemes: result.dreamSabotageThemes,

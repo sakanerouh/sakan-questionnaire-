@@ -72,15 +72,15 @@ export function buildReportBlocks(
   return [
     {
       title: "Opening Mirror",
-      body: `Your answers suggest ${dominant.name}: ${dominant.short} This does not define you. It names a protection your body learned, likely for intelligent reasons. What stands out is the way your system has tried to keep you safe while another version of you has been quietly asking for more room.`,
+      body: `Your answers suggest ${dominant.name}: ${dominant.short} This does not define you. It names a protective role your body learned, likely for intelligent reasons. What stands out is the way your system has tried to keep you safe while another version of you has been quietly asking for more room.`,
     },
     {
-      title: "Your Dominant Archetype",
-      body: `${dominant.name} protects through ${dominant.coreProtection}. Its body strategy is ${dominant.bodyStrategy}. The emotional logic is simple and tender: ${dominant.promise} What it protected was your younger self's access to safety, dignity, connection, or energy. What it may cost now is presence, choice, and the ease of letting life be less managed by the past.`,
+      title: "Your Dominant Protective Role",
+      body: `${dominant.name} protects through ${dominant.coreProtection}. Its core fear is ${dominant.coreFear}, and its strategy is ${dominant.strategy}. Its body strategy is ${dominant.bodyStrategy}. The emotional logic is simple and tender: ${dominant.promise} What it protected was your younger self's access to safety, dignity, connection, or energy. What it may cost now is presence, choice, and the ease of letting life be less managed by the past.`,
     },
     {
-      title: "Your Secondary Archetype",
-      body: `${secondary.name} is the second pattern in your result. It blends with ${dominant.name} by adding another layer of protection: ${secondary.bodyStrategy}. Together, these two patterns may explain why part of you reaches forward while another part negotiates safety first.`,
+      title: "Your Secondary Protective Role",
+      body: `${secondary.name} is the second pattern in your result. It blends with ${dominant.name} by adding another layer of protection: ${secondary.bodyStrategy}. Together, these two protective roles may explain why part of you reaches forward while another part negotiates safety first.`,
     },
     {
       title: "Your Protection / Shield",

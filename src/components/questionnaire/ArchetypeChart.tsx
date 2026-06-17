@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { archetypeOrder, archetypes, type ArchetypeId } from "@/lib/archetypes";
+import { roleScoreValue } from "@/lib/protectiveRoleCopy";
 
 export function ArchetypeChart({
-  distribution,
+  scores,
 }: {
-  distribution: Record<ArchetypeId, number>;
+  scores: Record<ArchetypeId, number>;
 }) {
   const [mounted, setMounted] = useState(false);
 
@@ -18,7 +19,7 @@ export function ArchetypeChart({
 
   const data = archetypeOrder.map((id) => ({
     name: archetypes[id].name.replace("The ", ""),
-    value: distribution[id],
+    value: roleScoreValue(scores[id]),
     fill: archetypes[id].color,
   }));
 
@@ -33,6 +34,7 @@ export function ArchetypeChart({
           <XAxis dataKey="name" tick={{ fill: "#6c4b37", fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis hide domain={[0, 100]} />
           <Tooltip
+            formatter={(value) => [`${value}/100`, "Intensity score"]}
             cursor={{ fill: "rgba(221,168,200,0.14)" }}
             contentStyle={{
               background: "#fffaf2",

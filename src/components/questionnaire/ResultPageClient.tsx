@@ -42,7 +42,7 @@ export function ResultPageClient() {
         const data = (await response.json()) as { result?: SakanResult; error?: string };
 
         if (!response.ok || !data.result) {
-          throw new Error(data.error || "AI archetype analysis failed.");
+          throw new Error(data.error || "AI protective role analysis failed.");
         }
 
         if (!cancelled) {
@@ -51,7 +51,7 @@ export function ResultPageClient() {
       } catch (error) {
         if (!cancelled) {
           setAnalysisError(
-            error instanceof Error ? error.message : "AI archetype analysis failed.",
+            error instanceof Error ? error.message : "AI protective role analysis failed.",
           );
         }
       }
@@ -69,7 +69,7 @@ export function ResultPageClient() {
       <main className="min-h-screen bg-[#fbf7ef] px-5 py-10 text-[#352317] sm:px-8">
         <div className="mx-auto grid min-h-[calc(100vh-5rem)] place-items-center">
           <p className="max-w-xl text-center text-lg leading-8 text-[#6c4b37]">
-            {analysisError ?? "Preparing your AI archetype result..."}
+            {analysisError ?? "Preparing your AI protective role result..."}
           </p>
         </div>
       </main>

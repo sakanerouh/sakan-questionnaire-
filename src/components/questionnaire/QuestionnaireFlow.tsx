@@ -83,13 +83,13 @@ export function QuestionnaireFlow() {
       const data = (await response.json()) as { result?: SakanResult; error?: string };
 
       if (!response.ok || !data.result) {
-        throw new Error(data.error || "AI archetype analysis failed.");
+        throw new Error(data.error || "AI protective role analysis failed.");
       }
 
       setResult(data.result);
       router.push("/questionnaire/result");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "AI archetype analysis failed.";
+      const message = error instanceof Error ? error.message : "AI protective role analysis failed.";
 
       setAnalyzing(false);
       await Swal.fire({

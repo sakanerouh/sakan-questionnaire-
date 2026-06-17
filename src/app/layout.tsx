@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sakan eRouh Archetype Questionnaire",
+  title: "Sakan eRouh Protective Role Questionnaire",
   description:
-    "A soulful archetype questionnaire that reveals emotional patterns, strengths, shadows, and a personalized healing path.",
+    "A soulful protective role questionnaire that reveals emotional patterns, strengths, shadows, and a personalized healing path.",
 };
 
 export default function RootLayout({

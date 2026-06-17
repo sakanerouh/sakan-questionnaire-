@@ -12,6 +12,8 @@ export type ArchetypeMeta = {
   id: ArchetypeId;
   name: string;
   short: string;
+  coreFear: string;
+  strategy: string;
   coreProtection: string;
   bodyStrategy: string;
   promise: string;
@@ -24,9 +26,11 @@ export type ArchetypeMeta = {
 export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
   anticipator: {
     id: "anticipator",
-    name: "The Anticipator",
-    short: "Body always preparing for pressure or chaos.",
-    coreProtection: "preparing before life can surprise you",
+    name: "The Watcher",
+    short: "Safety through anticipation.",
+    coreFear: "surprise",
+    strategy: "anticipate",
+    coreProtection: "staying alert so nothing catches you off guard",
     bodyStrategy: "scanning ahead, reading the room, running scenarios, and staying ready",
     promise: "If I anticipate, I stay safe.",
     currency: "anxiety, vigilance, and the energy spent preparing for what may never happen",
@@ -41,8 +45,10 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
   },
   performer: {
     id: "performer",
-    name: "The Performer",
-    short: "Body believes safety comes from achievement.",
+    name: "The Striver",
+    short: "Safety through achievement.",
+    coreFear: "not being enough",
+    strategy: "achieve",
     coreProtection: "earning safety through achievement, usefulness, and proof",
     bodyStrategy: "producing, improving, optimizing, and staying impressive",
     promise: "If I achieve, I stay worthy.",
@@ -59,7 +65,9 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
   harmonizer: {
     id: "harmonizer",
     name: "The Harmonizer",
-    short: "Body prioritizes belonging over self-expression.",
+    short: "Safety through connection.",
+    coreFear: "rejection",
+    strategy: "please/connect",
     coreProtection: "preserving connection by tracking others and softening yourself",
     bodyStrategy: "peacemaking, caretaking, staying small, and sensing what others need",
     promise: "If I harmonize, I stay loved.",
@@ -75,9 +83,11 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
   },
   quiter: {
     id: "quiter",
-    name: "The Quiter",
-    short: "Body protects energy through withdrawal or slowing down.",
-    coreProtection: "saving your energy by stopping before life asks too much",
+    name: "The Shield",
+    short: "Safety through withdrawal.",
+    coreFear: "hurt or failure",
+    strategy: "withdraw/protect",
+    coreProtection: "protecting yourself by pulling back",
     bodyStrategy: "withdrawing, sleeping, losing interest, slowing down, and avoiding pressure",
     promise: "If I withdraw, I preserve myself.",
     currency: "withdrawal, depletion, postponed desire, and the quiet grief of stopping at the threshold",

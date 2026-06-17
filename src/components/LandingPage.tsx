@@ -26,7 +26,7 @@ const storyBeats = [
     title: "Maybe you call it overthinking.",
     body: "But the body may be doing something more intelligent: preparing, proving, pleasing, or disappearing before old discomfort returns.",
     reveal: "The quiz starts where generic advice usually stops.",
-    previewTitle: "The Anticipator",
+    previewTitle: "The Watcher",
     score: "86%",
     locks: ["Pressure scan", "Future rehearsal", "Safety planning"],
     icon: Eye,
@@ -46,7 +46,7 @@ const storyBeats = [
   {
     eyebrow: "Finally, the mirror opens",
     title: "Your report names the pattern without making you small.",
-    body: "You receive an archetype, shadow clues, dream sabotage themes, and practices that feel personal enough to keep reading.",
+    body: "You receive a protective role, shadow clues, dream sabotage themes, and practices that feel personal enough to keep reading.",
     reveal: "Curiosity becomes a map.",
     previewTitle: "Full Report",
     score: "15",
@@ -56,11 +56,11 @@ const storyBeats = [
   },
 ];
 
-const archetypeData = [
-  { archetype: "Anticipator", score: 86 },
-  { archetype: "Performer", score: 64 },
-  { archetype: "Harmonizer", score: 72 },
-  { archetype: "Quiter", score: 58 },
+const protectiveRoleData = [
+  { role: "Watcher", score: 86 },
+  { role: "Striver", score: 64 },
+  { role: "Harmonizer", score: 72 },
+  { role: "Shield", score: 58 },
 ];
 
 const faqs = [
@@ -74,7 +74,7 @@ const faqs = [
   },
   {
     question: "What do I get after the questionnaire?",
-    answer: "A personalized report with your dominant archetype, secondary pattern, shadow themes, dream sabotage clues, and practices.",
+    answer: "A personalized report with your dominant protective role, secondary pattern, shadow themes, dream sabotage clues, and practices.",
   },
 ];
 
@@ -128,9 +128,9 @@ function StoryVisual({
         <div className="h-56">
           <ChartFrame>
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={archetypeData}>
+              <RadarChart data={protectiveRoleData}>
                 <PolarGrid stroke="#e3cfe0" />
-                <PolarAngleAxis dataKey="archetype" tick={{ fill: "#6c4b37", fontSize: 11 }} />
+                <PolarAngleAxis dataKey="role" tick={{ fill: "#6c4b37", fontSize: 11 }} />
                 <Radar dataKey="score" stroke="#7C3C60" fill="#A95888" fillOpacity={0.3} />
               </RadarChart>
             </ResponsiveContainer>
@@ -258,7 +258,7 @@ function HeroScene() {
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6c4b37] sm:text-xl">
             Scroll into the mirror. Notice the protection. Then take the questionnaire
-            to discover the archetype shaping the way you love, protect, heal, and become.
+            to discover the protective role shaping the way you love, protect, heal, and become.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <PrimaryCTA />

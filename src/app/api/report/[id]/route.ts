@@ -64,7 +64,7 @@ export async function GET(
 
   if (resultError) {
     return NextResponse.json(
-      { ok: false, error: "Could not read archetype result." },
+      { ok: false, error: "Could not read protective role result." },
       { status: 500 },
     );
   }

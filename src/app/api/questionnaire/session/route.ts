@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { generateAiResult } from "@/lib/aiReportGenerator";
+import { calculateResult } from "@/lib/scoring";
 import { sessionPayloadSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 const databaseErrorMessage = (fallback: string, error: { message?: string; details?: string; code?: string }) =>
   [fallback, error.message, error.details, error.code].filter(Boolean).join(" ");
+
+const isSupabaseUnavailable = (error: { message?: string; details?: string; code?: string }) =>
+  [error.message, error.details, error.code]
+    .filter(Boolean)
+    .some((value) => /fetch failed|ENOTFOUND|ECONNREFUSED|ECONNRESET|ETIMEDOUT/i.test(value ?? ""));
 
 export async function POST(request: Request) {
   const parsed = sessionPayloadSchema.safeParse(await request.json());
@@ -19,8 +25,31 @@ export async function POST(request: Request) {
   const payload = parsed.data;
   const supabase = getSupabaseAdmin();
 
+  const localResponse = async () => {
+    if (!payload.completed && !payload.result) {
+      return NextResponse.json({ ok: true, persisted: false });
+    }
+
+    if (payload.result) {
+      return NextResponse.json({ ok: true, persisted: false, result: payload.result });
+    }
+
+    try {
+      const result = await generateAiResult({
+        sessionId: payload.sessionId,
+        answers: payload.answers,
+      });
+
+      return NextResponse.json({ ok: true, persisted: false, result });
+    } catch {
+      const result = calculateResult(payload.sessionId, payload.answers);
+
+      return NextResponse.json({ ok: true, persisted: false, result });
+    }
+  };
+
   if (!supabase) {
-    return NextResponse.json({ ok: true, persisted: false });
+    return localResponse();
   }
   const now = new Date().toISOString();
 
@@ -31,6 +60,10 @@ export async function POST(request: Request) {
   });
 
     if (sessionError) {
+      if (isSupabaseUnavailable(sessionError)) {
+        return localResponse();
+      }
+
       return NextResponse.json(
         { ok: false, error: databaseErrorMessage("Could not save questionnaire session.", sessionError) },
         { status: 500 },
@@ -46,6 +79,10 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (responseLookupError) {
+    if (isSupabaseUnavailable(responseLookupError)) {
+      return localResponse();
+    }
+
     return NextResponse.json(
       {
         ok: false,
@@ -75,6 +112,10 @@ export async function POST(request: Request) {
   const { error: responseError } = await responseWrite;
 
   if (responseError) {
+    if (isSupabaseUnavailable(responseError)) {
+      return localResponse();
+    }
+
     return NextResponse.json(
       { ok: false, error: databaseErrorMessage("Could not save questionnaire response.", responseError) },
       { status: 500 },
@@ -91,7 +132,7 @@ export async function POST(request: Request) {
           answers: payload.answers,
         });
       } catch (error) {
-        const message = error instanceof Error ? error.message : "AI archetype analysis failed.";
+        const message = error instanceof Error ? error.message : "AI protective role analysis failed.";
 
         return NextResponse.json(
           { ok: false, error: message },
@@ -114,8 +155,12 @@ export async function POST(request: Request) {
     });
 
     if (resultError) {
+      if (isSupabaseUnavailable(resultError)) {
+        return NextResponse.json({ ok: true, persisted: false, result });
+      }
+
       return NextResponse.json(
-        { ok: false, error: databaseErrorMessage("Could not save archetype result.", resultError) },
+        { ok: false, error: databaseErrorMessage("Could not save protective role result.", resultError) },
         { status: 500 },
       );
     }
@@ -134,6 +179,10 @@ export async function POST(request: Request) {
     });
 
     if (reportError) {
+      if (isSupabaseUnavailable(reportError)) {
+        return NextResponse.json({ ok: true, persisted: false, result });
+      }
+
       return NextResponse.json(
         { ok: false, error: databaseErrorMessage("Could not save report.", reportError) },
         { status: 500 },
