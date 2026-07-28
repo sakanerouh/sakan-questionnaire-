@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { archetypeOrder, archetypes, type ArchetypeId } from "@/lib/archetypes";
 import { roleScoreValue } from "@/lib/protectiveRoleCopy";
@@ -10,6 +11,8 @@ export function ArchetypeChart({
 }: {
   scores: Record<ArchetypeId, number>;
 }) {
+  const roles = useTranslations("archetypes");
+  const resultUi = useTranslations("resultUi");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -18,7 +21,7 @@ export function ArchetypeChart({
   }, []);
 
   const data = archetypeOrder.map((id) => ({
-    name: archetypes[id].name.replace("The ", ""),
+    name: roles(`${id}.name`),
     value: roleScoreValue(scores[id]),
     fill: archetypes[id].color,
   }));
@@ -34,7 +37,7 @@ export function ArchetypeChart({
           <XAxis dataKey="name" tick={{ fill: "#6c4b37", fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis hide domain={[0, 100]} />
           <Tooltip
-            formatter={(value) => [`${value}/100`, "Intensity score"]}
+            formatter={(value) => [`${value}/100`, resultUi("intensityScore")]}
             cursor={{ fill: "rgba(221,168,200,0.14)" }}
             contentStyle={{
               background: "#fffaf2",

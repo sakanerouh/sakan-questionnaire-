@@ -5,16 +5,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Swal from "sweetalert2";
 import { ArrowRight, CreditCard } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import type { AppLocale } from "@/i18n/routing";
 import { useQuestionnaireStore } from "@/lib/questionnaireStore";
 
-const emailSchema = z.object({
-  email: z.string().email("Enter a valid email so your report can be associated with you."),
-});
-
-type EmailForm = z.infer<typeof emailSchema>;
+type EmailForm = { email: string };
 
 export function PaymentWall({ reportId }: { reportId: string }) {
   const [loading, setLoading] = useState(false);
+  const locale = useLocale() as AppLocale;
+  const t = useTranslations("payment");
+  const emailSchema = z.object({ email: z.string().email(t("emailInvalid")) });
   const { sessionId, email, setEmail } = useQuestionnaireStore();
   const {
     register,
@@ -39,18 +40,19 @@ export function PaymentWall({ reportId }: { reportId: string }) {
           sessionId,
           reportId,
           email: parsed.data.email,
+          locale,
         }),
       });
       const data = (await response.json()) as { error?: string; url?: string; demo?: boolean };
 
       if (!response.ok || !data.url) {
-        throw new Error(data.error || "Checkout could not be created.");
+        throw new Error(t("checkoutError"));
       }
 
       if (data.demo) {
         await Swal.fire({
-          title: "Demo unlock",
-          text: "Stripe keys are not configured locally, so this opens the report in demo mode.",
+          title: t("demoTitle"),
+          text: t("demoText"),
           icon: "info",
           confirmButtonColor: "#7C3C60",
           background: "#fffaf2",
@@ -61,8 +63,8 @@ export function PaymentWall({ reportId }: { reportId: string }) {
       window.location.assign(data.url);
     } catch (error) {
       Swal.fire({
-        title: "The payment door did not open.",
-        text: error instanceof Error ? error.message : "Please try again in a moment.",
+        title: t("paymentErrorTitle"),
+        text: error instanceof Error ? error.message : t("tryAgain"),
         icon: "warning",
         confirmButtonColor: "#7C3C60",
         background: "#fffaf2",
@@ -79,17 +81,16 @@ export function PaymentWall({ reportId }: { reportId: string }) {
       className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/45 p-6 text-[#fffaf2] shadow-[0_28px_80px_rgba(124,60,96,0.28)] sm:p-8"
     >
       <CreditCard className="h-7 w-7 text-[#f8d7ea]" aria-hidden />
-      <h2 className="mt-5 text-3xl font-semibold">Unlock your full report</h2>
+      <h2 className="mt-5 text-3xl font-semibold">{t("title")}</h2>
       <p className="mt-4 text-base leading-7 text-[#f8ead7]">
-        Your full SakanBody Audit includes your protection pattern, shadow personality,
-        dream sabotage pattern, nervous system update, practices, and identity inquiry.
+        {t("body")}
       </p>
       <label className="mt-6 block">
-        <span className="text-sm font-semibold text-[#f8d7ea]">Email for your report</span>
+        <span className="text-sm font-semibold text-[#f8d7ea]">{t("emailLabel")}</span>
         <input
           {...register("email", { required: true })}
           type="email"
-          placeholder="you@example.com"
+          placeholder={t("emailPlaceholder")}
           className="mt-2 h-12 w-full rounded-[8px] border border-white/20 bg-white/10 px-4 text-[#fffaf2] outline-none placeholder:text-[#edd3e2] focus:border-[#DDA8C8]"
         />
       </label>
@@ -99,11 +100,11 @@ export function PaymentWall({ reportId }: { reportId: string }) {
         disabled={loading}
         className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#fffaf2] px-6 py-3 text-sm font-semibold text-[#7C3C60] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {loading ? "Opening checkout..." : "Unlock My Full Report"}
+        {loading ? t("openingCheckout") : t("unlock")}
         <ArrowRight className="h-4 w-4" aria-hidden />
       </button>
       <p className="mt-4 text-xs leading-5 text-[#dcc7a8]">
-        This is a self-reflection tool, not a medical diagnosis or therapy.
+        {t("disclaimer")}
       </p>
     </form>
   );

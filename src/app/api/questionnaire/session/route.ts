@@ -4,6 +4,7 @@ import { calculateResult } from "@/lib/scoring";
 import { sessionPayloadSchema } from "@/lib/schemas";
 import { databaseErrorMessage, isSupabaseUnavailable } from "@/lib/supabase/errors";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { migrateLegacyAnswers } from "@/lib/questionnaireMigration";
 
 export async function POST(request: Request) {
   const parsed = sessionPayloadSchema.safeParse(await request.json());
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
   }
 
   const payload = parsed.data;
+  const answers = migrateLegacyAnswers(payload.answers);
   const supabase = getSupabaseAdmin();
 
   const localResponse = async () => {
@@ -30,12 +32,13 @@ export async function POST(request: Request) {
     try {
       const result = await generateAiResult({
         sessionId: payload.sessionId,
-        answers: payload.answers,
+        answers,
+        locale: payload.locale,
       });
 
       return NextResponse.json({ ok: true, persisted: false, result });
     } catch {
-      const result = calculateResult(payload.sessionId, payload.answers);
+      const result = calculateResult(payload.sessionId, answers, payload.locale);
 
       return NextResponse.json({ ok: true, persisted: false, result });
     }
@@ -49,6 +52,7 @@ export async function POST(request: Request) {
   const { error: sessionError } = await supabase.from("anonymous_sessions").upsert({
     id: payload.sessionId,
     email: payload.email || null,
+    locale: payload.locale,
     updated_at: now,
   });
 
@@ -90,7 +94,8 @@ export async function POST(request: Request) {
 
   const responseValues = {
     session_id: payload.sessionId,
-    answers: payload.answers,
+    answers,
+    locale: payload.locale,
     completed: payload.completed || existingResponse?.completed || false,
     updated_at: now,
   };
@@ -122,7 +127,8 @@ export async function POST(request: Request) {
       try {
         result = await generateAiResult({
           sessionId: payload.sessionId,
-          answers: payload.answers,
+          answers,
+          locale: payload.locale,
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : "AI protective role analysis failed.";
@@ -168,6 +174,8 @@ export async function POST(request: Request) {
       generation_status: "not_started",
       generated_at: null,
       generation_error: null,
+      result_locale: payload.locale,
+      localized_content: {},
       updated_at: now,
     });
 

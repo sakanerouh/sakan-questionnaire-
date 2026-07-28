@@ -5,16 +5,21 @@ import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { archetypes } from "./archetypes";
 import { generatedReportSchema, type GeneratedReport } from "./generatedReport";
-import type { Answers, SakanResult } from "./schemas";
+import { localizedAnswersForReport, localizedArchetype } from "./localizedQuestionnaire";
+import { calculateResult } from "./scoring";
+import { reportLanguageInstruction } from "./reportLocale";
+import type { Answers, SakanResult, SupportedLocale } from "./schemas";
 
 type ResultGenerationInput = {
   sessionId: string;
   answers: Answers;
+  locale: SupportedLocale;
 };
 
 type ReportGenerationInput = {
   answers: Answers;
   result: SakanResult;
+  locale: SupportedLocale;
 };
 
 const archetypeIdSchema = z.enum(["anticipator", "performer", "harmonizer", "quiter"]);
@@ -35,29 +40,6 @@ const aiResultSchema = z.object({
   dreamSabotageThemes: z.array(z.string()),
   protectionThemes: z.array(z.string()),
 });
-
-const answerToText = (value: unknown): string | string[] => {
-  if (Array.isArray(value)) return value.filter(Boolean).map(String);
-
-  if (typeof value === "string") return value.trim();
-
-  if (value && typeof value === "object") {
-    const item = value as { value?: unknown; other?: unknown };
-    return [item.value, item.other]
-      .filter((part): part is string => typeof part === "string" && Boolean(part.trim()))
-      .map((part) => part.trim())
-      .join(" - ");
-  }
-
-  return "";
-};
-
-const compactAnswers = (answers: Answers) =>
-  Object.fromEntries(
-    Object.entries(answers)
-      .map(([id, value]) => [id, answerToText(value)] as const)
-      .filter(([, value]) => Array.isArray(value) ? value.length > 0 : Boolean(value)),
-  );
 
 const systemPrompt = `You write premium SakanBody Audit reports.
 
@@ -83,6 +65,7 @@ Rules:
 - Distribution should be percentages that roughly total 100.
 - Scores and distribution are different metrics. If explanatory prose is generated later, it should cite scores as 0-100 intensity scores, not percentages.
 - Extract concrete patterns from the answers. Do not diagnose, treat, or claim medical or therapeutic authority.
+- For extracted themes, return exact stable option IDs from the supplied selections, never translated labels.
 - Return only structured JSON that matches the schema.`;
 
 const archetypeReference = Object.fromEntries(
@@ -118,6 +101,7 @@ const getReportMaxOutputTokens = () =>
 export async function generateAiResult({
   sessionId,
   answers,
+  locale,
 }: ResultGenerationInput): Promise<SakanResult> {
   const openai = createOpenAIClient();
   const model = getReportModel();
@@ -135,7 +119,7 @@ export async function generateAiResult({
           task:
             "Analyze these questionnaire answers and decide the SakanBody protective role result.",
           protectiveRoles: archetypeReference,
-          answers: compactAnswers(answers),
+          answers: localizedAnswersForReport(answers, locale),
         }),
       },
     ],
@@ -153,6 +137,7 @@ export async function generateAiResult({
   }
 
   const result = aiResultSchema.parse(parsed);
+  const stableThemes = calculateResult(sessionId, answers, locale);
   const secondary =
     result.secondary === result.dominant
       ? (Object.entries(result.scores)
@@ -169,21 +154,23 @@ export async function generateAiResult({
     secondary,
     id: globalThis.crypto?.randomUUID?.() ?? `${sessionId}-${Date.now()}`,
     sessionId,
-    keyPatterns: result.keyPatterns.slice(0, 12),
-    shadowThemes: result.shadowThemes.slice(0, 10),
-    dreamSabotageThemes: result.dreamSabotageThemes.slice(0, 10),
-    protectionThemes: result.protectionThemes.slice(0, 10),
+    keyPatterns: stableThemes.keyPatterns,
+    shadowThemes: stableThemes.shadowThemes,
+    dreamSabotageThemes: stableThemes.dreamSabotageThemes,
+    protectionThemes: stableThemes.protectionThemes,
     completedAt: new Date().toISOString(),
+    resultLocale: locale,
   };
 }
 
 export async function generateAiReport({
   answers,
   result,
+  locale,
 }: ReportGenerationInput): Promise<GeneratedReport> {
   const openai = createOpenAIClient();
-  const dominant = archetypes[result.dominant];
-  const secondary = archetypes[result.secondary];
+  const dominant = localizedArchetype(locale, result.dominant);
+  const secondary = localizedArchetype(locale, result.secondary);
   const model = getReportModel();
 
   const response = await openai.responses.parse({
@@ -191,13 +178,15 @@ export async function generateAiReport({
     input: [
       {
         role: "system",
-        content: systemPrompt,
+        content: `${systemPrompt}\n- ${reportLanguageInstruction(locale)}\n- Keep user-written free-text responses in their original language and do not translate them.`,
       },
       {
         role: "user",
         content: JSON.stringify({
           task:
-            "Create a premium 8-12 page custom self-reflection report from this questionnaire result.",
+            locale === "fr"
+              ? "Créez un rapport introspectif personnalisé et approfondi de 8 à 12 pages à partir de ce résultat."
+              : "Create a premium 8-12 page custom self-reflection report from this questionnaire result.",
           reportShape: {
             blocks:
               "Write 8 to 10 deep sections. Each section needs a title, a substantial body, reflection prompts, and practical practices.",
@@ -233,7 +222,7 @@ export async function generateAiReport({
             dreamSabotageThemes: result.dreamSabotageThemes,
             protectionThemes: result.protectionThemes,
           },
-          answers: compactAnswers(answers),
+          answers: localizedAnswersForReport(answers, locale),
         }),
       },
     ],

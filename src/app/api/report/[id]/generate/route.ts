@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateAiReport } from "@/lib/aiReportGenerator";
 import { generatedReportSchema } from "@/lib/generatedReport";
-import { answersSchema, resultSchema } from "@/lib/schemas";
+import { answersSchema, localeSchema, resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { migrateLegacyAnswers } from "@/lib/questionnaireMigration";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 
@@ -31,7 +32,7 @@ const toClientError = (error: unknown) =>
   error instanceof Error ? error.message : "Report generation failed.";
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = getSupabaseAdmin();
@@ -44,10 +45,12 @@ export async function POST(
   }
 
   const { id } = await params;
+  const requestBody = await request.json().catch(() => ({}));
+  const locale = localeSchema.catch("en").parse((requestBody as { locale?: unknown }).locale);
   const { data: report, error: reportError } = await supabase
     .from("reports")
     .select(
-      "id, session_id, result_id, payment_status, content, content_source, generation_status",
+      "id, session_id, result_id, payment_status, content, localized_content, result_locale, content_source, generation_status",
     )
     .eq("id", id)
     .maybeSingle();
@@ -73,8 +76,13 @@ export async function POST(
     );
   }
 
+  const localizedContent = (report.localized_content && typeof report.localized_content === "object")
+    ? report.localized_content as Record<string, unknown>
+    : {};
+  const cachedContent = localizedContent[locale] ?? (report.result_locale === locale ? report.content : undefined);
+
   if (report.content_source === "ai" && report.generation_status === "ready") {
-    const parsed = generatedReportSchema.safeParse(report.content);
+    const parsed = generatedReportSchema.safeParse(cachedContent);
 
     if (parsed.success) {
       return NextResponse.json({ ok: true, content: parsed.data });
@@ -141,17 +149,21 @@ export async function POST(
     dreamSabotageThemes: resultData.dream_sabotage_themes,
     protectionThemes: resultData.protection_themes,
     completedAt: resultData.created_at,
+    resultLocale: locale,
   });
-  const answers = answerRowSchema.parse(answerRow).answers;
+  const answers = migrateLegacyAnswers(answerRowSchema.parse(answerRow).answers);
 
   try {
-    const content = await generateAiReport({ answers, result });
+    const content = await generateAiReport({ answers, result, locale });
     const generatedAt = new Date().toISOString();
 
+    const primaryContent = generatedReportSchema.safeParse(report.content).success;
     const { error: saveError } = await supabase
       .from("reports")
       .update({
-        content,
+        content: primaryContent ? report.content : content,
+        result_locale: primaryContent ? report.result_locale : locale,
+        localized_content: { ...localizedContent, [locale]: content },
         content_source: "ai",
         generation_status: "ready",
         generated_at: generatedAt,

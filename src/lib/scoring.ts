@@ -1,6 +1,7 @@
 import { archetypeOrder, emptyScores, type ArchetypeId } from "./archetypes";
 import { questionnaireScreens } from "./questionnaire";
 import type { Answers, SakanResult } from "./schemas";
+import type { SupportedLocale } from "./schemas";
 
 const keywordWeights: Array<[RegExp, ArchetypeId]> = [
   [/plan|prepare|scenario|danger|worry|anxi|chaos|tight|race|future|anticip/i, "anticipator"],
@@ -28,6 +29,7 @@ const add = (
 export function calculateResult(
   sessionId: string,
   answers: Answers,
+  locale: SupportedLocale = "en",
 ): SakanResult {
   const scores = emptyScores();
   const keyPatterns: string[] = [];
@@ -41,24 +43,24 @@ export function calculateResult(
     const values = asArray(answers[screen.id]);
     if (screen.questionType !== "text") {
       for (const value of values) {
-        const option = screen.options?.find((item) => item.label === value);
+        const option = screen.options?.find((item) => item.id === value);
         add(scores, option?.weights);
 
-        if (option && option.label !== "Other") {
+        if (option && option.id !== "other") {
           if (["childhood-truths", "childhood-movement", "hard-to-stop", "slowing-fear"].includes(screen.id)) {
-            keyPatterns.push(option.label);
+            keyPatterns.push(option.id);
           }
 
           if (["shadow-clues", "fascination-shares", "shadow-wants"].includes(screen.id)) {
-            shadowThemes.push(option.label);
+            shadowThemes.push(option.id);
           }
 
           if (["looping-dream-areas", "sabotage-mechanism", "dream-shield"].includes(screen.id)) {
-            dreamSabotageThemes.push(option.label);
+            dreamSabotageThemes.push(option.id);
           }
 
           if (["protection-accomplished", "strengths-forged", "jobs-done", "promotion"].includes(screen.id)) {
-            protectionThemes.push(option.label);
+            protectionThemes.push(option.id);
           }
         }
       }
@@ -92,5 +94,6 @@ export function calculateResult(
     dreamSabotageThemes: [...new Set(dreamSabotageThemes)].slice(0, 10),
     protectionThemes: [...new Set(protectionThemes)].slice(0, 10),
     completedAt: new Date().toISOString(),
+    resultLocale: locale,
   };
 }

@@ -2,9 +2,12 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useRouter } from "@/i18n/navigation";
+import type { AppLocale } from "@/i18n/routing";
 import { questionnaireScreens, totalQuestionCount } from "@/lib/questionnaire";
 import { useQuestionnaireStore } from "@/lib/questionnaireStore";
 import type { SakanResult } from "@/lib/schemas";
@@ -23,6 +26,10 @@ const isTypingTarget = (target: EventTarget | null) => {
 
 export function QuestionnaireFlow() {
   const router = useRouter();
+  const locale = useLocale() as AppLocale;
+  const t = useTranslations("questionnaire");
+  const ui = useTranslations("questionnaireUi");
+  const common = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const {
@@ -57,12 +64,12 @@ export function QuestionnaireFlow() {
       fetch("/api/questionnaire/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, email, answers, completed: false }),
+        body: JSON.stringify({ sessionId, email, answers, locale, completed: false }),
       }).catch(() => undefined);
     }, 900);
 
     return () => window.clearTimeout(timeout);
-  }, [answers, email, mounted, sessionId]);
+  }, [answers, email, locale, mounted, sessionId]);
 
   const valueIsEmpty = useCallback(() => {
     if (screen.type !== "question" || screen.optional) return false;
@@ -78,22 +85,22 @@ export function QuestionnaireFlow() {
       const response = await fetch("/api/questionnaire/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, email, answers, completed: true }),
+        body: JSON.stringify({ sessionId, email, answers, locale, completed: true }),
       });
       const data = (await response.json()) as { result?: SakanResult; error?: string };
 
       if (!response.ok || !data.result) {
-        throw new Error(data.error || "AI protective role analysis failed.");
+        throw new Error(ui("analysisError"));
       }
 
       setResult(data.result);
       router.push("/questionnaire/result");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "AI protective role analysis failed.";
+      const message = error instanceof Error ? error.message : ui("analysisError");
 
       setAnalyzing(false);
       await Swal.fire({
-        title: "AI analysis did not complete.",
+        title: ui("analysisErrorTitle"),
         text: message,
         icon: "warning",
         confirmButtonColor: "#7C3C60",
@@ -101,13 +108,13 @@ export function QuestionnaireFlow() {
         color: "#352317",
       });
     }
-  }, [answers, email, router, sessionId, setResult]);
+  }, [answers, email, locale, router, sessionId, setResult, ui]);
 
   const next = useCallback(async () => {
     if (valueIsEmpty()) {
       await Swal.fire({
-        title: "One gentle pause.",
-        text: "Choose or write what feels closest before continuing. Optional questions are marked clearly.",
+        title: ui("validationTitle"),
+        text: ui("validationText"),
         icon: "info",
         confirmButtonColor: "#7C3C60",
         background: "#fffaf2",
@@ -122,7 +129,7 @@ export function QuestionnaireFlow() {
     }
 
     setCurrentIndex(currentIndex + 1);
-  }, [currentIndex, finish, setCurrentIndex, valueIsEmpty]);
+  }, [currentIndex, finish, setCurrentIndex, ui, valueIsEmpty]);
 
   const back = useCallback(() => {
     if (currentIndex > 0) {
@@ -149,15 +156,15 @@ export function QuestionnaireFlow() {
           event.preventDefault();
 
           if (screen.questionType === "single") {
-            setAnswer(screen.id, option.label);
+            setAnswer(screen.id, option.id);
           } else {
             const currentValue = answers[screen.id];
             const selected = Array.isArray(currentValue) ? currentValue : [];
             setAnswer(
               screen.id,
-              selected.includes(option.label)
-                ? selected.filter((item) => item !== option.label)
-                : [...selected, option.label],
+              selected.includes(option.id)
+                ? selected.filter((item) => item !== option.id)
+                : [...selected, option.id],
             );
           }
 
@@ -193,14 +200,13 @@ export function QuestionnaireFlow() {
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-2xl flex-col items-center justify-center text-center">
           <Loader2 className="h-10 w-10 animate-spin text-[#A95888]" aria-hidden />
           <p className="mt-8 text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
-            Reading the pattern
+            {ui("readingPattern")}
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
-            Your answers are being gathered into a mirror.
+            {ui("analyzingTitle")}
           </h1>
           <p className="mt-5 text-lg leading-8 text-[#6c4b37]">
-            Nothing is being diagnosed. We are simply noticing the protection, the
-            cost, and the life beginning to come forward.
+            {ui("analyzingBody")}
           </p>
         </div>
       </main>
@@ -211,23 +217,30 @@ export function QuestionnaireFlow() {
     <main className="min-h-screen overflow-hidden bg-[#fbf7ef] px-5 py-6 text-[#352317] sm:px-8">
       <div className="grain" />
       <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-6xl flex-col">
-        <div className="pt-3">
-          <ProgressBar
-            current={Math.max(questionNumber, 1)}
-            total={totalQuestionCount}
-            label={screen.section}
-          />
+        <div className="flex items-start gap-4 pt-3">
+          <div className="min-w-0 flex-1">
+            <ProgressBar
+              current={Math.max(questionNumber, 1)}
+              total={totalQuestionCount}
+              label={t(`sections.${screen.sectionId}`)}
+            />
+          </div>
+          <LanguageSwitcher className="shrink-0" />
         </div>
 
         <div className="grid flex-1 place-items-center py-12">
           <AnimatePresence mode="wait">
             <motion.div key={screen.id} className="w-full">
               {screen.type === "intro" || screen.type === "insight" ? (
-                <SectionIntro eyebrow={screen.eyebrow} title={screen.title} body={screen.body} />
+                <SectionIntro
+                  eyebrow={t.has(`screens.${screen.id}.eyebrow`) ? t(`screens.${screen.id}.eyebrow`) : undefined}
+                  title={t(`screens.${screen.id}.title`)}
+                  body={t(`screens.${screen.id}.body`)}
+                />
               ) : screen.type === "featured" ? (
                 <FeaturedReflectionScreen
-                  title={screen.title}
-                  body={screen.body}
+                  title={t(`screens.${screen.id}.title`)}
+                  body={t(`screens.${screen.id}.body`)}
                   childhoodQuestionId={screen.childhoodQuestionId}
                   sabotageQuestionId={screen.sabotageQuestionId}
                   answers={answers}
@@ -237,6 +250,8 @@ export function QuestionnaireFlow() {
                   screen={screen}
                   value={answers[screen.id] as string | string[] | undefined}
                   onChange={(value) => setAnswer(screen.id, value)}
+                  otherValue={typeof answers[`${screen.id}__other`] === "string" ? answers[`${screen.id}__other`] as string : ""}
+                  onOtherChange={(value) => setAnswer(`${screen.id}__other`, value)}
                 />
               ) : null}
             </motion.div>
@@ -252,16 +267,16 @@ export function QuestionnaireFlow() {
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/50 px-5 text-sm font-semibold text-[#7C3C60] transition hover:bg-white/80 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Back
+            {common("back")}
           </button>
-          <p className="hidden text-sm text-[#7C3C60] sm:block">Progress saved automatically</p>
+          <p className="hidden text-sm text-[#7C3C60] sm:block">{ui("progressSaved")}</p>
           <button
             type="button"
             onClick={next}
             aria-keyshortcuts="Enter ArrowRight PageDown"
             className="sakan-gradient inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.22)] transition hover:-translate-y-0.5"
           >
-            {currentIndex >= questionnaireScreens.length - 1 ? "See My Result" : "Continue"}
+            {currentIndex >= questionnaireScreens.length - 1 ? ui("seeResult") : common("continue")}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
