@@ -1,0 +1,801 @@
+{
+  "common": {
+    "languageSelector": "Choose language",
+    "switchLanguage": "Switch language to {language}",
+    "back": "Back",
+    "continue": "Continue",
+    "other": "Other",
+    "otherPlaceholder": "Tell us what feels true for you..."
+  },
+  "metadata": {
+    "home": {
+      "title": "Sakan eRouh Protective Role Questionnaire",
+      "description": "Discover the protective role shaping how you love, protect, heal, and become."
+    },
+    "questionnaire": {
+      "title": "Protective Role Questionnaire | Sakan eRouh",
+      "description": "A gentle, introspective audit of the protection patterns your nervous system learned."
+    },
+    "result": {
+      "title": "Your Protective Role Result | Sakan eRouh",
+      "description": "Explore your personalized protective role result and next steps."
+    },
+    "report": {
+      "title": "Your SakanBody Audit Report | Sakan eRouh",
+      "description": "Your personalized protective role analysis, reflections, and practice path."
+    }
+  },
+  "landing": {
+    "navBegin": "Begin",
+    "primaryCta": "Take the Questionnaire",
+    "heroTitle": "What if your pattern is not the problem?",
+    "heroBody": "Scroll into the mirror. Notice the protection. Then take the questionnaire to discover the protective role shaping the way you love, protect, heal, and become.",
+    "followStory": "Follow the Story",
+    "liveMirror": "Live mirror",
+    "storyBeats": [
+      {
+        "eyebrow": "First, the surface story",
+        "title": "Maybe you call it overthinking.",
+        "body": "But the body may be doing something more intelligent: preparing, proving, pleasing, or disappearing before old discomfort returns.",
+        "reveal": "The quiz starts where generic advice usually stops.",
+        "previewTitle": "The Watcher",
+        "locks": ["Pressure scan", "Future rehearsal", "Safety planning"]
+      },
+      {
+        "eyebrow": "Then, the protection appears",
+        "title": "There is a reason your pattern repeats.",
+        "body": "Each answer helps reveal the protection style underneath your reactions, the one that once kept something tender safe.",
+        "reveal": "Protection is not the enemy. It is the doorway.",
+        "previewTitle": "Protection Map",
+        "locks": ["Childhood role", "Current trigger", "Body strategy"]
+      },
+      {
+        "eyebrow": "Finally, the mirror opens",
+        "title": "Your report names the pattern without making you small.",
+        "body": "You receive a protective role, shadow clues, dream sabotage themes, and practices that feel personal enough to keep reading.",
+        "reveal": "Curiosity becomes a map.",
+        "previewTitle": "Full Report",
+        "locks": ["Shadow themes", "Dream sabotage", "Practice path"]
+      }
+    ],
+    "roleChart": ["Watcher", "Striver", "Harmonizer", "Shield"],
+    "bridgeEyebrow": "The question that changes the scroll",
+    "bridgeTitle": "Which part of you learned to keep watch?",
+    "bridgeBody": "The questionnaire is built like a conversation with that part. It asks enough to create recognition, but not so much that you feel analyzed.",
+    "findPattern": "Find My Pattern",
+    "bridgeCards": [
+      {"title": "Body pattern", "text": "How your system reacts before your mind explains it."},
+      {"title": "Relationship logic", "text": "What you do to stay loved, safe, useful, or unseen."},
+      {"title": "Shadow clue", "text": "The aliveness that got exiled because it felt risky."},
+      {"title": "Practice path", "text": "A next step that respects the protection instead of shaming it."}
+    ],
+    "finalEyebrow": "Your mirror is waiting",
+    "finalTitle": "You do not need another label. You need a pattern you can finally recognize.",
+    "finalBody": "Start with one answer. The rest of the story opens from there.",
+    "startQuestionnaire": "Start the Questionnaire",
+    "faqs": [
+      {"question": "How long does it take?", "answer": "Most people complete it in 10 to 15 minutes. It is reflective, but not endless."},
+      {"question": "Is this therapy?", "answer": "No. It is a self-reflection tool, not a diagnosis or a replacement for therapy, medical care, or crisis support."},
+      {"question": "What do I get after the questionnaire?", "answer": "A personalized report with your dominant protective role, secondary pattern, shadow themes, dream sabotage clues, and practices."}
+    ]
+  },
+  "archetypes": {
+    "anticipator": {
+      "name": "The Watcher",
+      "short": "Safety through anticipation.",
+      "coreFear": "surprise",
+      "strategy": "anticipate",
+      "coreProtection": "staying alert so nothing catches you off guard",
+      "bodyStrategy": "scanning ahead, reading the room, running scenarios, and staying ready",
+      "promise": "If I anticipate, I stay safe.",
+      "currency": "anxiety, vigilance, and the energy spent preparing for what may never happen",
+      "practices": ["60-second orienting practice: name five neutral things in the room before solving anything.", "Journal: What is actually happening now, and what am I preparing for?", "Body scan for present safety: jaw, shoulders, ribs, belly, feet.", "Choose one small plan to pause before adding another contingency."]
+    },
+    "performer": {
+      "name": "The Striver",
+      "short": "Safety through achievement.",
+      "coreFear": "not being enough",
+      "strategy": "achieve",
+      "coreProtection": "earning safety through achievement, usefulness, and proof",
+      "bodyStrategy": "producing, improving, optimizing, and staying impressive",
+      "promise": "If I achieve, I stay worthy.",
+      "currency": "achievement, urgency, self-improvement, and rest that has to be earned",
+      "practices": ["Rest without earning practice: take ten minutes before completing the next useful thing.", "Unfinished task tolerance: leave one low-stakes task incomplete for an evening.", "Pleasure before productivity: let the body receive something beautiful first.", "Journal: Who am I when nothing is being proven?"]
+    },
+    "harmonizer": {
+      "name": "The Harmonizer",
+      "short": "Safety through connection.",
+      "coreFear": "rejection",
+      "strategy": "please/connect",
+      "coreProtection": "preserving connection by tracking others and softening yourself",
+      "bodyStrategy": "peacemaking, caretaking, staying small, and sensing what others need",
+      "promise": "If I harmonize, I stay loved.",
+      "currency": "belonging, self-silencing, emotional labor, and the cost of not disappointing anyone",
+      "practices": ["One honest no: choose a low-stakes place to let a clean no exist.", "Belonging without performance reflection: what connection remains when I stop managing it?", "Hand-on-heart self-expression: say one true sentence out loud before editing it.", "Track the difference between generosity and fear-driven caretaking."]
+    },
+    "quiter": {
+      "name": "The Shield",
+      "short": "Safety through withdrawal.",
+      "coreFear": "hurt or failure",
+      "strategy": "withdraw/protect",
+      "coreProtection": "protecting yourself by pulling back",
+      "bodyStrategy": "withdrawing, sleeping, losing interest, slowing down, and avoiding pressure",
+      "promise": "If I withdraw, I preserve myself.",
+      "currency": "withdrawal, depletion, postponed desire, and the quiet grief of stopping at the threshold",
+      "practices": ["Tiny next step practice: choose one action that takes less than three minutes.", "Energy permission ritual: place a hand on the body and name what is genuinely available today.", "Gentle movement before avoidance: one song, one walk, one stretch, no performance.", "Journal: What pressure is my body trying to escape?"]
+    }
+  },
+  "questionnaireUi": {
+    "seeResult": "See My Result",
+    "optional": "This reflection is optional. You may continue when ready.",
+    "defaultPlaceholder": "Write what feels true. Fragments are welcome.",
+    "featuredReflection": "Featured reflection",
+    "childhoodProtection": "How you protected yourself as a child",
+    "childhoodPending": "Still forming from your answers.",
+    "sabotageNow": "How sabotage may dress itself now",
+    "sabotagePending": "Your current pattern is still coming into focus.",
+    "progressSaved": "Progress saved automatically",
+    "readingPattern": "Reading the pattern",
+    "analyzingTitle": "Your answers are being gathered into a mirror.",
+    "analyzingBody": "Nothing is being diagnosed. We are simply noticing the protection, the cost, and the life beginning to come forward.",
+    "validationTitle": "One gentle pause.",
+    "validationText": "Choose or write what feels closest before continuing. Optional questions are marked clearly.",
+    "analysisErrorTitle": "AI analysis did not complete.",
+    "analysisError": "AI protective role analysis failed."
+  },
+  "resultUi": {
+    "returnToAnswers": "Return to answers",
+    "preparing": "Preparing your AI protective role result...",
+    "identified": "Your dominant protective role has been identified.",
+    "patternNote": "AI pattern note",
+    "opening": "Your analysis identified {dominant} as the dominant protective role, with {secondary} shaping the secondary layer.",
+    "locked": "Locked",
+    "lockedBody": "A personalized mirror from your exact answers will appear here.",
+    "lockedSections": ["Protection Pattern", "Shadow Personality", "Dream Sabotage Pattern", "Nervous System Update", "Personalized Practices", "Identity Inquiry"],
+    "intensityScore": "Intensity score"
+  },
+  "payment": {
+    "emailInvalid": "Enter a valid email so your report can be associated with you.",
+    "title": "Unlock your full report",
+    "body": "Your full SakanBody Audit includes your protection pattern, shadow personality, dream sabotage pattern, nervous system update, practices, and identity inquiry.",
+    "emailLabel": "Email for your report",
+    "emailPlaceholder": "you@example.com",
+    "openingCheckout": "Opening checkout...",
+    "unlock": "Unlock My Full Report",
+    "disclaimer": "This is a self-reflection tool, not a medical diagnosis or therapy.",
+    "checkoutError": "Checkout could not be created.",
+    "paymentErrorTitle": "The payment door did not open.",
+    "tryAgain": "Please try again in a moment.",
+    "demoTitle": "Demo unlock",
+    "demoText": "Stripe keys are not configured locally, so this opens the report in demo mode."
+  },
+  "reportUi": {
+    "steps": ["Reading your answers", "Mapping protective roles", "Writing deep sections", "Preparing the integration plan"],
+    "writing": "Writing in progress",
+    "writingTitle": "Your full report is being written.",
+    "writingBody": "This can take a little time because the report is generated from your exact answers. Keep this page open and the finished report will appear here.",
+    "retry": "Retry generation",
+    "generationError": "Report generation failed.",
+    "openingReport": "Opening your report...",
+    "notFound": "Report not found.",
+    "checking": "We are checking this browser and your saved report.",
+    "notFoundBody": "Complete the questionnaire first, or check that Supabase is configured locally.",
+    "begin": "Begin the questionnaire",
+    "back": "Back to teaser",
+    "preparingPdf": "Preparing PDF...",
+    "downloadPdf": "Download PDF",
+    "pdfError": "Could not create PDF.",
+    "reportEyebrow": "SakanBody Audit Report",
+    "fallbackSubtitle": "{dominant}. Your secondary protective role is {secondary}, creating a nuanced blend of protection and becoming.",
+    "lockedTitle": "Report locked",
+    "lockedBody": "Payment is still being confirmed. Refresh this page once checkout is complete.",
+    "openingLetter": "Opening Letter",
+    "reflection": "Reflection",
+    "practices": "Practices",
+    "sevenDayPlan": "Seven-Day Integration Plan",
+    "day": "Day {day}"
+  },
+  "questionnaire": {
+    "sections": {
+      "orientation": "Orientation",
+      "audit_focus": "Audit Focus",
+      "the_first_25_years": "The First 25 Years",
+      "the_blind_spot": "The Blind Spot",
+      "the_shadow_personality": "The Shadow Personality",
+      "where_dreams_meet_protection": "Where Dreams Meet Protection",
+      "system_expiration": "System Expiration",
+      "honoring_the_protection": "Honoring the Protection",
+      "identity_inquiry": "Identity Inquiry"
+    },
+    "screens": {
+      "orientation": {
+        "eyebrow": "SakanBody Audit",
+        "title": "Your nervous system learned how to protect you before it knew how to choose.",
+        "body": "The first 25 years of life, your body was focused on survival. This audit helps you see what protection formed, how it shows up now, and what identity may be emerging beyond it."
+      },
+      "audit-focus": {
+        "title": "We begin with what brought you here.",
+        "body": "No need to make the answer polished. Let the current loop, longing, or friction show us where the old protection is asking to be understood."
+      },
+      "age": {
+        "prompt": "Your current age:",
+        "placeholder": "Example: 31"
+      },
+      "why-now": {
+        "prompt": "In one sentence, what made you book this audit right now?",
+        "placeholder": "I keep feeling..."
+      },
+      "stuck-areas": {
+        "prompt": "Where do you feel most stuck or most \"looping\" in your life currently?",
+        "options": {
+          "career_purpose": "Career / purpose",
+          "body_health": "Body / health",
+          "relationships_intimacy": "Relationships / intimacy",
+          "money_receiving": "Money / receiving",
+          "identity_sense_of_self": "Identity / sense of self",
+          "creativity_expression": "Creativity / expression",
+          "other": "Other"
+        }
+      },
+      "first-25": {
+        "title": "Now we map the world your body adapted to.",
+        "body": "Children read more than words. They read pressure, silence, image, fragility, and what must not be needed. This section gives language to the role your younger self learned to play."
+      },
+      "family-role": {
+        "prompt": "Growing up, what role did you instinctively play in your family?",
+        "options": {
+          "the_responsible_one": "The responsible one",
+          "the_peacemaker": "The peacemaker",
+          "the_caretaker": "The caretaker",
+          "the_achiever_the_proof": "The achiever / the proof",
+          "the_invisible_one": "The invisible one",
+          "the_funny_one_the_relief": "The funny one / the relief",
+          "the_strong_one": "The strong one",
+          "the_problem": "The problem",
+          "other": "Other"
+        }
+      },
+      "childhood-truths": {
+        "prompt": "As a child, which of these were true for you?",
+        "options": {
+          "i_tried_not_to_be_a_burden": "I tried not to be a burden",
+          "i_tried_not_to_add_stress_to_anyone": "I tried not to add stress to anyone",
+          "i_was_the_easy_one_the_good_one": "I was the easy one / the good one",
+          "i_learned_to_read_the_room_before_i_spoke": "I learned to read the room before I spoke",
+          "i_kept_my_problems_to_myself": "I kept my problems to myself",
+          "i_felt_responsible_for_someone_elses_wellbeing": "I felt responsible for someone else's wellbeing",
+          "i_felt_i_had_to_be_okay_so_others_could_be_okay": "I felt I had to be okay so others could be okay",
+          "i_grew_up_faster_than_i_needed_to": "I grew up faster than I needed to",
+          "i_didnt_want_to_take_up_space": "I didn't want to take up space",
+          "i_performed_being_fine": "I performed being fine",
+          "other": "Other"
+        }
+      },
+      "learned-when": {
+        "prompt": "Looking at what you selected, when did you first learn to do this? What was happening around you?",
+        "placeholder": "I first remember..."
+      },
+      "home-climate": {
+        "prompt": "What was the emotional climate of your home?",
+        "options": {
+          "tense_walking_on_eggshells": "Tense / walking on eggshells",
+          "cold_disconnected": "Cold / disconnected",
+          "chaotic_unpredictable": "Chaotic / unpredictable",
+          "over_involved_enmeshed": "Over-involved / enmeshed",
+          "performative_image_focused": "Performative / image-focused",
+          "warm_but_conditional": "Warm but conditional",
+          "other": "Other"
+        }
+      },
+      "tracked-wellbeing": {
+        "prompt": "Was there someone in your childhood whose wellbeing you were quietly aware of? Someone whose state you tracked?",
+        "options": {
+          "a_parents_health_physical_or_mental": "A parent's health (physical or mental)",
+          "a_parents_mood_emotions": "A parent's mood / emotions",
+          "a_sibling_who_needed_extra_care_or_attention": "A sibling who needed extra care or attention",
+          "the_familys_image_reputation": "The family's image / reputation",
+          "the_peace_of_the_home": "The peace of the home",
+          "a_financial_situation": "A financial situation",
+          "a_grief_loss_the_family_carried": "A grief / loss the family carried",
+          "an_unspoken_tension_no_one_talked_about": "An unspoken tension no one talked about",
+          "none_that_im_aware_of": "None that I'm aware of",
+          "other": "Other"
+        }
+      },
+      "unspoken-noticed": {
+        "prompt": "Describe what you noticed as a child, even if no one named it out loud. What did you sense was happening that you weren't supposed to talk about?"
+      },
+      "unspoken-rules": {
+        "prompt": "Even in a loving home, children pick up unspoken rules. Which of these did you absorb?",
+        "options": {
+          "dont_make_things_harder": "Don't make things harder",
+          "dont_be_the_reason_someone_worries": "Don't be the reason someone worries",
+          "stay_small_with_your_needs": "Stay small with your needs",
+          "be_the_one_whos_okay": "Be the one who's okay",
+          "achieve_succeed_make_us_proud": "Achieve / succeed / make us proud",
+          "dont_outshine": "Don't outshine",
+          "hold_it_together": "Hold it together",
+          "be_grateful_dont_complain": "Be grateful, don't complain",
+          "be_useful": "Be useful",
+          "be_good": "Be good",
+          "dont_need_too_much": "Don't need too much",
+          "other": "Other"
+        }
+      },
+      "felt-cost": {
+        "prompt": "If you broke this rule as a child, even just imagined breaking it, what did you sense would happen? Not punishment necessarily. Just... what was the felt cost?"
+      },
+      "childhood-movement": {
+        "prompt": "Looking at your childhood self, which of these describe how you moved through the world?",
+        "options": {
+          "always_one_step_ahead_anticipating": "Always one step ahead / anticipating",
+          "quietly_observing_before_acting": "Quietly observing before acting",
+          "tip_toeing_careful_not_to_disturb": "Tip-toeing / careful not to disturb",
+          "performing_okay_ness": "Performing okay-ness",
+          "caring_for_others_before_myself": "Caring for others before myself",
+          "hyper_organized_hyper_responsible": "Hyper-organized / hyper-responsible",
+          "gentle_not_too_much_not_too_loud": "Gentle, not too much, not too loud",
+          "mature_for_my_age": "Mature for my age",
+          "the_easy_child": "The \"easy\" child",
+          "always_moving_to_the_next_thing": "Always moving to the next thing",
+          "other": "Other"
+        }
+      },
+      "recognize-now": {
+        "prompt": "Do you still recognize yourself in any of these? Where?"
+      },
+      "blind-spot": {
+        "title": "Pause for a moment. Your answers are starting to reveal the shape of a protection that once made sense.",
+        "body": "Now we look at what is hard to stop, even when no one is asking. These are not flaws. They are the body repeating what once helped."
+      },
+      "hard-to-stop": {
+        "prompt": "Which of these do you find genuinely difficult to stop doing, even when you're tired, even on weekends, even when no one is asking?",
+        "options": {
+          "planning_ahead_running_scenarios": "Planning ahead / running scenarios",
+          "mentally_to_do_listing": "Mentally to-do listing",
+          "checking_on_people_you_love": "Checking on people you love",
+          "producing_achieving_progressing": "Producing / achieving / progressing",
+          "improving_yourself": "Improving yourself",
+          "anticipating_what_could_go_wrong": "Anticipating what could go wrong",
+          "tracking_everyones_mood_needs": "Tracking everyone's mood / needs",
+          "optimizing_your_time": "Optimizing your time",
+          "being_useful": "Being useful",
+          "preparing": "Preparing",
+          "tidying_organizing_arranging": "Tidying / organizing / arranging",
+          "other": "Other"
+        }
+      },
+      "body-when-stop": {
+        "prompt": "Pick the one that's hardest to stop. What happens in your body when you try?"
+      },
+      "slowing-fear": {
+        "prompt": "When you imagine slowing down completely, no plans, no productivity, no caretaking, no improving, for a full week, what's the first fear that rises?",
+        "options": {
+          "ill_fall_behind_lose_my_edge": "I'll fall behind / lose my edge",
+          "something_bad_will_happen_to_someone_i_love": "Something bad will happen to someone I love",
+          "ill_be_seen_as_lazy_selfish_useless": "I'll be seen as lazy / selfish / useless",
+          "ill_lose_myself_disappear": "I'll lose myself / disappear",
+          "ill_feel_everything_ive_been_outrunning": "I'll feel everything I've been outrunning",
+          "ill_become_a_burden": "I'll become a burden",
+          "i_wont_be_loved_the_same_way": "I won't be loved the same way",
+          "i_wont_matter": "I won't matter",
+          "ill_get_sick": "I'll get sick",
+          "i_dont_know_but_it_feels_unsafe": "I don't know, but it feels unsafe",
+          "other": "Other"
+        }
+      },
+      "as-long-as": {
+        "prompt": "Complete this sentence in your own words: As long as I keep _______, then _______ won't happen."
+      },
+      "present-memory": {
+        "prompt": "What is your best memory of a moment where you were fully in the present moment?"
+      },
+      "shadow-intro": {
+        "title": "Who would you be, had you not needed to be so cautious and protective?",
+        "body": "This is not a bad shadow. It is exiled aliveness: the self that got benched so the protection could keep running."
+      },
+      "shadow-clues": {
+        "prompt": "Which of these have you noticed in yourself? Be honest, these are clues, not flaws.",
+        "options": {
+          "i_feel_a_sharp_envy_when_i_see_certain_women_confident_loud_sensual_fr": "I feel a sharp envy when I see certain women, confident, loud, sensual, free",
+          "i_am_fascinated_by_women_who_seem_to_get_away_with_things_i_never_coul": "I am fascinated by women who seem to \"get away with\" things I never could",
+          "i_have_a_private_fantasy_version_of_myself_i_never_let_out": "I have a private fantasy version of myself I never let out",
+          "i_sometimes_catch_myself_thinking_if_only_i_were_the_kind_of_person_wh": "I sometimes catch myself thinking \"if only I were the kind of person who...\"",
+          "there_are_things_i_want_that_id_be_embarrassed_to_admit": "There are things I want that I'd be embarrassed to admit",
+          "i_feel_a_pull_toward_luxury_attention_indulgence_or_wildness_and_immed": "I feel a pull toward luxury, attention, indulgence, or wildness, and immediately judge it",
+          "i_feel_more_myself_in_a_rare_setting_like_travel_certain_people_alone_": "I feel more myself in a rare setting, like travel, certain people, alone, or a specific city",
+          "theres_a_version_of_me_that_comes_out_after_a_drink_on_vacation_or_wit": "There's a version of me that comes out after a drink, on vacation, or with strangers, and I miss her",
+          "other": "Other"
+        }
+      },
+      "shadow-trigger": {
+        "prompt": "Pick the one that hits hardest. Describe what or who specifically triggers it."
+      },
+      "fascination-shares": {
+        "prompt": "Looking at the people who fascinate you, or the version of you when feeling safe and welcomed, what do they share?",
+        "options": {
+          "playful_funny_light": "Playful / funny / light",
+          "bold_loud_unapologetic": "Bold / loud / unapologetic",
+          "sensual_luxurious_indulgent": "Sensual / luxurious / indulgent",
+          "soft_receiving_held": "Soft / receiving / held",
+          "wild_free_untamed": "Wild / free / untamed",
+          "slow_lazy_unproductive": "Slow / lazy / unproductive",
+          "visible_seen_celebrated": "Visible / seen / celebrated",
+          "wanting_asking_taking": "Wanting / asking / taking",
+          "warm_messy_openly_emotional": "Warm / messy / openly emotional",
+          "quiet_but_unbothered": "Quiet but unbothered",
+          "other": "Other"
+        }
+      },
+      "dinner-table-feeling": {
+        "prompt": "If that version of you had shown up at the dinner table as a child, loud, indulgent, demanding, taking up space, wanting things, what's the first feeling you imagine you would have felt?",
+        "options": {
+          "guilty": "Guilty",
+          "selfish": "Selfish",
+          "like_a_burden": "Like a burden",
+          "out_of_place": "Out of place",
+          "embarrassed": "Embarrassed",
+          "like_i_was_making_things_harder": "Like I was making things harder",
+          "like_i_was_being_too_much": "Like I was being too much",
+          "like_i_didnt_fit_the_family": "Like I didn't fit the family",
+          "disloyal": "Disloyal",
+          "other": "Other"
+        }
+      },
+      "shadow-wants": {
+        "prompt": "What does this shadow self want that you've quietly told yourself is not for you or not who I am?",
+        "options": {
+          "to_be_visible_celebrated_admired": "To be visible / celebrated / admired",
+          "to_be_wanted_desired_chosen": "To be wanted / desired / chosen",
+          "to_rest_without_earning_it": "To rest without earning it",
+          "to_have_luxury_beauty_excess": "To have luxury / beauty / excess",
+          "to_be_taken_care_of": "To be taken care of",
+          "to_say_no_without_guilt": "To say no without guilt",
+          "to_want_things_openly": "To want things openly",
+          "to_take_up_space": "To take up space",
+          "to_be_playful_silly_not_serious": "To be playful / silly / not serious",
+          "to_be_selfish_sometimes": "To be selfish sometimes",
+          "to_be_soft_receiving": "To be soft / receiving",
+          "to_not_be_useful": "To not be useful",
+          "other": "Other"
+        }
+      },
+      "most-forbidden": {
+        "prompt": "Pick the one that's most forbidden. What story do you tell yourself about why it's not for you?"
+      },
+      "dreams-intro": {
+        "title": "The resistance is the message.",
+        "body": "Between roughly 25 and 35, protections built in the first 25 years can clash with the life you are now reaching for. What you meet is not your limit. It may be the edge of an old contract."
+      },
+      "life-window": {
+        "prompt": "Where are you in this window?",
+        "options": {
+          "im_25_30_and_just_starting_to_feel_the_clash": "I'm 25-30 and just starting to feel the clash",
+          "im_30_35_and_im_in_the_thick_of_it": "I'm 30-35 and I'm in the thick of it",
+          "im_35_40_and_im_late_to_seeing_it_but_i_see_it_now": "I'm 35-40 and I'm late to seeing it but I see it now",
+          "im_past_40_and_these_patterns_went_unaddressed_for_years": "I'm past 40 and these patterns went unaddressed for years",
+          "im_under_25_and_im_noticing_it_early": "I'm under 25 and I'm noticing it early",
+          "other": "Other"
+        }
+      },
+      "looping-dream-areas": {
+        "prompt": "In which of these areas have you been looping, wanting something, reaching for it, and finding yourself blocked or sabotaging?",
+        "options": {
+          "a_career_move_business_creative_project": "A career move / business / creative project",
+          "a_relationship_i_want_or_want_to_leave": "A relationship I want (or want to leave)",
+          "my_body_health_weight_energy": "My body / health / weight / energy",
+          "money_receiving_charging_more": "Money / receiving / charging more",
+          "visibility_putting_myself_out_there": "Visibility / putting myself out there",
+          "a_creative_dream_i_keep_almost_starting": "A creative dream I keep almost starting",
+          "moving_a_place_i_want_to_live": "Moving / a place I want to live",
+          "becoming_a_mother_not_becoming_one": "Becoming a mother / not becoming one",
+          "a_version_of_myself_i_keep_almost_becoming": "A version of myself I keep almost becoming",
+          "other": "Other"
+        }
+      },
+      "specific-dream": {
+        "prompt": "Pick the area that's most charged. Now describe the dream itself in detail. Not the obstacle, the dream. What would your life actually look like if it were real?"
+      },
+      "sabotage-mechanism": {
+        "prompt": "When you get close to this dream, which of these tends to happen? Be honest. Most people do at least three of these.",
+        "options": {
+          "i_get_sick_exhausted_depleted": "I get sick / exhausted / depleted",
+          "i_get_distracted_scattered_lose_focus": "I get distracted / scattered / lose focus",
+          "i_procrastinate_or_research_instead_of_doing": "I procrastinate or \"research\" instead of doing",
+          "i_shrink_the_dream_make_it_smaller_be_realistic": "I shrink the dream / make it smaller / \"be realistic\"",
+          "i_sabotage_relationships_that_would_support_it": "I sabotage relationships that would support it",
+          "i_pick_fights_create_drama": "I pick fights / create drama",
+          "i_become_hyper_busy_with_other_things": "I become hyper-busy with other things",
+          "i_doubt_myself_into_paralysis": "I doubt myself into paralysis",
+          "i_tell_myself_its_not_the_right_time": "I tell myself it's not the right time",
+          "i_caretake_someone_elses_needs_instead": "I caretake someone else's needs instead",
+          "i_get_suddenly_very_tired_want_to_sleep": "I get suddenly very tired / want to sleep",
+          "i_find_a_financial_reason_to_stop_anxiety_over_expenses_or_debts": "I find a financial reason to stop / anxiety over expenses or debts",
+          "i_lose_interest_right_at_the_threshold": "I lose interest right at the threshold",
+          "other": "Other"
+        }
+      },
+      "dream-protection-match": {
+        "title": "The match-up",
+        "body": "Look at how you protected yourself as a child, then look at how the dream gets blocked now. Often, they are the same protection in a new dress."
+      },
+      "body-data": {
+        "prompt": "When you imagine actually having this dream, fully having it, no caveats, what happens in your body? Where does it tighten, freeze, race, or go numb?",
+        "helper": "Simply notice. Nothing needs to be treated or changed right now."
+      },
+      "dream-shield": {
+        "prompt": "When you imagine having this dream fully, what's the fear underneath? Check anything that resonates, even faintly.",
+        "options": {
+          "id_lose_connection_with_the_people_i_love": "I'd lose connection with the people I love",
+          "id_be_too_visible_too_much_too_seen": "I'd be too visible / too much / too seen",
+          "id_outgrow_my_family_outshine_them": "I'd outgrow my family / outshine them",
+          "id_be_a_burden_a_target_resented": "I'd be a burden / a target / resented",
+          "id_betray_someone": "I'd betray someone",
+          "id_be_punished_by_life_something_would_be_taken": "I'd be punished by life / something would be taken",
+          "id_be_exposed_as_a_fraud": "I'd be exposed as a fraud",
+          "id_have_to_feel_everything_ive_been_outrunning_responsibility": "I'd have to feel everything I've been outrunning / responsibility",
+          "i_wouldnt_know_who_i_am_anymore": "I wouldn't know who I am anymore",
+          "i_would_lose_my_safe_identity": "I would lose my \"safe\" identity",
+          "i_dont_know_but_it_feels_dangerous": "I don't know, but it feels dangerous",
+          "other": "Other"
+        }
+      },
+      "system-expiration": {
+        "title": "What is true now that was not true then?",
+        "body": "Your nervous system built its protection based on the reality of childhood. The question now is not whether the protection worked. It did. The question is whether the conditions are still the same."
+      },
+      "current-resources": {
+        "prompt": "Which of these are true in your life today, even if you don't always feel them?",
+        "options": {
+          "i_can_financially_support_myself_or_have_access_to_support": "I can financially support myself (or have access to support)",
+          "i_can_leave_a_situation_that_doesnt_feel_right": "I can leave a situation that doesn't feel right",
+          "i_have_at_least_one_person_i_can_be_honest_with": "I have at least one person I can be honest with",
+          "i_can_say_no_even_if_its_hard": "I can say no, even if it's hard",
+          "i_have_a_body_that_has_carried_me_through_real_things": "I have a body that has carried me through real things",
+          "i_have_skills_knowledge_or_experience_ive_earned": "I have skills, knowledge, or experience I've earned",
+          "i_can_ask_for_help_even_imperfectly": "I can ask for help (even imperfectly)",
+          "i_can_be_alone_without_it_being_unsafe": "I can be alone without it being unsafe",
+          "i_can_choose_where_i_live_who_im_with_how_i_spend_my_time": "I can choose where I live, who I'm with, how I spend my time",
+          "i_have_language_for_what_i_feel_more_than_i_did_as_a_child": "I have language for what I feel (more than I did as a child)",
+          "im_no_longer_dependent_on_the_people_i_had_to_protect_myself_from": "I'm no longer dependent on the people I had to protect myself from",
+          "i_have_more_agency_over_my_body_my_time_my_decisions": "I have more agency over my body, my time, my decisions",
+          "other": "Other"
+        }
+      },
+      "resources-body": {
+        "prompt": "Read your selections back to yourself slowly. What do you notice in your body?",
+        "helper": "Simply notice. Nothing needs to be treated or changed right now."
+      },
+      "external-changes": {
+        "prompt": "Compared to the environment you grew up in, which of these have changed?",
+        "options": {
+          "the_person_whose_wellbeing_i_tracked_is_no_longer_my_responsibility_or": "The person whose wellbeing I tracked is no longer my responsibility (or is no longer here)",
+          "im_no_longer_living_in_that_home": "I'm no longer living in that home",
+          "the_financial_situation_is_different": "The financial situation is different",
+          "the_family_dynamic_has_shifted": "The family dynamic has shifted",
+          "i_have_my_own_home_space_room": "I have my own home / space / room",
+          "i_have_relationships_i_chose_not_just_the_ones_i_was_born_into": "I have relationships I chose, not just the ones I was born into",
+          "the_fear_i_lived_with_as_a_child_is_no_longer_present_in_my_daily_life": "The fear I lived with as a child is no longer present in my daily life",
+          "the_danger_fragility_illness_that_shaped_me_is_no_longer_the_air_i_bre": "The danger / fragility / illness that shaped me is no longer the air I breathe",
+          "i_have_distance_physical_emotional_or_both_from_the_original_condition": "I have distance, physical, emotional, or both, from the original conditions",
+          "other": "Other"
+        }
+      },
+      "child-impossible": {
+        "prompt": "Optional: What's one thing about your current life that the child-you couldn't have imagined would be possible?"
+      },
+      "capacities-built": {
+        "prompt": "Which of these can you do now that you couldn't do as a child?",
+        "options": {
+          "recognize_when_something_doesnt_feel_right": "Recognize when something doesn't feel right",
+          "walk_away_from_people_who_harm_me": "Walk away from people who harm me",
+          "set_a_limit_even_if_im_still_practicing": "Set a limit (even if I'm still practicing)",
+          "soothe_myself_when_im_activated": "Soothe myself when I'm activated",
+          "identify_what_im_feeling": "Identify what I'm feeling",
+          "ask_a_question_instead_of_assuming": "Ask a question instead of assuming",
+          "repair_after_a_rupture": "Repair after a rupture",
+          "choose_who_gets_access_to_me": "Choose who gets access to me",
+          "tolerate_someone_being_disappointed_in_me": "Tolerate someone being disappointed in me",
+          "sit_with_discomfort_without_immediately_fixing_it": "Sit with discomfort without immediately fixing it",
+          "other": "Other"
+        }
+      },
+      "child-changed-everything": {
+        "prompt": "Optional: Which of these would have changed everything for child-you?"
+      },
+      "somatic-recognition": {
+        "prompt": "After reading through what you just selected, resources, changes, capacities, what's the first thing you notice in your body?",
+        "options": {
+          "a_softening_a_small_relief": "A softening, a small relief",
+          "something_doesnt_believe_it_yet_but_my_mind_sees_it": "Something doesn't believe it yet, but my mind sees it",
+          "tears_or_something_that_wants_to_release": "Tears, or something that wants to release",
+          "resistance_like_my_body_doesnt_trust_this": "Resistance, like my body doesn't trust this",
+          "surprise_i_hadnt_really_seen_all_of_this_before": "Surprise, I hadn't really seen all of this before",
+          "a_quiet_oh": "A quiet \"oh\"",
+          "i_dont_feel_anything_yet_i_want_to_explore_this_in_session": "I don't feel anything yet, I want to explore this in session",
+          "other": "Other"
+        }
+      },
+      "updated-self": {
+        "prompt": "Given everything you've witnessed about your current reality, who would you be if your nervous system updated to match your present life? Describe her."
+      },
+      "honoring-intro": {
+        "title": "You do not fire a part of yourself. You promote it.",
+        "body": "The protection was not a flaw. It was an intelligent response to conditions you did not choose. Now we thank what it gave you and update what it no longer needs to carry."
+      },
+      "protection-accomplished": {
+        "prompt": "Looking back, what did this protection actually accomplish for you? Which of these are true?",
+        "options": {
+          "it_kept_me_safe_in_a_situation_i_couldnt_have_changed": "It kept me safe in a situation I couldn't have changed",
+          "it_let_me_get_through_childhood_with_my_dignity_intact": "It let me get through childhood with my dignity intact",
+          "it_helped_me_become_responsible_capable": "It helped me become responsible / capable",
+          "it_gave_me_a_sense_of_agency_when_i_had_none": "It gave me a sense of agency when I had none",
+          "it_protected_someone_i_loved": "It protected someone I loved",
+          "it_earned_me_the_love_or_peace_i_needed": "It earned me the love or peace I needed",
+          "it_got_me_out_got_me_here": "It got me out / got me here",
+          "it_built_a_life_im_now_actually_able_to_live_in": "It built a life I'm now actually able to live in",
+          "it_made_me_someone_people_can_count_on": "It made me someone people can count on",
+          "it_gave_me_a_way_to_be_useful_when_i_felt_powerless": "It gave me a way to be useful when I felt powerless",
+          "other": "Other"
+        }
+      },
+      "strengths-forged": {
+        "prompt": "This protection forged real capacities. Which of these did it build in you?",
+        "options": {
+          "deep_attunement_to_others": "Deep attunement to others",
+          "ability_to_read_a_room_instantly": "Ability to read a room instantly",
+          "reliability_follow_through": "Reliability / follow-through",
+          "emotional_sensitivity": "Emotional sensitivity",
+          "empathy": "Empathy",
+          "maturity_depth": "Maturity / depth",
+          "resilience": "Resilience",
+          "anticipation_foresight": "Anticipation / foresight",
+          "ability_to_hold_complexity": "Ability to hold complexity",
+          "capacity_to_show_up_for_others": "Capacity to show up for others",
+          "discipline": "Discipline",
+          "self_sufficiency": "Self-sufficiency",
+          "inner_steadiness_under_pressure": "Inner steadiness under pressure",
+          "other": "Other"
+        }
+      },
+      "strengths-keep": {
+        "prompt": "Which of these would you not want to lose, even as the protection itself softens?"
+      },
+      "jobs-done": {
+        "prompt": "Now that your life has changed, which of these jobs does the protection no longer need to do?",
+        "options": {
+          "track_everyones_mood_for_safety_reasons": "Track everyone's mood for safety reasons",
+          "anticipate_danger_that_isnt_there": "Anticipate danger that isn't there",
+          "earn_love_thats_already_given": "Earn love that's already given",
+          "prevent_abandonment_that_isnt_coming": "Prevent abandonment that isn't coming",
+          "hold_the_family_together": "Hold the family together",
+          "protect_a_parent_who_is_no_longer_fragile_or_no_longer_here": "Protect a parent who is no longer fragile (or no longer here)",
+          "stay_small_so_others_can_be_big": "Stay small so others can be big",
+          "be_useful_in_order_to_be_allowed_to_exist": "Be useful in order to be allowed to exist",
+          "perform_okay_ness_when_im_not_okay": "Perform okay-ness when I'm not okay",
+          "carry_weight_that_wasnt_mine_to_carry": "Carry weight that wasn't mine to carry",
+          "other": "Other"
+        }
+      },
+      "jobs-reflection": {
+        "prompt": "What's it like to consider that the protection is still doing jobs no one is asking it to do anymore?"
+      },
+      "promotion": {
+        "prompt": "If the protection were promoted to a new role, one that fits your current life rather than your past, which of these feels right?",
+        "options": {
+          "from_hyper_vigilance_to_discernment": "From hyper-vigilance to discernment",
+          "from_caretaking_everyone_to_caring_for_whats_actually_mine": "From caretaking everyone to caring for what's actually mine",
+          "from_productivity_as_survival_to_creation_as_expression": "From productivity-as-survival to creation as expression",
+          "from_perfectionism_to_craft": "From perfectionism to craft",
+          "from_people_pleasing_to_genuine_generosity": "From people-pleasing to genuine generosity",
+          "from_self_sufficiency_to_interdependence": "From self-sufficiency to interdependence",
+          "from_anticipating_danger_to_sensing_aliveness": "From anticipating danger to sensing aliveness",
+          "from_holding_it_together_to_letting_things_move_through_me": "From holding it together to letting things move through me",
+          "from_earning_love_to_receiving_love": "From earning love to receiving love",
+          "from_staying_small_to_taking_up_the_space_thats_mine": "From staying small to taking up the space that's mine",
+          "other": "Other"
+        }
+      },
+      "thank-protection": {
+        "prompt": "Write a sentence to your protection, not to dismiss it, but to thank it and update its role.",
+        "placeholder": "Thank you for keeping me safe. You can now..."
+      },
+      "identity-intro": {
+        "title": "Who are you outside this protection?",
+        "body": "We are not trying to force an answer. The not-knowing is not a problem. It is the doorway. Let it stay open for a while."
+      },
+      "quiet-protection": {
+        "prompt": "Think of moments, even brief ones, when the protection has gone quiet. In those moments, what's true about you?",
+        "options": {
+          "im_slower": "I'm slower",
+          "im_warmer": "I'm warmer",
+          "im_funnier": "I'm funnier",
+          "im_quieter": "I'm quieter",
+          "im_more_sensual": "I'm more sensual",
+          "im_more_curious": "I'm more curious",
+          "im_more_playful": "I'm more playful",
+          "im_more_direct": "I'm more direct",
+          "im_more_affectionate": "I'm more affectionate",
+          "im_more_spacious": "I'm more spacious",
+          "im_more_present": "I'm more present",
+          "im_more_honest": "I'm more honest",
+          "i_notice_things_i_usually_miss": "I notice things I usually miss",
+          "i_dont_know_im_not_sure_ive_felt_that": "I don't know, I'm not sure I've felt that",
+          "other": "Other"
+        }
+      },
+      "quiet-moment-detail": {
+        "prompt": "Describe one of these moments in detail. Where were you, who were you with, what did your body feel like?"
+      },
+      "never-tested": {
+        "prompt": "Which of these have you never really been able to test, because the protection has always been running?",
+        "options": {
+          "whether_id_actually_be_loved_if_i_werent_useful": "Whether I'd actually be loved if I weren't useful",
+          "whether_id_be_safe_if_i_werent_perfect": "Whether I'd be safe if I weren't perfect",
+          "whether_anyone_would_stay_if_i_were_difficult": "Whether anyone would stay if I were difficult",
+          "whether_i_could_rest_without_falling_apart": "Whether I could rest without falling apart",
+          "whether_i_could_want_something_openly_without_losing_it": "Whether I could want something openly without losing it",
+          "whether_i_could_be_wrong_and_still_be_okay": "Whether I could be wrong and still be okay",
+          "whether_i_could_disappoint_someone_and_survive_it": "Whether I could disappoint someone and survive it",
+          "whether_i_could_be_slow_without_being_left_behind": "Whether I could be slow without being left behind",
+          "whether_i_could_be_soft_without_being_crushed": "Whether I could be soft without being crushed",
+          "whether_i_could_need_without_being_a_burden": "Whether I could need without being a burden",
+          "whether_i_could_just_be_without_earning_it": "Whether I could just be without earning it",
+          "other": "Other"
+        }
+      },
+      "scary-test": {
+        "prompt": "Pick the one that scares you most to test. Why?"
+      },
+      "outside-image": {
+        "prompt": "When you imagine the version of you outside the protection, which is more honest?",
+        "options": {
+          "i_have_a_clear_vivid_image_of_her": "I have a clear, vivid image of her",
+          "i_have_a_vague_sense_but_i_cant_really_feel_her": "I have a vague sense but I can't really feel her",
+          "i_have_an_image_but_i_suspect_its_still_a_performance": "I have an image but I suspect it's still a performance",
+          "i_genuinely_dont_know_who_i_am_underneath": "I genuinely don't know who I am underneath",
+          "im_afraid_theres_nothing_underneath": "I'm afraid there's nothing underneath",
+          "ive_glimpsed_her_but_i_dont_trust_it_yet": "I've glimpsed her but I don't trust it yet",
+          "other": "Other"
+        }
+      },
+      "not-knowing": {
+        "prompt": "How does it feel to consider that you might not need to have an answer to who am I outside this protection yet?",
+        "options": {
+          "a_relief_ive_been_pressuring_myself_to_know": "A relief, I've been pressuring myself to know",
+          "uncomfortable_but_okay": "Uncomfortable but okay",
+          "hard_i_want_an_answer": "Hard, I want an answer",
+          "scary_i_feel_ungrounded_without_one": "Scary, I feel ungrounded without one",
+          "i_want_to_explore_this_in_session": "I want to explore this in session",
+          "other": "Other"
+        }
+      },
+      "small-evidence": {
+        "prompt": "What's one small thing, a feeling, a moment, a glimpse, that already hints at who you might be underneath the protection?"
+      },
+      "finding-out-fear": {
+        "prompt": "What's underneath the resistance to meeting this version of yourself?",
+        "options": {
+          "im_afraid_shell_be_disappointing": "I'm afraid she'll be disappointing",
+          "im_afraid_shell_be_too_much": "I'm afraid she'll be too much",
+          "im_afraid_she_wont_be_loved_the_same_way": "I'm afraid she won't be loved the same way",
+          "im_afraid_shell_outgrow_people_i_love": "I'm afraid she'll outgrow people I love",
+          "im_afraid_shell_be_selfish": "I'm afraid she'll be selfish",
+          "im_afraid_i_wont_recognize_her": "I'm afraid I won't recognize her",
+          "im_afraid_shell_make_me_grieve_who_ive_been": "I'm afraid she'll make me grieve who I've been",
+          "im_afraid_ill_have_to_change_my_life_in_ways_im_not_ready_for": "I'm afraid I'll have to change my life in ways I'm not ready for",
+          "im_afraid_i_wont_be_able_to_go_back": "I'm afraid I won't be able to go back",
+          "im_afraid_shell_be_the_same_as_the_protected_one_and_ill_have_done_all": "I'm afraid she'll be the same as the protected one and I'll have done all this for nothing",
+          "other": "Other"
+        }
+      },
+      "grief": {
+        "prompt": "What might you have to grieve if you stop running the protection? Who or what would you be saying goodbye to?"
+      },
+      "closing-recognition": {
+        "prompt": "Write one sentence to the version of you who is just beginning to come online. Not a promise. Not a goal. Just a small acknowledgment.",
+        "placeholder": "I see you. Take your time."
+      }
+    }
+  }
+}

@@ -12,6 +12,8 @@ import {
 } from "@/lib/generatedReport";
 import { normalizeProtectiveRoleCopy, roleScoreValue } from "@/lib/protectiveRoleCopy";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { getDictionary, localizedArchetype } from "@/lib/localizedQuestionnaire";
+import { localeSchema, type SupportedLocale } from "@/lib/schemas";
 
 export const runtime = "nodejs";
 
@@ -29,6 +31,7 @@ type PdfResult = z.infer<typeof resultRowSchema>;
 const pdfPayloadSchema = z.object({
   content: reportContentSchema,
   result: resultRowSchema,
+  locale: localeSchema.catch("en").default("en"),
 });
 
 type PdfBlock = {
@@ -115,8 +118,8 @@ const writeList = (doc: PDFKit.PDFDocument, items: string[]) => {
   }
 };
 
-const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult) => {
-  writeHeading(doc, "Protective Role Scores");
+const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult, locale: SupportedLocale) => {
+  writeHeading(doc, locale === "fr" ? "Scores des rôles protecteurs" : "Protective Role Scores");
 
   for (const id of archetypeOrder) {
     const meta = archetypes[id];
@@ -128,7 +131,7 @@ const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult) => {
 
     ensureSpace(doc, 54);
     doc.fillColor("#352317").font("Helvetica-Bold").fontSize(10.5);
-    doc.text(meta.name, x, y, { continued: true });
+    doc.text(localizedArchetype(locale, id).name, x, y, { continued: true });
     doc.text(`${score}/100`, { align: "right" });
     doc.roundedRect(x, barY, width, 8, 4).fill("#eadbc5");
     doc.roundedRect(x, barY, (width * score) / 100, 8, 4).fill(meta.color);
@@ -136,20 +139,21 @@ const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult) => {
   }
 };
 
-const buildPdf = async (content: PdfContent, result: PdfResult) => {
+const buildPdf = async (content: PdfContent, result: PdfResult, locale: SupportedLocale) => {
   const doc = new PDFDocument({
     autoFirstPage: false,
     margin: 54,
     size: "A4",
   });
-  const dominant = archetypes[result.dominant];
-  const secondary = archetypes[result.secondary];
+  const dominant = localizedArchetype(locale, result.dominant);
+  const secondary = localizedArchetype(locale, result.secondary);
+  const reportUi = getDictionary(locale).reportUi;
   const pdf = collectPdf(doc);
 
   doc.addPage({ margin: 0 });
   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#7c3c60");
   doc.fillColor("#f8d7ea").font("Helvetica-Bold").fontSize(11);
-  doc.text("SAKANBODY AUDIT REPORT", 54, 76, { characterSpacing: 2 });
+  doc.text(reportUi.reportEyebrow.toUpperCase(), 54, 76, { characterSpacing: 2 });
   doc.fillColor("#fffaf2").font("Helvetica-Bold").fontSize(42);
   doc.text(normalizeProtectiveRoleCopy(content.reportTitle), 54, 142, {
     lineGap: 8,
@@ -161,13 +165,13 @@ const buildPdf = async (content: PdfContent, result: PdfResult) => {
     width: doc.page.width - 108,
   });
   doc.fillColor("#f8ead7").font("Helvetica").fontSize(13);
-  doc.text(`Dominant protective role: ${dominant.name}`, 54, 706);
-  doc.text(`Secondary protective role: ${secondary.name}`, 54, 728);
+  doc.text(`${locale === "fr" ? "Rôle protecteur dominant" : "Dominant protective role"}: ${dominant.name}`, 54, 706);
+  doc.text(`${locale === "fr" ? "Rôle protecteur secondaire" : "Secondary protective role"}: ${secondary.name}`, 54, 728);
 
   doc.addPage();
-  writeHeading(doc, "Opening Letter");
+  writeHeading(doc, reportUi.openingLetter);
   writeBody(doc, content.openingLetter);
-  writeScoreRows(doc, result);
+  writeScoreRows(doc, result, locale);
 
   for (const block of content.blocks) {
     ensureSpace(doc, 180);
@@ -175,24 +179,24 @@ const buildPdf = async (content: PdfContent, result: PdfResult) => {
     writeBody(doc, block.body);
 
     if (block.reflectionPrompts.length) {
-      writeHeading(doc, "Reflection");
+      writeHeading(doc, reportUi.reflection);
       writeList(doc, block.reflectionPrompts);
     }
 
     if (block.practices.length) {
-      writeHeading(doc, "Practices");
+      writeHeading(doc, reportUi.practices);
       writeList(doc, block.practices);
     }
   }
 
   if (content.sevenDayPlan.length) {
     doc.addPage();
-    writeHeading(doc, "Seven-Day Integration Plan");
+    writeHeading(doc, reportUi.sevenDayPlan);
 
     for (const item of content.sevenDayPlan) {
       ensureSpace(doc, 78);
       doc.fillColor("#7c3c60").font("Helvetica-Bold").fontSize(12);
-      doc.text(`Day ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`);
+      doc.text(`${locale === "fr" ? "Jour" : "Day"} ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`);
       writeBody(doc, item.practice);
       doc.fillColor("#6c4b37").font("Helvetica-Oblique").fontSize(10.5);
       doc.text(normalizeProtectiveRoleCopy(item.reflection), { lineGap: 3 });
@@ -219,7 +223,7 @@ const pdfResponse = (pdf: Buffer, id: string) =>
   });
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = getSupabaseAdmin();
@@ -232,9 +236,10 @@ export async function GET(
   }
 
   const { id } = await params;
+  const locale = localeSchema.catch("en").parse(new URL(request.url).searchParams.get("locale") ?? undefined);
   const { data: report, error: reportError } = await supabase
     .from("reports")
-    .select("id, result_id, payment_status, content, content_source, generation_status")
+    .select("id, result_id, payment_status, content, localized_content, result_locale, content_source, generation_status")
     .eq("id", id)
     .maybeSingle();
 
@@ -259,7 +264,10 @@ export async function GET(
     );
   }
 
-  const content = reportContentSchema.parse(report.content);
+  const localizedContent = (report.localized_content && typeof report.localized_content === "object")
+    ? report.localized_content as Record<string, unknown>
+    : {};
+  const content = reportContentSchema.parse(localizedContent[locale] ?? (report.result_locale === locale ? report.content : undefined));
   const { data: resultRow, error: resultError } = await supabase
     .from("archetype_results")
     .select("dominant, secondary, scores, distribution")
@@ -274,7 +282,7 @@ export async function GET(
   }
 
   const result = resultRowSchema.parse(resultRow);
-  const pdf = await buildPdf(toPdfContent(content, result), result);
+  const pdf = await buildPdf(toPdfContent(content, result), result, locale);
 
   return pdfResponse(pdf, id);
 }
@@ -293,8 +301,8 @@ export async function POST(
     );
   }
 
-  const { content, result } = parsed.data;
-  const pdf = await buildPdf(toPdfContent(content, result), result);
+  const { content, result, locale } = parsed.data;
+  const pdf = await buildPdf(toPdfContent(content, result), result, locale);
 
   return pdfResponse(pdf, id);
 }

@@ -7,11 +7,13 @@ import {
   supabaseUnavailableMessage,
 } from "@/lib/supabase/errors";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { localeSchema } from "@/lib/schemas";
 
 const checkoutSchema = z.object({
   sessionId: z.string().min(1),
   reportId: z.string().min(1),
   email: z.string().email().optional().or(z.literal("")),
+  locale: localeSchema.catch("en").default("en"),
 });
 
 export async function POST(request: Request) {
@@ -35,6 +37,7 @@ export async function POST(request: Request) {
     const { error: sessionError } = await supabase.from("anonymous_sessions").upsert({
       id: payload.sessionId,
       email: payload.email || null,
+      locale: payload.locale,
       updated_at: now,
     });
 
@@ -87,7 +90,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      url: `${origin}/report/${payload.reportId}?demo_unlocked=1`,
+      url: `${origin}/${payload.locale}/report/${payload.reportId}?demo_unlocked=1`,
       demo: true,
     });
   }
@@ -101,11 +104,12 @@ export async function POST(request: Request) {
       mode: "payment",
       customer_email: payload.email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/report/${payload.reportId}?checkout=success`,
-      cancel_url: `${origin}/questionnaire/result?checkout=cancelled`,
+      success_url: `${origin}/${payload.locale}/report/${payload.reportId}?checkout=success`,
+      cancel_url: `${origin}/${payload.locale}/questionnaire/result?checkout=cancelled`,
       metadata: {
         sessionId: payload.sessionId,
         reportId: payload.reportId,
+        locale: payload.locale,
       },
     });
   } catch {

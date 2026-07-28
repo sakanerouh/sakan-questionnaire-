@@ -1,0 +1,871 @@
+{
+  "common": {
+    "languageSelector": "Choisir la langue",
+    "switchLanguage": "Passer la langue en {language}",
+    "back": "Retour",
+    "continue": "Continuer",
+    "other": "Autre",
+    "otherPlaceholder": "Dites-nous ce qui vous semble juste pour vous..."
+  },
+  "metadata": {
+    "home": {
+      "title": "Questionnaire sur votre rôle protecteur | Sakan eRouh",
+      "description": "Découvrez le rôle protecteur qui façonne votre manière d’aimer, de vous protéger, de guérir et de devenir vous-même."
+    },
+    "questionnaire": {
+      "title": "Questionnaire sur votre rôle protecteur | Sakan eRouh",
+      "description": "Une exploration douce et introspective des schémas de protection appris par votre système nerveux."
+    },
+    "result": {
+      "title": "Votre rôle protecteur | Sakan eRouh",
+      "description": "Découvrez votre rôle protecteur personnalisé et les prochaines étapes de votre cheminement."
+    },
+    "report": {
+      "title": "Votre rapport SakanBody | Sakan eRouh",
+      "description": "Votre analyse personnalisée du rôle protecteur, accompagnée de pistes de réflexion et de pratiques."
+    }
+  },
+  "landing": {
+    "navBegin": "Commencer",
+    "primaryCta": "Faire le questionnaire",
+    "heroTitle": "Et si votre schéma n’était pas le problème ?",
+    "heroBody": "Entrez doucement dans ce miroir. Observez la protection, puis répondez au questionnaire pour découvrir le rôle protecteur qui façonne votre manière d’aimer, de vous protéger, de guérir et de devenir vous-même.",
+    "followStory": "Suivre le récit",
+    "liveMirror": "Miroir en direct",
+    "storyBeats": [
+      {
+        "eyebrow": "D’abord, ce qui se voit",
+        "title": "Vous appelez peut-être cela trop réfléchir.",
+        "body": "Mais votre corps fait peut-être quelque chose de plus subtil : il se prépare, fait ses preuves, cherche à plaire ou s’efface avant que l’ancien inconfort ne revienne.",
+        "reveal": "Le questionnaire commence là où les conseils génériques s’arrêtent.",
+        "previewTitle": "La Vigie",
+        "locks": [
+          "Lecture de la pression",
+          "Anticipation du futur",
+          "Planification de la sécurité"
+        ]
+      },
+      {
+        "eyebrow": "Puis, la protection apparaît",
+        "title": "Si votre schéma se répète, ce n’est pas sans raison.",
+        "body": "Chaque réponse aide à révéler le mode de protection sous vos réactions — celui qui, autrefois, a gardé quelque chose de vulnérable en sécurité.",
+        "reveal": "La protection n’est pas l’ennemie. Elle est une porte d’entrée.",
+        "previewTitle": "Carte de protection",
+        "locks": [
+          "Rôle dans l’enfance",
+          "Déclencheur actuel",
+          "Stratégie corporelle"
+        ]
+      },
+      {
+        "eyebrow": "Enfin, le miroir s’ouvre",
+        "title": "Votre rapport nomme le schéma sans vous enfermer.",
+        "body": "Vous découvrez votre rôle protecteur, les indices de votre part d’ombre, les façons dont vos rêves peuvent être freinés et des pratiques assez personnelles pour vous accompagner vraiment.",
+        "reveal": "La curiosité devient une carte.",
+        "previewTitle": "Rapport complet",
+        "locks": [
+          "Thèmes de l’ombre",
+          "Freins aux rêves",
+          "Chemin de pratique"
+        ]
+      }
+    ],
+    "roleChart": [
+      "Vigie",
+      "Battante",
+      "Conciliatrice",
+      "Bouclier"
+    ],
+    "bridgeEyebrow": "La question qui change le regard",
+    "bridgeTitle": "Quelle part de vous a appris à monter la garde ?",
+    "bridgeBody": "Le questionnaire est conçu comme une conversation avec cette part de vous. Il va assez loin pour faire naître une reconnaissance, sans vous donner l’impression d’être disséquée.",
+    "findPattern": "Découvrir mon schéma",
+    "bridgeCards": [
+      {
+        "title": "Schéma corporel",
+        "text": "La façon dont votre système réagit avant même que votre esprit ne l’explique."
+      },
+      {
+        "title": "Logique relationnelle",
+        "text": "Ce que vous faites pour rester aimée, en sécurité, utile ou invisible."
+      },
+      {
+        "title": "Indice de l’ombre",
+        "text": "L’élan vital qui a été mis à l’écart parce qu’il semblait risqué."
+      },
+      {
+        "title": "Chemin de pratique",
+        "text": "Un prochain pas qui respecte la protection au lieu de la culpabiliser."
+      }
+    ],
+    "finalEyebrow": "Votre miroir vous attend",
+    "finalTitle": "Vous n’avez pas besoin d’une étiquette de plus. Vous avez besoin d’un schéma que vous pouvez enfin reconnaître.",
+    "finalBody": "Commencez par une seule réponse. La suite du récit s’ouvrira à partir de là.",
+    "startQuestionnaire": "Commencer le questionnaire",
+    "faqs": [
+      {
+        "question": "Combien de temps faut-il prévoir ?",
+        "answer": "La plupart des personnes terminent en 10 à 15 minutes. C’est un temps de réflexion, sans être interminable."
+      },
+      {
+        "question": "Est-ce une thérapie ?",
+        "answer": "Non. C’est un outil d’introspection, et non un diagnostic ni un substitut à une thérapie, à des soins médicaux ou à une aide d’urgence."
+      },
+      {
+        "question": "Que vais-je recevoir après le questionnaire ?",
+        "answer": "Un rapport personnalisé présentant votre rôle protecteur dominant, votre schéma secondaire, les thèmes de votre part d’ombre, les indices de freinage de vos rêves et des pratiques adaptées."
+      }
+    ]
+  },
+  "archetypes": {
+    "anticipator": {
+      "name": "La Vigie",
+      "short": "La sécurité par l’anticipation.",
+      "coreFear": "être prise au dépourvu",
+      "strategy": "anticiper",
+      "coreProtection": "rester en alerte pour que rien ne vous prenne au dépourvu",
+      "bodyStrategy": "scruter ce qui vient, lire l’atmosphère, imaginer des scénarios et rester prête",
+      "promise": "Si j’anticipe, je reste en sécurité.",
+      "currency": "l’anxiété, la vigilance et l’énergie dépensée à préparer ce qui n’arrivera peut-être jamais",
+      "practices": [
+        "Exercice d’orientation de 60 secondes : nommez cinq choses neutres dans la pièce avant d’essayer de résoudre quoi que ce soit.",
+        "Journal : Qu’est-ce qui se passe réellement maintenant, et à quoi suis-je en train de me préparer ?",
+        "Parcourez votre corps à la recherche des signes de sécurité présents : mâchoire, épaules, côtes, ventre, pieds.",
+        "Mettez un petit plan en pause avant d’ajouter un nouveau scénario de secours."
+      ]
+    },
+    "performer": {
+      "name": "La Battante",
+      "short": "La sécurité par l’accomplissement.",
+      "coreFear": "ne pas être à la hauteur",
+      "strategy": "accomplir",
+      "coreProtection": "gagner sa sécurité par la réussite, l’utilité et les preuves apportées",
+      "bodyStrategy": "produire, s’améliorer, optimiser et continuer à impressionner",
+      "promise": "Si j’accomplis, je reste digne d’estime.",
+      "currency": "la réussite, l’urgence, le perfectionnement de soi et un repos qu’il faut mériter",
+      "practices": [
+        "S’accorder du repos sans le mériter : prenez dix minutes avant de terminer la prochaine chose utile.",
+        "Tolérer l’inachevé : laissez une tâche sans enjeu inachevée le temps d’une soirée.",
+        "Le plaisir avant la productivité : laissez votre corps recevoir quelque chose de beau en premier.",
+        "Journal : Qui suis-je lorsque je n’ai rien à prouver ?"
+      ]
+    },
+    "harmonizer": {
+      "name": "La Conciliatrice",
+      "short": "La sécurité par le lien.",
+      "coreFear": "le rejet",
+      "strategy": "plaire et préserver le lien",
+      "coreProtection": "préserver le lien en restant attentive aux autres et en vous faisant plus douce, plus petite",
+      "bodyStrategy": "apaiser, prendre soin, ne pas prendre trop de place et sentir ce dont les autres ont besoin",
+      "promise": "Si je maintiens l’harmonie, je reste aimée.",
+      "currency": "l’appartenance, l’effacement de soi, le travail émotionnel et le prix de ne décevoir personne",
+      "practices": [
+        "Un non sincère : choisissez une situation à faible enjeu où vous pouvez laisser exister un non clair.",
+        "Réfléchissez à l’appartenance sans performance : quel lien demeure lorsque vous cessez de le gérer ?",
+        "Une main sur le cœur, dites une phrase vraie à voix haute avant de la corriger.",
+        "Observez la différence entre la générosité et le soin motivé par la peur."
+      ]
+    },
+    "quiter": {
+      "name": "Le Bouclier",
+      "short": "La sécurité par le retrait.",
+      "coreFear": "être blessée ou échouer",
+      "strategy": "se retirer et se protéger",
+      "coreProtection": "vous protéger en prenant de la distance",
+      "bodyStrategy": "se retirer, dormir, perdre l’intérêt, ralentir et éviter la pression",
+      "promise": "Si je me retire, je me préserve.",
+      "currency": "le retrait, l’épuisement, les désirs reportés et le chagrin silencieux de s’arrêter au seuil",
+      "practices": [
+        "Le tout petit prochain pas : choisissez une action de moins de trois minutes.",
+        "Rituel de permission énergétique : posez une main sur votre corps et nommez ce qui est réellement disponible aujourd’hui.",
+        "Un mouvement doux avant l’évitement : une chanson, une marche, un étirement, sans performance.",
+        "Journal : À quelle pression mon corps essaie-t-il d’échapper ?"
+      ]
+    }
+  },
+  "questionnaireUi": {
+    "seeResult": "Voir mon résultat",
+    "optional": "Cette réflexion est facultative. Vous pouvez continuer lorsque vous vous sentez prête.",
+    "defaultPlaceholder": "Écrivez ce qui vous semble vrai. Les fragments sont les bienvenus.",
+    "featuredReflection": "Réflexion mise en lumière",
+    "childhoodProtection": "Comment vous vous protégiez enfant",
+    "childhoodPending": "Cela se précise encore à travers vos réponses.",
+    "sabotageNow": "Le visage que peuvent prendre vos freins aujourd’hui",
+    "sabotagePending": "Votre schéma actuel se dessine encore.",
+    "progressSaved": "Votre progression est enregistrée automatiquement",
+    "readingPattern": "Lecture de votre schéma",
+    "analyzingTitle": "Vos réponses se rassemblent pour former un miroir.",
+    "analyzingBody": "Il ne s’agit pas de poser un diagnostic. Nous observons simplement la protection, son coût et la vie qui commence à émerger.",
+    "validationTitle": "Une petite pause, tout en douceur.",
+    "validationText": "Choisissez ou écrivez ce qui vous ressemble le plus avant de continuer. Les questions facultatives sont clairement indiquées.",
+    "analysisErrorTitle": "L’analyse n’a pas pu aboutir.",
+    "analysisError": "L’analyse de votre rôle protecteur n’a pas pu aboutir."
+  },
+  "resultUi": {
+    "returnToAnswers": "Revenir à mes réponses",
+    "preparing": "Préparation de l’analyse de votre rôle protecteur...",
+    "identified": "Votre rôle protecteur dominant a été identifié.",
+    "patternNote": "Note sur votre schéma",
+    "opening": "Votre analyse fait ressortir {dominant} comme rôle protecteur dominant, tandis que {secondary} façonne la couche secondaire.",
+    "locked": "Verrouillé",
+    "lockedBody": "Un miroir personnalisé à partir de vos réponses apparaîtra ici.",
+    "lockedSections": [
+      "Schéma de protection",
+      "Part d’ombre",
+      "Freins aux rêves",
+      "Mise à jour du système nerveux",
+      "Pratiques personnalisées",
+      "Exploration de l’identité"
+    ],
+    "intensityScore": "Score d’intensité"
+  },
+  "payment": {
+    "emailInvalid": "Saisissez une adresse e-mail valide afin que votre rapport puisse vous être associé.",
+    "title": "Déverrouillez votre rapport complet",
+    "body": "Votre rapport SakanBody complet comprend votre schéma de protection, votre part d’ombre, les freins qui entourent vos rêves, la mise à jour de votre système nerveux, des pratiques et une exploration de votre identité.",
+    "emailLabel": "Adresse e-mail pour votre rapport",
+    "emailPlaceholder": "vous@exemple.com",
+    "openingCheckout": "Ouverture du paiement...",
+    "unlock": "Déverrouiller mon rapport complet",
+    "disclaimer": "Cet outil favorise l’introspection ; il ne constitue ni un diagnostic médical ni une thérapie.",
+    "checkoutError": "Le paiement n’a pas pu être créé.",
+    "paymentErrorTitle": "La page de paiement ne s’est pas ouverte.",
+    "tryAgain": "Veuillez réessayer dans un instant.",
+    "demoTitle": "Déverrouillage de démonstration",
+    "demoText": "Les clés Stripe ne sont pas configurées localement ; le rapport s’ouvre donc en mode démonstration."
+  },
+  "reportUi": {
+    "steps": [
+      "Lecture de vos réponses",
+      "Cartographie des rôles protecteurs",
+      "Rédaction des sections approfondies",
+      "Préparation du parcours d’intégration"
+    ],
+    "writing": "Rédaction en cours",
+    "writingTitle": "Votre rapport complet est en cours de rédaction.",
+    "writingBody": "Cela peut prendre un peu de temps, car le rapport est créé à partir de vos réponses précises. Gardez cette page ouverte : le rapport final s’affichera ici.",
+    "retry": "Relancer la génération",
+    "generationError": "La génération du rapport a échoué.",
+    "openingReport": "Ouverture de votre rapport...",
+    "notFound": "Rapport introuvable.",
+    "checking": "Nous vérifions ce navigateur et votre rapport enregistré.",
+    "notFoundBody": "Commencez par terminer le questionnaire ou vérifiez que Supabase est configuré localement.",
+    "begin": "Commencer le questionnaire",
+    "back": "Revenir à l’aperçu",
+    "preparingPdf": "Préparation du PDF...",
+    "downloadPdf": "Télécharger le PDF",
+    "pdfError": "Le PDF n’a pas pu être créé.",
+    "reportEyebrow": "Rapport d’audit SakanBody",
+    "fallbackSubtitle": "{dominant}. Votre rôle protecteur secondaire est {secondary}, créant un mélange nuancé de protection et de devenir.",
+    "lockedTitle": "Rapport verrouillé",
+    "lockedBody": "La confirmation du paiement est encore en cours. Actualisez cette page une fois le paiement terminé.",
+    "openingLetter": "Lettre d’ouverture",
+    "reflection": "Réflexion",
+    "practices": "Pratiques",
+    "sevenDayPlan": "Parcours d’intégration sur sept jours",
+    "day": "Jour {day}"
+  },
+  "questionnaire": {
+    "sections": {
+      "orientation": "Orientation",
+      "audit_focus": "Objectif de l'audit",
+      "the_first_25_years": "Les 25 premières années",
+      "the_blind_spot": "L'angle mort",
+      "the_shadow_personality": "La personnalité de l'ombre",
+      "where_dreams_meet_protection": "Où les rêves rencontrent la protection",
+      "system_expiration": "Expiration du système",
+      "honoring_the_protection": "Honorer la protection",
+      "identity_inquiry": "Demande d'identité"
+    },
+    "screens": {
+      "orientation": {
+        "eyebrow": "Audit SakanBody",
+        "title": "Votre système nerveux a appris à vous protéger avant de savoir comment choisir.",
+        "body": "Durant les 25 premières années de votre vie, votre corps était concentré sur la survie. Cet audit vous aide à voir quelle protection s'est formée, comment elle apparaît maintenant et quelle identité peut émerger au-delà d'elle."
+      },
+      "audit-focus": {
+        "title": "Nous commençons par ce qui vous a amené ici.",
+        "body": "Votre réponse n’a pas besoin d’être parfaite. Laissez la boucle, le désir ou la tension du moment nous montrer où l’ancienne protection demande à être comprise."
+      },
+      "age": {
+        "prompt": "Votre âge actuel :",
+        "placeholder": "Exemple : 31"
+      },
+      "why-now": {
+        "prompt": "En une phrase, qu’est-ce qui vous a poussé à réserver cet audit maintenant ?",
+        "placeholder": "Je continue de ressentir..."
+      },
+      "stuck-areas": {
+        "prompt": "Où vous sentez-vous le plus coincé ou le plus « en boucle » dans votre vie actuellement ?",
+        "options": {
+          "career_purpose": "Carrière / vocation",
+          "body_health": "Corps / santé",
+          "relationships_intimacy": "Relations / intimité",
+          "money_receiving": "Argent / recevoir",
+          "identity_sense_of_self": "Identité / sentiment de soi",
+          "creativity_expression": "Créativité / expression",
+          "other": "Autre"
+        }
+      },
+      "first-25": {
+        "title": "Maintenant, nous cartographions le monde auquel votre corps s'est adapté.",
+        "body": "Les enfants perçoivent bien plus que les mots. Ils ressentent la pression, les silences, l’image à préserver, la fragilité et les besoins qu’il ne faudrait pas avoir. Cette section met des mots sur le rôle que votre jeune moi a appris à jouer."
+      },
+      "family-role": {
+        "prompt": "En grandissant, quel rôle avez-vous instinctivement joué dans votre famille ?",
+        "options": {
+          "the_responsible_one": "La personne responsable",
+          "the_peacemaker": "Celle qui apaise les tensions",
+          "the_caretaker": "Celle qui prend soin des autres",
+          "the_achiever_the_proof": "Celle qui réussit / qui fait ses preuves",
+          "the_invisible_one": "Celle qui se rend invisible",
+          "the_funny_one_the_relief": "Celle qui fait rire / qui allège l’atmosphère",
+          "the_strong_one": "Celle qui reste forte",
+          "the_problem": "Celle que l’on désigne comme le problème",
+          "other": "Autre"
+        }
+      },
+      "childhood-truths": {
+        "prompt": "En tant qu'enfant, lesquelles de ces affirmations étaient vraies pour vous ?",
+        "options": {
+          "i_tried_not_to_be_a_burden": "J'ai essayé de ne pas être un fardeau",
+          "i_tried_not_to_add_stress_to_anyone": "J'ai essayé de n'ajouter du stress à personne",
+          "i_was_the_easy_one_the_good_one": "J’étais l’enfant facile / sage",
+          "i_learned_to_read_the_room_before_i_spoke": "J’ai appris à sentir l’atmosphère avant de parler",
+          "i_kept_my_problems_to_myself": "J'ai gardé mes problèmes pour moi",
+          "i_felt_responsible_for_someone_elses_wellbeing": "Je me sentais responsable du bien-être de quelqu'un d'autre",
+          "i_felt_i_had_to_be_okay_so_others_could_be_okay": "Je sentais que je devais aller bien pour que les autres puissent aller bien",
+          "i_grew_up_faster_than_i_needed_to": "J'ai grandi plus vite que nécessaire",
+          "i_didnt_want_to_take_up_space": "Je ne voulais pas prendre de place",
+          "i_performed_being_fine": "Je faisais semblant d’aller bien",
+          "other": "Autre"
+        }
+      },
+      "learned-when": {
+        "prompt": "En regardant ce que vous avez sélectionné, quand avez-vous appris à faire cela pour la première fois ? Que se passait-il autour de vous ?",
+        "placeholder": "Je me souviens d'abord..."
+      },
+      "home-climate": {
+        "prompt": "Quel était le climat émotionnel de votre maison ?",
+        "options": {
+          "tense_walking_on_eggshells": "Tendu / marcher sur des œufs",
+          "cold_disconnected": "Froid / déconnecté",
+          "chaotic_unpredictable": "Chaotique / imprévisible",
+          "over_involved_enmeshed": "Très impliqué / aux frontières peu claires",
+          "performative_image_focused": "Centré sur les apparences / l’image",
+          "warm_but_conditional": "Chaleureux mais conditionnel",
+          "other": "Autre"
+        }
+      },
+      "tracked-wellbeing": {
+        "prompt": "Dans votre enfance, y avait-il une personne dont vous surveilliez discrètement le bien-être ou l’état ?",
+        "options": {
+          "a_parents_health_physical_or_mental": "La santé d'un parent (physique ou mentale)",
+          "a_parents_mood_emotions": "L'humeur/les émotions d'un parent",
+          "a_sibling_who_needed_extra_care_or_attention": "Un frère ou une sœur qui avait besoin de soins ou d'attention supplémentaires",
+          "the_familys_image_reputation": "L'image/réputation de la famille",
+          "the_peace_of_the_home": "La paix de la maison",
+          "a_financial_situation": "Une situation financière",
+          "a_grief_loss_the_family_carried": "Un chagrin/une perte que la famille a porté",
+          "an_unspoken_tension_no_one_talked_about": "Une tension tacite dont personne n'a parlé",
+          "none_that_im_aware_of": "Aucun à ma connaissance",
+          "other": "Autre"
+        }
+      },
+      "unspoken-noticed": {
+        "prompt": "Décrivez ce que vous avez remarqué lorsque vous étiez enfant, même si personne ne l'a nommé à voix haute. Selon vous, qu’est-ce qui se passait dont vous n’étiez pas censé parler ?"
+      },
+      "unspoken-rules": {
+        "prompt": "Même dans un foyer aimant, les enfants absorbent des règles implicites. Lesquelles avez-vous intégrées ?",
+        "options": {
+          "dont_make_things_harder": "Ne rends pas les choses plus difficiles",
+          "dont_be_the_reason_someone_worries": "Ne donne à personne une raison de s’inquiéter",
+          "stay_small_with_your_needs": "Garde tes besoins discrets",
+          "be_the_one_whos_okay": "Sois celle qui va bien",
+          "achieve_succeed_make_us_proud": "Réussis / rends-nous fiers",
+          "dont_outshine": "Ne fais pas d’ombre aux autres",
+          "hold_it_together": "Tiens bon et garde le contrôle",
+          "be_grateful_dont_complain": "Sois reconnaissante, ne te plains pas",
+          "be_useful": "Sois utile",
+          "be_good": "Sois sage",
+          "dont_need_too_much": "N’aie pas trop de besoins",
+          "other": "Autre"
+        }
+      },
+      "felt-cost": {
+        "prompt": "Si vous aviez enfreint cette règle enfant — ou simplement imaginé le faire — que sentiez-vous qu’il se passerait ? Pas forcément une punition. Plutôt… quel en aurait été le coût émotionnel ?"
+      },
+      "childhood-movement": {
+        "prompt": "En regardant votre enfance, laquelle de ces descriptions décrit comment vous avez évolué à travers le monde ?",
+        "options": {
+          "always_one_step_ahead_anticipating": "Toujours une longueur d'avance / anticiper",
+          "quietly_observing_before_acting": "Observer tranquillement avant d’agir",
+          "tip_toeing_careful_not_to_disturb": "Sur la pointe des pieds / attention à ne pas déranger",
+          "performing_okay_ness": "Faire semblant d’aller bien",
+          "caring_for_others_before_myself": "Prendre soin des autres avant moi",
+          "hyper_organized_hyper_responsible": "Hyper-organisé / hyper-responsable",
+          "gentle_not_too_much_not_too_loud": "Doux, pas trop, pas trop fort",
+          "mature_for_my_age": "Mature pour mon âge",
+          "the_easy_child": "L'enfant \"facile\"",
+          "always_moving_to_the_next_thing": "Passer toujours à la chose suivante",
+          "other": "Autre"
+        }
+      },
+      "recognize-now": {
+        "prompt": "Vous reconnaissez-vous encore dans l’un d’entre eux ? Où?"
+      },
+      "blind-spot": {
+        "title": "Faites une pause un instant. Vos réponses commencent à révéler la forme d’une protection qui avait autrefois un sens.",
+        "body": "Examinons maintenant ce qui est difficile à arrêter, même lorsque personne ne le demande. Ce ne sont pas des défauts. Ils sont le corps qui répète ce qui a déjà aidé."
+      },
+      "hard-to-stop": {
+        "prompt": "Parmi ces habitudes, lesquelles avez-vous réellement du mal à arrêter, même lorsque vous êtes fatiguée, le week-end ou lorsque personne ne vous demande rien ?",
+        "options": {
+          "planning_ahead_running_scenarios": "Planifier à l’avance / imaginer tous les scénarios",
+          "mentally_to_do_listing": "Liste de choses à faire mentalement",
+          "checking_on_people_you_love": "Prendre constamment des nouvelles des personnes que vous aimez",
+          "producing_achieving_progressing": "Produire / réaliser / progresser",
+          "improving_yourself": "S'améliorer",
+          "anticipating_what_could_go_wrong": "Anticiper ce qui pourrait mal se passer",
+          "tracking_everyones_mood_needs": "Surveiller l’humeur / les besoins de chacun",
+          "optimizing_your_time": "Optimiser votre temps",
+          "being_useful": "Être utile",
+          "preparing": "Se préparer",
+          "tidying_organizing_arranging": "Ranger / organiser / arranger",
+          "other": "Autre"
+        }
+      },
+      "body-when-stop": {
+        "prompt": "Choisissez celui qui est le plus difficile à arrêter. Que se passe-t-il dans votre corps lorsque vous essayez ?"
+      },
+      "slowing-fear": {
+        "prompt": "Quand vous imaginez ralentir complètement pendant une semaine — sans projets, sans productivité, sans prendre soin des autres ni chercher à vous améliorer — quelle est la première peur qui surgit ?",
+        "options": {
+          "ill_fall_behind_lose_my_edge": "Je vais prendre du retard / perdre mon avantage",
+          "something_bad_will_happen_to_someone_i_love": "Quelque chose de grave va arriver à quelqu'un que j'aime",
+          "ill_be_seen_as_lazy_selfish_useless": "On me trouvera paresseuse / égoïste / inutile",
+          "ill_lose_myself_disappear": "Je vais me perdre/disparaître",
+          "ill_feel_everything_ive_been_outrunning": "Je ressentirai tout ce que je fuis depuis longtemps",
+          "ill_become_a_burden": "je deviendrai un fardeau",
+          "i_wont_be_loved_the_same_way": "Je ne serai pas aimé de la même façon",
+          "i_wont_matter": "je n'aurai pas d'importance",
+          "ill_get_sick": "je vais tomber malade",
+          "i_dont_know_but_it_feels_unsafe": "Je ne sais pas, mais je ne me sens pas en sécurité",
+          "other": "Autre"
+        }
+      },
+      "as-long-as": {
+        "prompt": "Complétez cette phrase avec vos propres mots : Tant que je garde _______, alors _______ n'arrivera pas."
+      },
+      "present-memory": {
+        "prompt": "Quel est votre meilleur souvenir d’un moment où vous étiez pleinement dans le moment présent ?"
+      },
+      "shadow-intro": {
+        "title": "Qui seriez-vous si vous n’aviez pas eu besoin d’être aussi prudente et protectrice ?",
+        "body": "Cette part d’ombre n’est pas mauvaise. Elle porte la vitalité exilée : la part de vous mise de côté pour que la protection puisse continuer à fonctionner."
+      },
+      "shadow-clues": {
+        "prompt": "Qu’avez-vous remarqué chez vous ? Répondez avec honnêteté : ce sont des indices, pas des défauts.",
+        "options": {
+          "i_feel_a_sharp_envy_when_i_see_certain_women_confident_loud_sensual_fr": "J'éprouve une vive envie quand je vois certaines femmes, confiantes, bruyantes, sensuelles, libres",
+          "i_am_fascinated_by_women_who_seem_to_get_away_with_things_i_never_coul": "Je suis fascinée par les femmes qui semblent s’autoriser ce que je ne me suis jamais permis",
+          "i_have_a_private_fantasy_version_of_myself_i_never_let_out": "J'ai une version privée et fantastique de moi-même que je ne laisse jamais sortir",
+          "i_sometimes_catch_myself_thinking_if_only_i_were_the_kind_of_person_wh": "Je me surprends parfois à penser \"si seulement j'étais le genre de personne qui...\"",
+          "there_are_things_i_want_that_id_be_embarrassed_to_admit": "Il y a des choses que je veux et que je serais gêné d'admettre",
+          "i_feel_a_pull_toward_luxury_attention_indulgence_or_wildness_and_immed": "Je me sens attirée par le luxe, l’attention, le plaisir ou une forme de liberté sauvage, puis je me juge aussitôt",
+          "i_feel_more_myself_in_a_rare_setting_like_travel_certain_people_alone_": "Je me sens plus moi-même dans un cadre rare, comme un voyage, certaines personnes, seul ou une ville précise",
+          "theres_a_version_of_me_that_comes_out_after_a_drink_on_vacation_or_wit": "Il y a une version de moi qui sort après un verre, en vacances ou avec des inconnus, et elle me manque",
+          "other": "Autre"
+        }
+      },
+      "shadow-trigger": {
+        "prompt": "Choisissez celui qui frappe le plus fort. Décrivez quoi ou qui le déclenche spécifiquement."
+      },
+      "fascination-shares": {
+        "prompt": "En regardant les gens qui vous fascinent, ou la version de vous lorsque vous vous sentez en sécurité et accueilli, que partagent-ils ?",
+        "options": {
+          "playful_funny_light": "Ludique / drôle / léger",
+          "bold_loud_unapologetic": "Audacieux / bruyant / sans excuse",
+          "sensual_luxurious_indulgent": "Sensuel / luxueux / indulgent",
+          "soft_receiving_held": "Doux / réception / tenu",
+          "wild_free_untamed": "Sauvage / libre / indompté",
+          "slow_lazy_unproductive": "Lent / paresseux / improductif",
+          "visible_seen_celebrated": "Visible / vu / célébré",
+          "wanting_asking_taking": "Vouloir / demander / prendre",
+          "warm_messy_openly_emotional": "Chaleureux / désordonné / ouvertement émotif",
+          "quiet_but_unbothered": "Calme mais indifférent",
+          "other": "Autre"
+        }
+      },
+      "dinner-table-feeling": {
+        "prompt": "Si cette version de vous s'était présentée à table quand vous étiez enfant, bruyante, indulgente, exigeante, prenant de la place, voulant des choses, quel est le premier sentiment que vous imaginez que vous auriez ressenti ?",
+        "options": {
+          "guilty": "Coupable",
+          "selfish": "Égoïste",
+          "like_a_burden": "Comme un fardeau",
+          "out_of_place": "Hors de propos",
+          "embarrassed": "Gêné",
+          "like_i_was_making_things_harder": "Comme si je rendais les choses plus difficiles",
+          "like_i_was_being_too_much": "Comme si j'en étais trop",
+          "like_i_didnt_fit_the_family": "Comme si je ne correspondais pas à la famille",
+          "disloyal": "Déloyal",
+          "other": "Autre"
+        }
+      },
+      "shadow-wants": {
+        "prompt": "Que désire cette part d’ombre que vous vous êtes discrètement répété ne pas être pour vous, ou ne pas vous ressembler ?",
+        "options": {
+          "to_be_visible_celebrated_admired": "Être visible / célébré / admiré",
+          "to_be_wanted_desired_chosen": "Être recherché / désiré / choisi",
+          "to_rest_without_earning_it": "Se reposer sans le mériter",
+          "to_have_luxury_beauty_excess": "Avoir du luxe / beauté / excès",
+          "to_be_taken_care_of": "Être pris en charge",
+          "to_say_no_without_guilt": "Dire non sans culpabilité",
+          "to_want_things_openly": "Vouloir les choses ouvertement",
+          "to_take_up_space": "Prendre pleinement sa place",
+          "to_be_playful_silly_not_serious": "Être joueuse / légère / ne pas toujours être sérieuse",
+          "to_be_selfish_sometimes": "Être égoïste parfois",
+          "to_be_soft_receiving": "Être doux / recevoir",
+          "to_not_be_useful": "Ne pas avoir à être utile",
+          "other": "Autre"
+        }
+      },
+      "most-forbidden": {
+        "prompt": "Choisissez celui qui est le plus interdit. Quelle histoire vous racontez-vous pour expliquer pourquoi ce n'est pas pour vous ?"
+      },
+      "dreams-intro": {
+        "title": "La résistance est le message.",
+        "body": "Entre 25 et 35 ans environ, les protections mises en place au cours des 25 premières années peuvent entrer en conflit avec la vie que vous visez actuellement. Ce que vous rencontrez n’est pas votre limite. C'est peut-être la limite d'un ancien contrat."
+      },
+      "life-window": {
+        "prompt": "Où vous situez-vous dans cette période ?",
+        "options": {
+          "im_25_30_and_just_starting_to_feel_the_clash": "J'ai 25-30 ans et je commence tout juste à ressentir le choc",
+          "im_30_35_and_im_in_the_thick_of_it": "J'ai 30-35 ans et je suis dans le vif du sujet",
+          "im_35_40_and_im_late_to_seeing_it_but_i_see_it_now": "J’ai entre 35 et 40 ans ; je le vois tardivement, mais je le vois maintenant",
+          "im_past_40_and_these_patterns_went_unaddressed_for_years": "J'ai plus de 40 ans et ces schémas sont restés sans réponse pendant des années",
+          "im_under_25_and_im_noticing_it_early": "J'ai moins de 25 ans et je le remarque tôt",
+          "other": "Autre"
+        }
+      },
+      "looping-dream-areas": {
+        "prompt": "Dans quels domaines tournez-vous en boucle : vous désirez quelque chose, vous vous en approchez, puis vous vous retrouvez bloquée ou vous freinez vous-même ?",
+        "options": {
+          "a_career_move_business_creative_project": "Une évolution de carrière/d'entreprise/un projet créatif",
+          "a_relationship_i_want_or_want_to_leave": "Une relation que je veux (ou veux quitter)",
+          "my_body_health_weight_energy": "Mon corps / santé / poids / énergie",
+          "money_receiving_charging_more": "Argent/recevoir/facturer davantage",
+          "visibility_putting_myself_out_there": "Visibilité / me faire connaître",
+          "a_creative_dream_i_keep_almost_starting": "Un rêve créatif que je suis toujours sur le point de commencer",
+          "moving_a_place_i_want_to_live": "Déménager / un endroit où je veux vivre",
+          "becoming_a_mother_not_becoming_one": "Devenir mère/ne pas le devenir",
+          "a_version_of_myself_i_keep_almost_becoming": "Une version de moi-même que je suis toujours sur le point de devenir",
+          "other": "Autre"
+        }
+      },
+      "specific-dream": {
+        "prompt": "Choisissez la zone la plus chargée. Décrivez maintenant le rêve lui-même en détail. Ce n’est pas l’obstacle, c’est le rêve. À quoi ressemblerait votre vie si elle était réelle ?"
+      },
+      "sabotage-mechanism": {
+        "prompt": "Lorsque vous vous approchez de ce rêve, lequel de ces événements a tendance à se produire ? Soyez honnête. La plupart des gens en font au moins trois.",
+        "options": {
+          "i_get_sick_exhausted_depleted": "Je tombe malade / je m’épuise / je me vide de mon énergie",
+          "i_get_distracted_scattered_lose_focus": "Je me distrais / je me disperse / je perds le fil",
+          "i_procrastinate_or_research_instead_of_doing": "Je procrastine ou je « fais des recherches » au lieu de faire",
+          "i_shrink_the_dream_make_it_smaller_be_realistic": "Je rétrécis le rêve/le rends plus petit/« sois réaliste »",
+          "i_sabotage_relationships_that_would_support_it": "Je sabote les relations qui le soutiendraient",
+          "i_pick_fights_create_drama": "Je provoque des disputes / je crée des tensions",
+          "i_become_hyper_busy_with_other_things": "Je deviens hyper occupé avec d'autres choses",
+          "i_doubt_myself_into_paralysis": "Je doute de moi jusqu'à la paralysie",
+          "i_tell_myself_its_not_the_right_time": "Je me dis que ce n'est pas le bon moment",
+          "i_caretake_someone_elses_needs_instead": "Je m'occupe plutôt des besoins de quelqu'un d'autre",
+          "i_get_suddenly_very_tired_want_to_sleep": "Je me sens soudain très fatiguée / j’ai envie de dormir",
+          "i_find_a_financial_reason_to_stop_anxiety_over_expenses_or_debts": "Je trouve une raison financière d'arrêter / anxiété face aux dépenses ou aux dettes",
+          "i_lose_interest_right_at_the_threshold": "Je perds tout intérêt dès le seuil",
+          "other": "Autre"
+        }
+      },
+      "dream-protection-match": {
+        "title": "La mise en regard",
+        "body": "Observez comment vous vous protégiez enfant, puis comment votre rêve se retrouve bloqué aujourd’hui. Souvent, c’est la même protection sous une nouvelle forme."
+      },
+      "body-data": {
+        "prompt": "Lorsque vous imaginez réellement faire ce rêve, le réaliser pleinement, sans réserve, que se passe-t-il dans votre corps ? Où se resserre-t-il, se fige-t-il, s'emballe-t-il ou s'engourdit-il ?",
+        "helper": "Remarquez simplement. Rien ne doit être traité ou changé pour le moment."
+      },
+      "dream-shield": {
+        "prompt": "Quand vous imaginez réaliser pleinement ce rêve, quelle est la peur qui se cache en dessous ? Vérifiez tout ce qui résonne, même faiblement.",
+        "options": {
+          "id_lose_connection_with_the_people_i_love": "Je perdrais le lien avec les gens que j'aime",
+          "id_be_too_visible_too_much_too_seen": "Je serais trop visible / trop présente / trop exposée",
+          "id_outgrow_my_family_outshine_them": "Je dépasserais ma famille / je lui ferais de l’ombre",
+          "id_be_a_burden_a_target_resented": "Je serais un fardeau / une cible / on m’en voudrait",
+          "id_betray_someone": "je trahirais quelqu'un",
+          "id_be_punished_by_life_something_would_be_taken": "La vie me punirait / quelque chose me serait retiré",
+          "id_be_exposed_as_a_fraud": "On découvrirait que je suis une imposture",
+          "id_have_to_feel_everything_ive_been_outrunning_responsibility": "Je devrais ressentir tout ce que je fuis / assumer pleinement mes responsabilités",
+          "i_wouldnt_know_who_i_am_anymore": "Je ne saurais plus qui je suis",
+          "i_would_lose_my_safe_identity": "Je perdrais mon identité \"sûre\"",
+          "i_dont_know_but_it_feels_dangerous": "Je ne sais pas, mais ça semble dangereux",
+          "other": "Autre"
+        }
+      },
+      "system-expiration": {
+        "title": "Qu’est-ce qui est vrai aujourd’hui et qui ne l’était pas à l’époque ?",
+        "body": "Votre système nerveux a construit cette protection à partir de la réalité de votre enfance. La question n’est pas de savoir si elle a fonctionné : elle a fonctionné. La question est de savoir si les conditions sont encore les mêmes aujourd’hui."
+      },
+      "current-resources": {
+        "prompt": "Lesquelles de ces affirmations sont vraies dans votre vie aujourd’hui, même si vous ne les ressentez pas toujours ?",
+        "options": {
+          "i_can_financially_support_myself_or_have_access_to_support": "Je peux subvenir à mes besoins financièrement (ou avoir accès à du soutien)",
+          "i_can_leave_a_situation_that_doesnt_feel_right": "Je peux quitter une situation qui ne me semble pas bonne",
+          "i_have_at_least_one_person_i_can_be_honest_with": "J'ai au moins une personne avec qui je peux être honnête",
+          "i_can_say_no_even_if_its_hard": "Je peux dire non, même si c'est dur",
+          "i_have_a_body_that_has_carried_me_through_real_things": "J’ai un corps qui m’a portée à travers des épreuves réelles",
+          "i_have_skills_knowledge_or_experience_ive_earned": "J'ai des compétences, des connaissances ou une expérience que j'ai acquises",
+          "i_can_ask_for_help_even_imperfectly": "Je peux demander de l'aide (même imparfaitement)",
+          "i_can_be_alone_without_it_being_unsafe": "Je peux être seule sans être en danger",
+          "i_can_choose_where_i_live_who_im_with_how_i_spend_my_time": "Je peux choisir où je vis, avec qui je suis, comment je passe mon temps",
+          "i_have_language_for_what_i_feel_more_than_i_did_as_a_child": "J’ai davantage de mots pour nommer ce que je ressens que lorsque j’étais enfant",
+          "im_no_longer_dependent_on_the_people_i_had_to_protect_myself_from": "Je ne dépends plus des gens dont je devais me protéger",
+          "i_have_more_agency_over_my_body_my_time_my_decisions": "J’ai davantage de pouvoir d’action sur mon corps, mon temps et mes décisions",
+          "other": "Autre"
+        }
+      },
+      "resources-body": {
+        "prompt": "Relisez lentement vos sélections. Que remarquez-vous dans votre corps ?",
+        "helper": "Remarquez simplement. Rien ne doit être traité ou changé pour le moment."
+      },
+      "external-changes": {
+        "prompt": "Par rapport à l’environnement dans lequel vous avez grandi, lesquels ont changé ?",
+        "options": {
+          "the_person_whose_wellbeing_i_tracked_is_no_longer_my_responsibility_or": "La personne dont j'ai suivi le bien-être n'est plus sous ma responsabilité (ou n'est plus là)",
+          "im_no_longer_living_in_that_home": "Je ne vis plus dans cette maison",
+          "the_financial_situation_is_different": "La situation financière est différente",
+          "the_family_dynamic_has_shifted": "La dynamique familiale a changé",
+          "i_have_my_own_home_space_room": "J'ai ma propre maison/espace/chambre",
+          "i_have_relationships_i_chose_not_just_the_ones_i_was_born_into": "J'ai des relations que j'ai choisies, pas seulement celles dans lesquelles je suis né",
+          "the_fear_i_lived_with_as_a_child_is_no_longer_present_in_my_daily_life": "La peur avec laquelle je vivais quand j'étais enfant n'est plus présente dans mon quotidien",
+          "the_danger_fragility_illness_that_shaped_me_is_no_longer_the_air_i_bre": "Le danger/fragilité/maladie qui m'a façonné n'est plus l'air que je respire",
+          "i_have_distance_physical_emotional_or_both_from_the_original_condition": "J'ai une distance, physique, émotionnelle, ou les deux, par rapport aux conditions d'origine",
+          "other": "Autre"
+        }
+      },
+      "child-impossible": {
+        "prompt": "Facultatif : quelle réalité de votre vie actuelle l’enfant que vous étiez n’aurait-elle jamais imaginée possible ?"
+      },
+      "capacities-built": {
+        "prompt": "Que savez-vous faire aujourd’hui que vous ne pouviez pas faire enfant ?",
+        "options": {
+          "recognize_when_something_doesnt_feel_right": "Reconnaître quand quelque chose ne va pas",
+          "walk_away_from_people_who_harm_me": "M’éloigner des personnes qui me font du mal",
+          "set_a_limit_even_if_im_still_practicing": "Fixer une limite (même si je m'entraîne encore)",
+          "soothe_myself_when_im_activated": "M’apaiser lorsque mon système s’active",
+          "identify_what_im_feeling": "Identifier ce que je ressens",
+          "ask_a_question_instead_of_assuming": "Poser une question au lieu de supposer",
+          "repair_after_a_rupture": "Réparer le lien après une rupture",
+          "choose_who_gets_access_to_me": "Choisir qui peut entrer dans mon intimité",
+          "tolerate_someone_being_disappointed_in_me": "Tolérer que quelqu'un soit déçu de moi",
+          "sit_with_discomfort_without_immediately_fixing_it": "Rester avec l’inconfort sans chercher aussitôt à le résoudre",
+          "other": "Autre"
+        }
+      },
+      "child-changed-everything": {
+        "prompt": "Facultatif : parmi ces capacités, laquelle aurait tout changé pour l’enfant que vous étiez ?"
+      },
+      "somatic-recognition": {
+        "prompt": "Après avoir parcouru ce que vous venez de sélectionner, ressources, changements, capacités, quelle est la première chose que vous remarquez dans votre corps ?",
+        "options": {
+          "a_softening_a_small_relief": "Un adoucissement, un petit soulagement",
+          "something_doesnt_believe_it_yet_but_my_mind_sees_it": "Quelque chose n'y croit pas encore, mais mon esprit le voit",
+          "tears_or_something_that_wants_to_release": "Des larmes, ou quelque chose qui veut se libérer",
+          "resistance_like_my_body_doesnt_trust_this": "Résistance, comme si mon corps n'y faisait pas confiance",
+          "surprise_i_hadnt_really_seen_all_of_this_before": "Surprise, je n'avais pas vraiment vu tout ça auparavant",
+          "a_quiet_oh": "Un \"oh\" silencieux",
+          "i_dont_feel_anything_yet_i_want_to_explore_this_in_session": "Je ne ressens encore rien, je veux explorer ça en séance",
+          "other": "Autre"
+        }
+      },
+      "updated-self": {
+        "prompt": "Compte tenu de tout ce dont vous avez été témoin sur votre réalité actuelle, qui seriez-vous si votre système nerveux se mettait à jour pour correspondre à votre vie actuelle ? Décrivez-la."
+      },
+      "honoring-intro": {
+        "title": "On ne renvoie pas une part de soi. On lui confie un nouveau rôle.",
+        "body": "La protection n’était pas un défaut. C’était une réponse intelligente à des conditions que vous n’aviez pas choisies. Nous pouvons maintenant honorer ce qu’elle vous a apporté et actualiser ce qu’elle n’a plus besoin de porter."
+      },
+      "protection-accomplished": {
+        "prompt": "Avec le recul, qu’a réellement apporté cette protection pour vous ? Lesquelles de ces affirmations sont vraies ?",
+        "options": {
+          "it_kept_me_safe_in_a_situation_i_couldnt_have_changed": "Cela m'a gardé en sécurité dans une situation que je n'aurais pas pu changer",
+          "it_let_me_get_through_childhood_with_my_dignity_intact": "Cela m'a permis de traverser mon enfance avec ma dignité intacte",
+          "it_helped_me_become_responsible_capable": "Cela m'a aidé à devenir responsable/capable",
+          "it_gave_me_a_sense_of_agency_when_i_had_none": "Elle m’a donné un sentiment de pouvoir d’action lorsque je n’en avais aucun",
+          "it_protected_someone_i_loved": "Cela protégeait quelqu'un que j'aimais",
+          "it_earned_me_the_love_or_peace_i_needed": "Cela m'a valu l'amour ou la paix dont j'avais besoin",
+          "it_got_me_out_got_me_here": "Ça m'a fait sortir/m'a amené ici",
+          "it_built_a_life_im_now_actually_able_to_live_in": "Cela a construit une vie dans laquelle je suis maintenant capable de vivre",
+          "it_made_me_someone_people_can_count_on": "Cela a fait de moi quelqu'un sur qui les gens peuvent compter",
+          "it_gave_me_a_way_to_be_useful_when_i_felt_powerless": "Elle m’a donné une façon d’être utile lorsque je me sentais impuissante",
+          "other": "Autre"
+        }
+      },
+      "strengths-forged": {
+        "prompt": "Cette protection a forgé de réelles capacités. Lequel de ces éléments a-t-il construit en vous ?",
+        "options": {
+          "deep_attunement_to_others": "Une profonde harmonisation avec les autres",
+          "ability_to_read_a_room_instantly": "Capacité à saisir instantanément l’atmosphère",
+          "reliability_follow_through": "Fiabilité / capacité à aller au bout",
+          "emotional_sensitivity": "Sensibilité émotionnelle",
+          "empathy": "Empathie",
+          "maturity_depth": "Maturité / profondeur",
+          "resilience": "Résilience",
+          "anticipation_foresight": "Anticipation / vision à long terme",
+          "ability_to_hold_complexity": "Capacité à gérer la complexité",
+          "capacity_to_show_up_for_others": "Capacité à être présente pour les autres",
+          "discipline": "Discipline",
+          "self_sufficiency": "Autosuffisance",
+          "inner_steadiness_under_pressure": "Stabilité intérieure sous pression",
+          "other": "Autre"
+        }
+      },
+      "strengths-keep": {
+        "prompt": "Lequel de ces éléments ne voudriez-vous pas perdre, même si la protection elle-même s’assouplit ?"
+      },
+      "jobs-done": {
+        "prompt": "Maintenant que votre vie a changé, quelles missions votre protection n’a-t-elle plus besoin d’assurer ?",
+        "options": {
+          "track_everyones_mood_for_safety_reasons": "Surveiller l’humeur de chacun pour rester en sécurité",
+          "anticipate_danger_that_isnt_there": "Anticiper un danger qui n'existe pas",
+          "earn_love_thats_already_given": "Mériter un amour qui m’est déjà donné",
+          "prevent_abandonment_that_isnt_coming": "Prévenir les abandons qui ne viennent pas",
+          "hold_the_family_together": "Maintenir la famille unie",
+          "protect_a_parent_who_is_no_longer_fragile_or_no_longer_here": "Protéger un parent qui n'est plus fragile (ou qui n'est plus là)",
+          "stay_small_so_others_can_be_big": "Me faire petite pour que les autres puissent prendre toute la place",
+          "be_useful_in_order_to_be_allowed_to_exist": "Être utile pour pouvoir exister",
+          "perform_okay_ness_when_im_not_okay": "Faire semblant d’aller bien lorsque ce n’est pas le cas",
+          "carry_weight_that_wasnt_mine_to_carry": "Porter un poids qui ne m’appartenait pas",
+          "other": "Autre"
+        }
+      },
+      "jobs-reflection": {
+        "prompt": "Qu'est-ce que ça fait de considérer que la protection continue de faire un travail que personne ne lui demande plus de faire ?"
+      },
+      "promotion": {
+        "prompt": "Si la protection était promue à un nouveau rôle, qui correspondrait à votre vie actuelle plutôt qu'à votre passé, lequel de ces éléments vous semblerait le mieux ?",
+        "options": {
+          "from_hyper_vigilance_to_discernment": "De l'hypervigilance au discernement",
+          "from_caretaking_everyone_to_caring_for_whats_actually_mine": "De prendre soin de tout le monde à prendre soin de ce qui m'appartient réellement",
+          "from_productivity_as_survival_to_creation_as_expression": "De la productivité comme survie à la création comme expression",
+          "from_perfectionism_to_craft": "Du perfectionnisme à l'artisanat",
+          "from_people_pleasing_to_genuine_generosity": "Du besoin de plaire à une générosité sincère",
+          "from_self_sufficiency_to_interdependence": "De l’autosuffisance à l’interdépendance",
+          "from_anticipating_danger_to_sensing_aliveness": "De l’anticipation du danger au sentiment de vitalité",
+          "from_holding_it_together_to_letting_things_move_through_me": "Du besoin de tout tenir à la capacité de laisser les émotions me traverser",
+          "from_earning_love_to_receiving_love": "De gagner l'amour à recevoir de l'amour",
+          "from_staying_small_to_taking_up_the_space_thats_mine": "De me faire petite à prendre la place qui est la mienne",
+          "other": "Autre"
+        }
+      },
+      "thank-protection": {
+        "prompt": "Écrivez une phrase à votre protection, non pas pour la rejeter, mais pour la remercier et actualiser son rôle.",
+        "placeholder": "Merci de me garder en sécurité. Vous pouvez maintenant..."
+      },
+      "identity-intro": {
+        "title": "Qui êtes-vous au-delà de cette protection ?",
+        "body": "Nous ne cherchons pas à forcer une réponse. Ne pas savoir n’est pas un problème : c’est une porte. Laissez-la ouverte quelque temps."
+      },
+      "quiet-protection": {
+        "prompt": "Pensez aux moments, même brefs, où la protection est devenue silencieuse. Dans ces moments-là, qu’est-ce qui est vrai chez vous ?",
+        "options": {
+          "im_slower": "Je suis plus lente",
+          "im_warmer": "Je suis plus chaleureuse",
+          "im_funnier": "Je suis plus drôle",
+          "im_quieter": "Je suis plus calme",
+          "im_more_sensual": "Je suis plus sensuelle",
+          "im_more_curious": "Je suis plus curieuse",
+          "im_more_playful": "Je suis plus joueuse",
+          "im_more_direct": "Je suis plus directe",
+          "im_more_affectionate": "Je suis plus affectueuse",
+          "im_more_spacious": "Je me sens plus ample intérieurement",
+          "im_more_present": "Je suis plus présente",
+          "im_more_honest": "Je suis plus honnête",
+          "i_notice_things_i_usually_miss": "Je remarque des choses qui me manquent habituellement",
+          "i_dont_know_im_not_sure_ive_felt_that": "Je ne sais pas, je ne suis pas sûr d'avoir ressenti ça",
+          "other": "Autre"
+        }
+      },
+      "quiet-moment-detail": {
+        "prompt": "Décrivez l’un de ces moments en détail. Où étiez-vous, avec qui, et que ressentiez-vous dans votre corps ?"
+      },
+      "never-tested": {
+        "prompt": "Lequel de ces éléments n’avez-vous jamais vraiment pu tester, car la protection a toujours fonctionné ?",
+        "options": {
+          "whether_id_actually_be_loved_if_i_werent_useful": "Savoir si je serais réellement aimée sans être utile",
+          "whether_id_be_safe_if_i_werent_perfect": "Savoir si je serais en sécurité sans être parfaite",
+          "whether_anyone_would_stay_if_i_were_difficult": "Si quelqu'un resterait si j'étais difficile",
+          "whether_i_could_rest_without_falling_apart": "Si je pourrais me reposer sans m'effondrer",
+          "whether_i_could_want_something_openly_without_losing_it": "Si je pouvais vouloir quelque chose ouvertement sans le perdre",
+          "whether_i_could_be_wrong_and_still_be_okay": "Si je peux me tromper et quand même aller bien",
+          "whether_i_could_disappoint_someone_and_survive_it": "Si je pourrais décevoir quelqu'un et y survivre",
+          "whether_i_could_be_slow_without_being_left_behind": "Savoir si je pourrais ralentir sans être laissée de côté",
+          "whether_i_could_be_soft_without_being_crushed": "Savoir si je pourrais être douce sans être écrasée",
+          "whether_i_could_need_without_being_a_burden": "Si je pourrais avoir besoin sans être un fardeau",
+          "whether_i_could_just_be_without_earning_it": "Si je pourrais simplement être sans le gagner",
+          "other": "Autre"
+        }
+      },
+      "scary-test": {
+        "prompt": "Choisissez ce qu’il vous fait le plus peur de mettre à l’épreuve. Pourquoi ?"
+      },
+      "outside-image": {
+        "prompt": "Quand vous imaginez votre version en dehors de la protection, laquelle est la plus honnête ?",
+        "options": {
+          "i_have_a_clear_vivid_image_of_her": "J'ai une image claire et vivante d'elle",
+          "i_have_a_vague_sense_but_i_cant_really_feel_her": "J'ai un vague sentiment mais je ne peux pas vraiment la sentir",
+          "i_have_an_image_but_i_suspect_its_still_a_performance": "J'ai une image mais je soupçonne que c'est toujours une performance",
+          "i_genuinely_dont_know_who_i_am_underneath": "Je ne sais vraiment pas qui je suis en dessous",
+          "im_afraid_theres_nothing_underneath": "J'ai peur qu'il n'y ait rien en dessous",
+          "ive_glimpsed_her_but_i_dont_trust_it_yet": "Je l'ai aperçue mais je n'y fais pas encore confiance",
+          "other": "Autre"
+        }
+      },
+      "not-knowing": {
+        "prompt": "Que ressentez-vous à l’idée de ne pas avoir besoin, pour l’instant, de savoir qui vous êtes au-delà de cette protection ?",
+        "options": {
+          "a_relief_ive_been_pressuring_myself_to_know": "Un soulagement : je me mettais la pression pour savoir",
+          "uncomfortable_but_okay": "Inconfortable mais ok",
+          "hard_i_want_an_answer": "Difficile, je veux une réponse",
+          "scary_i_feel_ungrounded_without_one": "Effrayant : sans réponse, je perds mes repères",
+          "i_want_to_explore_this_in_session": "J’aimerais explorer cela en séance",
+          "other": "Autre"
+        }
+      },
+      "small-evidence": {
+        "prompt": "Quelle est une petite chose, un sentiment, un moment, un aperçu, qui fait déjà allusion à qui vous pourriez être sous la protection ?"
+      },
+      "finding-out-fear": {
+        "prompt": "Qu’y a-t-il derrière la résistance à rencontrer cette version de vous-même ?",
+        "options": {
+          "im_afraid_shell_be_disappointing": "J'ai peur qu'elle soit décevante",
+          "im_afraid_shell_be_too_much": "J’ai peur qu’elle soit « trop »",
+          "im_afraid_she_wont_be_loved_the_same_way": "J'ai peur qu'elle ne soit pas aimée de la même manière",
+          "im_afraid_shell_outgrow_people_i_love": "J’ai peur qu’elle dépasse les personnes que j’aime",
+          "im_afraid_shell_be_selfish": "J'ai peur qu'elle soit égoïste",
+          "im_afraid_i_wont_recognize_her": "J'ai peur de ne pas la reconnaître",
+          "im_afraid_shell_make_me_grieve_who_ive_been": "J’ai peur qu’elle m’oblige à faire le deuil de celle que j’ai été",
+          "im_afraid_ill_have_to_change_my_life_in_ways_im_not_ready_for": "J’ai peur de devoir changer ma vie d’une manière à laquelle je ne suis pas prête",
+          "im_afraid_i_wont_be_able_to_go_back": "J'ai peur de ne pas pouvoir y retourner",
+          "im_afraid_shell_be_the_same_as_the_protected_one_and_ill_have_done_all": "J'ai peur qu'elle soit la même que la protégée et j'aurai fait tout ça pour rien",
+          "other": "Autre"
+        }
+      },
+      "grief": {
+        "prompt": "Quel deuil pourriez-vous avoir à faire si vous cessiez de faire fonctionner cette protection ? À qui ou à quoi diriez-vous au revoir ?"
+      },
+      "closing-recognition": {
+        "prompt": "Écrivez une phrase à la part de vous qui commence tout juste à s’éveiller. Pas une promesse. Pas un objectif. Une simple marque de reconnaissance.",
+        "placeholder": "Je vous vois. Prenez votre temps."
+      }
+    }
+  }
+}

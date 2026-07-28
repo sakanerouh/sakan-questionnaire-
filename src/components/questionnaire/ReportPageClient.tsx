@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Download, Loader2, Sparkles } from "lucide-react";
-import { archetypes } from "@/lib/archetypes";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Link } from "@/i18n/navigation";
+import type { AppLocale } from "@/i18n/routing";
 import {
   isGeneratedReport,
   type GeneratedReport,
@@ -37,12 +39,8 @@ function GeneratingReportPanel({
   generating: boolean;
   onRetry: () => void;
 }) {
-  const steps = [
-    "Reading your answers",
-    "Mapping protective roles",
-    "Writing deep sections",
-    "Preparing the integration plan",
-  ];
+  const t = useTranslations("reportUi");
+  const steps = t.raw("steps") as string[];
 
   return (
     <section className="mt-6 overflow-hidden rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8">
@@ -50,14 +48,13 @@ function GeneratingReportPanel({
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/58 px-4 py-2 text-sm font-semibold text-[#7C3C60]">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            Writing in progress
+            {t("writing")}
           </div>
           <h2 className="mt-5 text-3xl font-semibold text-[#352317]">
-            Your full report is being written.
+            {t("writingTitle")}
           </h2>
           <p className="mt-4 text-base leading-8 text-[#5d402d]">
-            This can take a little time because the report is generated from your exact
-            answers. Keep this page open and the finished report will appear here.
+            {t("writingBody")}
           </p>
           {error && (
             <p className="mt-4 rounded-[8px] border border-[#DDA8C8]/60 bg-white/60 p-4 text-sm font-semibold leading-6 text-[#A95888]">
@@ -90,7 +87,7 @@ function GeneratingReportPanel({
           disabled={generating}
           className="sakan-gradient mt-6 inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-semibold text-[#fffaf2] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Retry generation
+          {t("retry")}
         </button>
       )}
     </section>
@@ -98,6 +95,9 @@ function GeneratingReportPanel({
 }
 
 export function ReportPageClient({ id }: { id: string }) {
+  const locale = useLocale() as AppLocale;
+  const t = useTranslations("reportUi");
+  const roles = useTranslations("archetypes");
   const mountedRef = useRef(true);
   const [report, setReport] = useState<LoadedReport | null>(null);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
@@ -120,7 +120,7 @@ export function ReportPageClient({ id }: { id: string }) {
       }
 
       try {
-        const response = await fetch(`/api/report/${encodeURIComponent(id)}`, {
+        const response = await fetch(`/api/report/${encodeURIComponent(id)}?locale=${locale}`, {
           cache: "no-store",
         });
 
@@ -147,7 +147,7 @@ export function ReportPageClient({ id }: { id: string }) {
         }
       }
     },
-    [id],
+    [id, locale],
   );
 
   const generateReport = useCallback(async () => {
@@ -165,6 +165,8 @@ export function ReportPageClient({ id }: { id: string }) {
     try {
       const response = await fetch(`/api/report/${encodeURIComponent(id)}/generate`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
       });
       const data = (await response.json()) as {
         content?: GeneratedReport;
@@ -172,7 +174,7 @@ export function ReportPageClient({ id }: { id: string }) {
       };
 
       if (!response.ok || !data.content) {
-        throw new Error(data.error || "Report generation failed.");
+        throw new Error(t("generationError"));
       }
 
       const content = data.content;
@@ -199,7 +201,7 @@ export function ReportPageClient({ id }: { id: string }) {
         return;
       }
 
-      const message = error instanceof Error ? error.message : "Report generation failed.";
+      const message = error instanceof Error ? error.message : t("generationError");
 
       setReport((current) =>
         current
@@ -215,7 +217,7 @@ export function ReportPageClient({ id }: { id: string }) {
       setGenerationAttempted(true);
       void fetchReport({ quiet: true });
     }
-  }, [fetchReport, id]);
+  }, [fetchReport, id, locale, t]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -294,19 +296,19 @@ export function ReportPageClient({ id }: { id: string }) {
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-2xl flex-col items-center justify-center text-center">
           <Sparkles className="h-10 w-10 text-[#A95888]" aria-hidden />
           <h1 className="mt-6 text-4xl font-semibold">
-            {loading ? "Opening your report..." : "Report not found."}
+            {loading ? t("openingReport") : t("notFound")}
           </h1>
           <p className="mt-4 text-lg leading-8 text-[#6c4b37]">
             {loading
-              ? "We are checking this browser and your saved Supabase report."
-              : "Complete the questionnaire first, or check that Supabase is configured locally."}
+              ? t("checking")
+              : t("notFoundBody")}
           </p>
           {!loading && (
             <Link
               href="/questionnaire/start"
               className="sakan-gradient mt-8 inline-flex min-h-12 items-center justify-center rounded-full px-6 text-sm font-semibold text-[#fffaf2]"
             >
-              Begin the questionnaire
+              {t("begin")}
             </Link>
           )}
         </div>
@@ -314,8 +316,8 @@ export function ReportPageClient({ id }: { id: string }) {
     );
   }
 
-  const dominant = archetypes[report.result.dominant];
-  const secondary = archetypes[report.result.secondary];
+  const dominantName = roles(`${report.result.dominant}.name`);
+  const secondaryName = roles(`${report.result.secondary}.name`);
   const pdfAvailable = Boolean(generatedContent);
   const downloadPdf = async () => {
     if (!pdfAvailable || downloadingPdf) return;
@@ -330,12 +332,12 @@ export function ReportPageClient({ id }: { id: string }) {
         body: JSON.stringify({
           content: report.content,
           result: report.result,
+          locale,
         }),
       });
 
       if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(data?.error || "Could not create PDF.");
+        throw new Error(t("pdfError"));
       }
 
       const blob = await response.blob();
@@ -348,7 +350,7 @@ export function ReportPageClient({ id }: { id: string }) {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      setPdfError(error instanceof Error ? error.message : "Could not create PDF.");
+      setPdfError(error instanceof Error ? error.message : t("pdfError"));
     } finally {
       setDownloadingPdf(false);
     }
@@ -364,8 +366,10 @@ export function ReportPageClient({ id }: { id: string }) {
             className="inline-flex items-center gap-2 text-sm font-semibold text-[#6c4b37]"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Back to teaser
+            {t("back")}
           </Link>
+          <div className="flex items-center gap-3">
+          <LanguageSwitcher />
           <button
             type="button"
             onClick={downloadPdf}
@@ -373,8 +377,9 @@ export function ReportPageClient({ id }: { id: string }) {
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/50 px-5 text-sm font-semibold text-[#7C3C60] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Download className="h-4 w-4" aria-hidden />
-            {downloadingPdf ? "Preparing PDF..." : "Download PDF"}
+            {downloadingPdf ? t("preparingPdf") : t("downloadPdf")}
           </button>
+          </div>
         </div>
         {pdfError && (
           <p className="-mt-4 mb-6 text-right text-sm font-semibold text-[#A95888]">
@@ -384,17 +389,17 @@ export function ReportPageClient({ id }: { id: string }) {
 
         <section className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/45 p-6 text-[#fffaf2] shadow-[0_28px_80px_rgba(124,60,96,0.28)] sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#f8d7ea]">
-            SakanBody Audit Report
+            {t("reportEyebrow")}
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-6xl">
             {generatedContent
               ? normalizeProtectiveRoleCopy(generatedContent.reportTitle)
-              : dominant.name}
+              : dominantName}
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-[#f8ead7]">
             {generatedContent
               ? normalizeProtectiveRoleCopy(generatedContent.reportSubtitle)
-              : `${dominant.short} Your secondary protective role is ${secondary.name}, creating a nuanced blend of protection and becoming.`}
+              : t("fallbackSubtitle", { dominant: roles(`${report.result.dominant}.short`), secondary: secondaryName })}
           </p>
         </section>
 
@@ -412,9 +417,9 @@ export function ReportPageClient({ id }: { id: string }) {
 
         {!generatedContent && !unlocked && report.paymentStatus !== "local" && (
           <section className="mt-6 rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8">
-            <h2 className="text-2xl font-semibold text-[#352317]">Report locked</h2>
+            <h2 className="text-2xl font-semibold text-[#352317]">{t("lockedTitle")}</h2>
             <p className="mt-4 text-base leading-8 text-[#5d402d]">
-              Payment is still being confirmed. Refresh this page once checkout is complete.
+              {t("lockedBody")}
             </p>
           </section>
         )}
@@ -424,7 +429,7 @@ export function ReportPageClient({ id }: { id: string }) {
             <>
               <ReportSection
                 block={{
-                  title: "Opening Letter",
+                  title: t("openingLetter"),
                   body: normalizeProtectiveRoleCopy(generatedContent.openingLetter),
                 }}
               />
@@ -442,7 +447,7 @@ export function ReportPageClient({ id }: { id: string }) {
                   <div className="mt-5 grid gap-4 lg:grid-cols-2">
                     <div>
                       <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
-                        Reflection
+                        {t("reflection")}
                       </h3>
                       <ul className="mt-3 grid gap-3">
                         {block.reflectionPrompts.map((prompt) => (
@@ -457,7 +462,7 @@ export function ReportPageClient({ id }: { id: string }) {
                     </div>
                     <div>
                       <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
-                        Practices
+                        {t("practices")}
                       </h3>
                       <div className="mt-3 grid gap-3">
                         {block.practices.map((practice) => (
@@ -473,7 +478,7 @@ export function ReportPageClient({ id }: { id: string }) {
               ))}
               <section className="rounded-[8px] border border-[#e4cda9] bg-[#fffaf2]/78 p-6 shadow-[0_18px_55px_rgba(75,47,32,0.08)] sm:p-8">
                 <h2 className="text-2xl font-semibold text-[#352317]">
-                  Seven-Day Integration Plan
+                  {t("sevenDayPlan")}
                 </h2>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {generatedContent.sevenDayPlan.map((item) => (
@@ -482,7 +487,7 @@ export function ReportPageClient({ id }: { id: string }) {
                       className="rounded-[8px] border border-[#e4cda9] bg-white/58 p-5"
                     >
                       <p className="text-sm font-semibold text-[#7C3C60]">
-                        Day {item.day}: {normalizeProtectiveRoleCopy(item.title)}
+                        {t("day", { day: item.day })}: {normalizeProtectiveRoleCopy(item.title)}
                       </p>
                       <p className="mt-3 text-base leading-7 text-[#5d402d]">
                         {normalizeProtectiveRoleCopy(item.practice)}

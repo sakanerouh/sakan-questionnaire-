@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Answers, SakanResult } from "./schemas";
+import { migrateLegacyAnswers, QUESTIONNAIRE_STATE_VERSION } from "./questionnaireMigration";
 
 type QuestionnaireState = {
   sessionId: string;
@@ -17,11 +18,16 @@ type QuestionnaireState = {
   reset: () => void;
 };
 
+type PersistedQuestionnaireState = Pick<
+  QuestionnaireState,
+  "sessionId" | "email" | "answers" | "currentIndex" | "result"
+>;
+
 const createSessionId = () =>
   globalThis.crypto?.randomUUID?.() ?? `sakan-${Date.now()}`;
 
 export const useQuestionnaireStore = create<QuestionnaireState>()(
-  persist(
+  persist<QuestionnaireState, [], [], PersistedQuestionnaireState>(
     (set) => ({
       sessionId: createSessionId(),
       email: "",
@@ -43,6 +49,14 @@ export const useQuestionnaireStore = create<QuestionnaireState>()(
     }),
     {
       name: "sakanbody-audit-progress",
+      version: QUESTIONNAIRE_STATE_VERSION,
+      migrate: (persistedState) => {
+        const state = persistedState as PersistedQuestionnaireState | undefined;
+        return {
+          ...state,
+          answers: migrateLegacyAnswers(state?.answers ?? {}),
+        } as PersistedQuestionnaireState;
+      },
       partialize: (state) => ({
         sessionId: state.sessionId,
         email: state.email,

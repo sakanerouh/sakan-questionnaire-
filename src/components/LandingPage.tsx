@@ -16,75 +16,37 @@ import {
   Sparkles,
   Waves,
 } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
+import { Link } from "@/i18n/navigation";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-const storyBeats = [
-  {
-    eyebrow: "First, the surface story",
-    title: "Maybe you call it overthinking.",
-    body: "But the body may be doing something more intelligent: preparing, proving, pleasing, or disappearing before old discomfort returns.",
-    reveal: "The quiz starts where generic advice usually stops.",
-    previewTitle: "The Watcher",
-    score: "86%",
-    locks: ["Pressure scan", "Future rehearsal", "Safety planning"],
-    icon: Eye,
-    accent: "#A95888",
-  },
-  {
-    eyebrow: "Then, the protection appears",
-    title: "There is a reason your pattern repeats.",
-    body: "Each answer helps reveal the protection style underneath your reactions, the one that once kept something tender safe.",
-    reveal: "Protection is not the enemy. It is the doorway.",
-    previewTitle: "Protection Map",
-    score: "04",
-    locks: ["Childhood role", "Current trigger", "Body strategy"],
-    icon: Shield,
-    accent: "#7C3C60",
-  },
-  {
-    eyebrow: "Finally, the mirror opens",
-    title: "Your report names the pattern without making you small.",
-    body: "You receive a protective role, shadow clues, dream sabotage themes, and practices that feel personal enough to keep reading.",
-    reveal: "Curiosity becomes a map.",
-    previewTitle: "Full Report",
-    score: "15",
-    locks: ["Shadow themes", "Dream sabotage", "Practice path"],
-    icon: Sparkles,
-    accent: "#DDA8C8",
-  },
+type StoryBeatText = { eyebrow: string; title: string; body: string; reveal: string; previewTitle: string; locks: string[] };
+type CardText = { title: string; text: string };
+
+const storyMeta = [
+  { score: "86%", icon: Eye, accent: "#A95888" },
+  { score: "04", icon: Shield, accent: "#7C3C60" },
+  { score: "15", icon: Sparkles, accent: "#DDA8C8" },
 ];
 
-const protectiveRoleData = [
-  { role: "Watcher", score: 86 },
-  { role: "Striver", score: 64 },
-  { role: "Harmonizer", score: 72 },
-  { role: "Shield", score: 58 },
-];
+const useStoryBeats = () => {
+  const t = useTranslations("landing");
+  return useMemo(
+    () => (t.raw("storyBeats") as StoryBeatText[]).map((beat, index) => ({ ...beat, ...storyMeta[index] })),
+    [t],
+  );
+};
 
-const faqs = [
-  {
-    question: "How long does it take?",
-    answer: "Most people complete it in 10 to 15 minutes. It is reflective, but not endless.",
-  },
-  {
-    question: "Is this therapy?",
-    answer: "No. It is a self-reflection tool, not a diagnosis or a replacement for therapy, medical care, or crisis support.",
-  },
-  {
-    question: "What do I get after the questionnaire?",
-    answer: "A personalized report with your dominant protective role, secondary pattern, shadow themes, dream sabotage clues, and practices.",
-  },
-];
-
-function PrimaryCTA({ children = "Take the Questionnaire" }: { children?: React.ReactNode }) {
+function PrimaryCTA({ children }: { children?: React.ReactNode }) {
+  const t = useTranslations("landing");
   return (
     <Link
       href="/questionnaire/start"
       className="group sakan-gradient inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.28)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(124,60,96,0.34)] focus:outline-none focus:ring-2 focus:ring-[#DDA8C8] focus:ring-offset-2 focus:ring-offset-[#fbf7ef]"
     >
-      {children}
+      {children ?? t("primaryCta")}
       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden />
     </Link>
   );
@@ -113,6 +75,11 @@ function StoryVisual({
   stateRefs?: React.MutableRefObject<Array<HTMLDivElement | null>>;
   progressRef?: React.RefObject<HTMLDivElement | null>;
 }) {
+  const t = useTranslations("landing");
+  const storyBeats = useStoryBeats();
+  const roleNames = t.raw("roleChart") as string[];
+  const protectiveRoleData = roleNames.map((role, index) => ({ role, score: [86, 64, 72, 58][index] }));
+
   return (
     <div className="relative min-h-[34rem] overflow-hidden rounded-[8px] border border-[#ead5e2] bg-[#fffaf2]/88 p-5 shadow-[0_28px_90px_rgba(124,60,96,0.16)] backdrop-blur sm:p-7">
       <div className="absolute inset-0 sakan-gradient-soft opacity-80" />
@@ -152,7 +119,7 @@ function StoryVisual({
               <div className="flex items-start justify-between gap-4 border-b border-[#ead5e2] pb-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7C3C60]">
-                    Live mirror
+                    {t("liveMirror")}
                   </p>
                   <h2 className="mt-2 text-3xl font-semibold text-[#352317]">
                     {beat.previewTitle}
@@ -183,6 +150,7 @@ function StoryVisual({
 }
 
 function HeroScene() {
+  const t = useTranslations("landing");
   const heroRef = useRef<HTMLElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
@@ -244,21 +212,25 @@ function HeroScene() {
         className="absolute inset-x-0 top-12 -z-10 mx-auto h-[34rem] max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(221,168,200,0.5),rgba(169,88,136,0.17)_48%,transparent_70%)] blur-3xl"
       />
 
-      <nav className="mx-auto flex max-w-7xl items-center justify-between py-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 py-4">
         <Link href="/" className="text-base font-semibold tracking-[0.24em] text-[#7C3C60] sm:text-lg">
           SAKAN EROUH
         </Link>
-        <PrimaryCTA>Begin</PrimaryCTA>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitcher />
+          <div className="hidden min-[370px]:block">
+            <PrimaryCTA>{t("navBegin")}</PrimaryCTA>
+          </div>
+        </div>
       </nav>
 
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-10 py-10 lg:grid-cols-[0.95fr_1.05fr]">
         <div ref={copyRef}>
           <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] text-[#352317] sm:text-5xl lg:text-7xl">
-            What if your pattern is not the problem?
+            {t("heroTitle")}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6c4b37] sm:text-xl">
-            Scroll into the mirror. Notice the protection. Then take the questionnaire
-            to discover the protective role shaping the way you love, protect, heal, and become.
+            {t("heroBody")}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <PrimaryCTA />
@@ -267,7 +239,7 @@ function HeroScene() {
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/45 px-6 py-3 text-sm font-semibold text-[#7C3C60] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/75 focus:outline-none focus:ring-2 focus:ring-[#DDA8C8] focus:ring-offset-2 focus:ring-offset-[#fbf7ef]"
             >
               <ArrowDown className="h-4 w-4" aria-hidden />
-              Follow the Story
+              {t("followStory")}
             </a>
           </div>
         </div>
@@ -283,6 +255,7 @@ function HeroScene() {
 }
 
 function ScrollyStory() {
+  const storyBeats = useStoryBeats();
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
@@ -378,7 +351,7 @@ function ScrollyStory() {
     }, sectionRef);
 
     return () => context.revert();
-  }, []);
+  }, [storyBeats]);
 
   return (
     <section ref={sectionRef} id="story" className="relative px-5 py-10 sm:px-8 lg:px-12">
@@ -426,33 +399,30 @@ function ScrollyStory() {
   );
 }
 function CuriosityBridge() {
+  const t = useTranslations("landing");
+  const cards = t.raw("bridgeCards") as CardText[];
+  const icons = [Waves, HeartHandshake, Moon, CheckCircle2];
   return (
     <section className="px-5 py-16 sm:px-8 lg:px-12">
       <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/35 p-7 text-[#fffaf2] shadow-[0_30px_90px_rgba(124,60,96,0.28)] sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#f8d7ea]">
-            The question that changes the scroll
+            {t("bridgeEyebrow")}
           </p>
           <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-5xl">
-            Which part of you learned to keep watch?
+            {t("bridgeTitle")}
           </h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-[#f8ead7]">
-            The questionnaire is built like a conversation with that part. It asks
-            enough to create recognition, but not so much that you feel analyzed.
+            {t("bridgeBody")}
           </p>
           <div className="mt-8">
-            <PrimaryCTA>Find My Pattern</PrimaryCTA>
+            <PrimaryCTA>{t("findPattern")}</PrimaryCTA>
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {[
-            { icon: Waves, title: "Body pattern", text: "How your system reacts before your mind explains it." },
-            { icon: HeartHandshake, title: "Relationship logic", text: "What you do to stay loved, safe, useful, or unseen." },
-            { icon: Moon, title: "Shadow clue", text: "The aliveness that got exiled because it felt risky." },
-            { icon: CheckCircle2, title: "Practice path", text: "A next step that respects the protection instead of shaming it." },
-          ].map((item) => {
-            const Icon = item.icon;
+          {cards.map((item, index) => {
+            const Icon = icons[index];
 
             return (
               <div key={item.title} className="rounded-[8px] border border-[#ead5e2] bg-white/58 p-5 shadow-[0_18px_50px_rgba(124,60,96,0.08)]">
@@ -471,20 +441,21 @@ function CuriosityBridge() {
 }
 
 function FinalInvitation() {
+  const t = useTranslations("landing");
   return (
     <section className="px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
       <div className="mx-auto max-w-4xl text-center">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
-          Your mirror is waiting
+          {t("finalEyebrow")}
         </p>
         <h2 className="mt-5 text-4xl font-semibold leading-tight text-[#352317] sm:text-6xl">
-          You do not need another label. You need a pattern you can finally recognize.
+          {t("finalTitle")}
         </h2>
         <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#6c4b37]">
-          Start with one answer. The rest of the story opens from there.
+          {t("finalBody")}
         </p>
         <div className="mt-8">
-          <PrimaryCTA>Start the Questionnaire</PrimaryCTA>
+          <PrimaryCTA>{t("startQuestionnaire")}</PrimaryCTA>
         </div>
       </div>
     </section>
@@ -492,6 +463,8 @@ function FinalInvitation() {
 }
 
 function FAQ() {
+  const t = useTranslations("landing");
+  const faqs = t.raw("faqs") as Array<{ question: string; answer: string }>;
   return (
     <section className="px-5 pb-28 sm:px-8 lg:px-12">
       <Accordion.Root type="single" collapsible className="mx-auto max-w-3xl space-y-3">
@@ -518,13 +491,14 @@ function FAQ() {
 }
 
 function StickyCTA() {
+  const t = useTranslations("landing");
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#DDA8C8]/55 bg-[#fffaf2]/88 p-3 shadow-[0_-16px_40px_rgba(124,60,96,0.14)] backdrop-blur md:hidden">
       <Link
         href="/questionnaire/start"
         className="sakan-gradient flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-[#fffaf2]"
       >
-        Take the Questionnaire
+        {t("primaryCta")}
         <ArrowRight className="h-4 w-4" aria-hidden />
       </Link>
     </div>

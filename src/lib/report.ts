@@ -9,7 +9,7 @@ export type ReportBlock = {
 
 const selected = (answers: Answers, id: string): string[] => {
   const value = answers[id];
-  if (Array.isArray(value)) return value.filter((item) => item !== "Other");
+  if (Array.isArray(value)) return value.filter((item) => item !== "other");
   if (typeof value === "string" && value.trim()) return [value];
   return [];
 };

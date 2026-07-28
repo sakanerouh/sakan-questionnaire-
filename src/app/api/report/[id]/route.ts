@@ -3,6 +3,7 @@ import { z } from "zod";
 import { reportContentSchema } from "@/lib/generatedReport";
 import { resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { localeSchema } from "@/lib/schemas";
 
 const resultRowSchema = z.object({
   id: z.string(),
@@ -19,7 +20,7 @@ const resultRowSchema = z.object({
 });
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = getSupabaseAdmin();
@@ -32,10 +33,11 @@ export async function GET(
   }
 
   const { id } = await params;
+  const locale = localeSchema.catch("en").parse(new URL(request.url).searchParams.get("locale") ?? undefined);
   const { data: report, error: reportError } = await supabase
     .from("reports")
     .select(
-      "id, session_id, result_id, payment_status, content, content_source, generation_status, generated_at, generation_error",
+      "id, session_id, result_id, payment_status, content, localized_content, result_locale, content_source, generation_status, generated_at, generation_error",
     )
     .eq("id", id)
     .maybeSingle();
@@ -89,8 +91,13 @@ export async function GET(
     dreamSabotageThemes: resultData.dream_sabotage_themes,
     protectionThemes: resultData.protection_themes,
     completedAt: resultData.created_at,
+    resultLocale: locale,
   });
-  const content = reportContentSchema.safeParse(report.content);
+  const localizedContent = (report.localized_content && typeof report.localized_content === "object")
+    ? report.localized_content as Record<string, unknown>
+    : {};
+  const requestedContent = localizedContent[locale] ?? (report.result_locale === locale ? report.content : undefined);
+  const content = reportContentSchema.safeParse(requestedContent);
 
   return NextResponse.json({
     ok: true,
@@ -101,6 +108,8 @@ export async function GET(
       generationStatus: report.generation_status,
       generatedAt: report.generated_at,
       generationError: report.generation_error,
+      resultLocale: content.success ? locale : report.result_locale,
+      needsGeneration: !content.success,
       result,
       content: content.success ? content.data : null,
     },

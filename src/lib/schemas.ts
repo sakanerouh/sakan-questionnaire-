@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const localeSchema = z.enum(["en", "fr"]);
+
 export const answerValueSchema = z.union([
   z.string(),
   z.array(z.string()),
@@ -23,15 +25,18 @@ export const resultSchema = z.object({
   dreamSabotageThemes: z.array(z.string()),
   protectionThemes: z.array(z.string()),
   completedAt: z.string(),
+  resultLocale: localeSchema.default("en"),
 });
 
 export const sessionPayloadSchema = z.object({
   sessionId: z.string().min(1),
   email: z.string().email().optional().or(z.literal("")),
   answers: answersSchema,
+  locale: localeSchema.catch("en").default("en"),
   result: resultSchema.optional(),
   completed: z.boolean().optional(),
 });
 
 export type Answers = z.infer<typeof answersSchema>;
 export type SakanResult = z.infer<typeof resultSchema>;
+export type SupportedLocale = z.infer<typeof localeSchema>;

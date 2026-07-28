@@ -3,6 +3,7 @@ create extension if not exists pgcrypto;
 create table if not exists anonymous_sessions (
   id text primary key,
   email text,
+  locale text not null default 'en' check (locale in ('en', 'fr')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -11,6 +12,7 @@ create table if not exists questionnaire_responses (
   id uuid primary key default gen_random_uuid(),
   session_id text not null references anonymous_sessions(id) on delete cascade,
   answers jsonb not null default '{}',
+  locale text not null default 'en' check (locale in ('en', 'fr')),
   completed boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -51,6 +53,8 @@ create table if not exists reports (
   generation_status text not null default 'not_started',
   generated_at timestamptz,
   generation_error text,
+  result_locale text not null default 'en' check (result_locale in ('en', 'fr')),
+  localized_content jsonb not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -59,7 +63,15 @@ alter table reports
   add column if not exists content_source text not null default 'template',
   add column if not exists generation_status text not null default 'not_started',
   add column if not exists generated_at timestamptz,
-  add column if not exists generation_error text;
+  add column if not exists generation_error text,
+  add column if not exists result_locale text not null default 'en',
+  add column if not exists localized_content jsonb not null default '{}';
+
+alter table anonymous_sessions
+  add column if not exists locale text not null default 'en';
+
+alter table questionnaire_responses
+  add column if not exists locale text not null default 'en';
 
 alter table anonymous_sessions enable row level security;
 alter table questionnaire_responses enable row level security;
