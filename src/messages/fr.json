@@ -38,7 +38,7 @@
         "title": "Vous appelez peut-être cela trop réfléchir.",
         "body": "Mais votre corps fait peut-être quelque chose de plus subtil : il se prépare, fait ses preuves, cherche à plaire ou s’efface avant que l’ancien inconfort ne revienne.",
         "reveal": "Le questionnaire commence là où les conseils génériques s’arrêtent.",
-        "previewTitle": "La Vigie",
+        "previewTitle": "Vigile",
         "locks": [
           "Lecture de la pression",
           "Anticipation du futur",
@@ -71,10 +71,10 @@
       }
     ],
     "roleChart": [
-      "Vigie",
-      "Battante",
-      "Conciliatrice",
-      "Bouclier"
+      "Vigile",
+      "Perfectionniste",
+      "Harmoniste",
+      "Stoïque"
     ],
     "bridgeEyebrow": "La question qui change le regard",
     "bridgeTitle": "Quelle part de vous a appris à monter la garde ?",
@@ -119,7 +119,7 @@
   },
   "archetypes": {
     "anticipator": {
-      "name": "La Vigie",
+      "name": "Vigile",
       "short": "La sécurité par l’anticipation.",
       "coreFear": "être prise au dépourvu",
       "strategy": "anticiper",
@@ -135,7 +135,7 @@
       ]
     },
     "performer": {
-      "name": "La Battante",
+      "name": "Perfectionniste",
       "short": "La sécurité par l’accomplissement.",
       "coreFear": "ne pas être à la hauteur",
       "strategy": "accomplir",
@@ -151,7 +151,7 @@
       ]
     },
     "harmonizer": {
-      "name": "La Conciliatrice",
+      "name": "Harmoniste",
       "short": "La sécurité par le lien.",
       "coreFear": "le rejet",
       "strategy": "plaire et préserver le lien",
@@ -167,7 +167,7 @@
       ]
     },
     "quiter": {
-      "name": "Le Bouclier",
+      "name": "Stoïque",
       "short": "La sécurité par le retrait.",
       "coreFear": "être blessée ou échouer",
       "strategy": "se retirer et se protéger",
