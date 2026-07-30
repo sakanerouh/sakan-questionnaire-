@@ -30,6 +30,26 @@ export async function POST(request: Request) {
   const origin = request.headers.get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   const stripeSecret = process.env.STRIPE_SECRET_KEY;
   const priceId = process.env.STRIPE_PRICE_ID;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const isProduction = process.env.NODE_ENV === "production";
+  const demoUnlockEnabled =
+    process.env.NODE_ENV === "development" &&
+    process.env.ENABLE_DEMO_UNLOCK === "true";
+  const isCheckoutConfigurationMissing =
+    !stripeSecret || !priceId || (isProduction && !webhookSecret);
+  const isTestKeyInProduction =
+    isProduction && stripeSecret?.startsWith("sk_test_");
+
+  if (
+    isTestKeyInProduction ||
+    (isCheckoutConfigurationMissing && !demoUnlockEnabled)
+  ) {
+    return NextResponse.json(
+      { error: "Payment is temporarily unavailable." },
+      { status: 503 },
+    );
+  }
+
   const supabase = getSupabaseAdmin();
   const now = new Date().toISOString();
 
@@ -53,7 +73,7 @@ export async function POST(request: Request) {
     }
   }
 
-  if (!stripeSecret || !priceId) {
+  if (isCheckoutConfigurationMissing) {
     if (supabase) {
       const { error: paymentError } = await supabase.from("payments").insert({
         session_id: payload.sessionId,
