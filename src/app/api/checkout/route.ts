@@ -122,6 +122,7 @@ export async function POST(request: Request) {
   try {
     checkout = await stripe.checkout.sessions.create({
       mode: "payment",
+      allow_promotion_codes: true,
       customer_email: payload.email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}/${payload.locale}/report/${payload.reportId}?checkout=success`,
