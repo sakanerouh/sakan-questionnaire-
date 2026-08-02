@@ -1,9 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getSupabaseAdmin } = vi.hoisted(() => ({
+const { createCheckoutSession, getSupabaseAdmin } = vi.hoisted(() => ({
+  createCheckoutSession: vi.fn(),
   getSupabaseAdmin: vi.fn(),
 }));
 
+vi.mock("stripe", () => ({
+  default: class StripeMock {
+    checkout = { sessions: { create: createCheckoutSession } };
+  },
+}));
 vi.mock("@/lib/supabase/server", () => ({ getSupabaseAdmin }));
 vi.mock("@/lib/supabase/errors", () => ({
   databaseErrorMessage: vi.fn(),
@@ -33,6 +39,7 @@ function checkoutRequest() {
 
 describe("checkout configuration safety", () => {
   beforeEach(() => {
+    createCheckoutSession.mockReset();
     getSupabaseAdmin.mockReset();
     vi.stubEnv("STRIPE_SECRET_KEY", "");
     vi.stubEnv("STRIPE_PRICE_ID", "");
@@ -90,5 +97,25 @@ describe("checkout configuration safety", () => {
 
     expect(response.status).toBe(503);
     expect(getSupabaseAdmin).not.toHaveBeenCalled();
+  });
+
+  it("enables customer-entered promotion codes in Stripe Checkout", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("STRIPE_SECRET_KEY", "sk_test_example");
+    vi.stubEnv("STRIPE_PRICE_ID", "price_example");
+    getSupabaseAdmin.mockReturnValue(null);
+    createCheckoutSession.mockResolvedValue({
+      id: "cs_test_example",
+      url: "https://checkout.stripe.com/example",
+      amount_total: 2000,
+      currency: "usd",
+    });
+
+    const response = await POST(checkoutRequest());
+
+    expect(response.status).toBe(200);
+    expect(createCheckoutSession).toHaveBeenCalledWith(
+      expect.objectContaining({ allow_promotion_codes: true }),
+    );
   });
 });

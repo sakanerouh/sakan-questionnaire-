@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { checkoutGrantsReportAccess } from "@/lib/stripe/checkoutAccess";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -60,6 +61,7 @@ export async function POST(request: Request) {
   }
 
   const now = new Date().toISOString();
+  const grantsAccess = checkoutGrantsReportAccess(checkout);
   const { error: paymentError } = await supabase
     .from("payments")
     .update({
@@ -77,7 +79,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (checkout.payment_status === "paid") {
+  if (grantsAccess) {
     const { error: reportError } = await supabase
       .from("reports")
       .update({
