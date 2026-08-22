@@ -9,8 +9,8 @@
   },
   "metadata": {
     "home": {
-      "title": "Questionnaire sur votre rôle protecteur | Sakan eRouh",
-      "description": "Découvrez le rôle protecteur qui façonne votre manière d’aimer, de vous protéger, de guérir et de devenir vous-même."
+      "title": "SakanBody Audit | Comprendre vos schémas de protection",
+      "description": "Un auto-audit éclairé par le système nerveux pour comprendre votre rôle protecteur dominant, son origine et les prochaines étapes."
     },
     "questionnaire": {
       "title": "Questionnaire sur votre rôle protecteur | Sakan eRouh",
@@ -27,7 +27,7 @@
   },
   "landing": {
     "navBegin": "Commencer",
-    "primaryCta": "Faire le questionnaire",
+    "primaryCta": "Recevoir votre audit — 22 €",
     "heroTitle": "Et si votre schéma n’était pas le problème ?",
     "heroBody": "Entrez doucement dans ce miroir. Observez la protection, puis répondez au questionnaire pour découvrir le rôle protecteur qui façonne votre manière d’aimer, de vous protéger, de guérir et de devenir vous-même.",
     "followStory": "Suivre le récit",
@@ -102,6 +102,56 @@
     "finalTitle": "Vous n’avez pas besoin d’une étiquette de plus. Vous avez besoin d’un schéma que vous pouvez enfin reconnaître.",
     "finalBody": "Commencez par une seule réponse. La suite du récit s’ouvrira à partir de là.",
     "startQuestionnaire": "Commencer le questionnaire",
+    "navCta": "Commencer l’audit",
+    "heroEyebrow": "Un auto-audit éclairé par le système nerveux",
+    "heroTitle": "SakanBody Audit : découvrez le système protecteur derrière vos schémas.",
+    "heroSubtitle": "Ce n’est pas un programme de plus. C’est un retour à vous-même.",
+    "heroBody": "Un auto-audit puissant qui révèle votre rôle protecteur dominant, la manière dont il s’est formé et ce qu’il cherche à protéger depuis toujours.",
+    "detailsLabel": "Détails de l’audit",
+    "duration": "30–40 min",
+    "report": "Rapport d’audit personnalisé",
+    "languages": "English & Français",
+    "secure": "Paiement sécurisé. Accès immédiat.",
+    "heroImageAlt": "Portrait chaleureux de la praticienne SakanBody",
+    "heroQuote": "Ce n’est pas seulement un programme. C’est un retour à vous-même.",
+    "truthsEyebrow": "Trois vérités qui changent tout",
+    "truthsTitle": "Cet audit est plus qu’un rapport. C’est un tournant.",
+    "truths": [
+      {
+        "title": "Vous n’êtes pas votre système de protection.",
+        "body": "Vos schémas sont des stratégies intelligentes créées par votre corps pour vous garder en sécurité."
+      },
+      {
+        "title": "Comprendre ouvre la voie à la compassion.",
+        "body": "Lorsque vous voyez l’intention derrière vos schémas, vous pouvez cesser de vous combattre et revenir à vous-même."
+      },
+      {
+        "title": "L’adulte et l’enfant intérieur peuvent se retrouver.",
+        "body": "Reconstruisez la confiance, restaurez le lien et créez la sécurité dont votre enfant intérieur a toujours eu besoin."
+      }
+    ],
+    "receiveEyebrow": "Ce que vous recevrez",
+    "receiveTitle": "Clarté. Compassion. Une nouvelle relation avec vous-même.",
+    "receiveIntro": "Une carte personnalisée, éclairée par le système nerveux, pour comprendre ce qui se joue sous le schéma — sans honte ni diagnostic.",
+    "receiveItems": [
+      "Vos rôles protecteurs dominant et secondaire",
+      "Leur origine et ce qu’ils cherchent à protéger",
+      "Le coût de ces schémas dans votre vie aujourd’hui",
+      "Des éclairages personnalisés et des prochaines étapes douces"
+    ],
+    "stepsEyebrow": "Comment ça marche",
+    "steps": [
+      { "title": "Répondez", "body": "Parcourez un questionnaire guidé de 30 à 40 minutes." },
+      { "title": "Recevez", "body": "Recevez votre rapport SakanBody personnalisé." },
+      { "title": "Comprenez", "body": "Gagnez en clarté et choisissez votre prochaine étape alignée." }
+    ],
+    "testimonialQuote": "J’ai eu l’impression que quelqu’un avait enfin décodé mon corps pour moi. J’ai regardé mes schémas avec tellement de compassion.",
+    "testimonialAuthor": "S., Maroc",
+    "finalEyebrow": "Revenez à vous-même",
+    "finalTitle": "Vos schémas ont du sens. Comprenons pourquoi.",
+    "finalBody": "Rencontrez l’intelligence protectrice sous vos réactions et recevez une carte personnelle pour avancer avec plus de choix, de douceur et de confiance en vous.",
+    "pillars": ["Enraciné dans le somatique", "Éclairé par le système nerveux", "Holistique", "De la compassion pour vous"],
+    "disclaimer": "Le SakanBody Audit est un outil éducatif d’introspection. Il ne remplace ni un diagnostic, ni une thérapie, ni des soins médicaux ou une aide d’urgence.",
     "faqs": [
       {
         "question": "Combien de temps faut-il prévoir ?",

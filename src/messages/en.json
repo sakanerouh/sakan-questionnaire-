@@ -9,8 +9,8 @@
   },
   "metadata": {
     "home": {
-      "title": "Sakan eRouh Protective Role Questionnaire",
-      "description": "Discover the protective role shaping how you love, protect, heal, and become."
+      "title": "SakanBody Audit | Discover the Protection Behind Your Patterns",
+      "description": "A nervous-system-informed self-audit revealing your dominant protective role, how it formed, and gentle next steps."
     },
     "questionnaire": {
       "title": "Protective Role Questionnaire | Sakan eRouh",
@@ -27,7 +27,7 @@
   },
   "landing": {
     "navBegin": "Begin",
-    "primaryCta": "Take the Questionnaire",
+    "primaryCta": "Get Your Audit Now — €22",
     "heroTitle": "What if your pattern is not the problem?",
     "heroBody": "Scroll into the mirror. Notice the protection. Then take the questionnaire to discover the protective role shaping the way you love, protect, heal, and become.",
     "followStory": "Follow the Story",
@@ -73,6 +73,56 @@
     "finalTitle": "You do not need another label. You need a pattern you can finally recognize.",
     "finalBody": "Start with one answer. The rest of the story opens from there.",
     "startQuestionnaire": "Start the Questionnaire",
+    "navCta": "Begin the Audit",
+    "heroEyebrow": "A nervous system informed self-audit",
+    "heroTitle": "SakanBody Audit: Discover the protective system behind your patterns.",
+    "heroSubtitle": "This is not another program. It is a return to yourself.",
+    "heroBody": "A powerful self-audit that reveals your dominant protective role, how it formed, and what it has been trying to protect all along.",
+    "detailsLabel": "Audit details",
+    "duration": "30–40 min",
+    "report": "Personalized Audit Report",
+    "languages": "English & Français",
+    "secure": "Secure checkout. Instant access.",
+    "heroImageAlt": "A warm portrait of the SakanBody practitioner",
+    "heroQuote": "This is not just a program. It’s a return to yourself.",
+    "truthsEyebrow": "Three truths that change everything",
+    "truthsTitle": "This audit is more than a report. It’s a turning point.",
+    "truths": [
+      {
+        "title": "You are not your protection system.",
+        "body": "Your patterns are intelligent strategies your body created to keep you safe."
+      },
+      {
+        "title": "Understanding creates compassion.",
+        "body": "When you see the intention behind your patterns, you can stop fighting yourself and begin to come home."
+      },
+      {
+        "title": "The adult and inner child can reconnect.",
+        "body": "Rebuild trust, restore connection, and create the safety your inner child has always needed."
+      }
+    ],
+    "receiveEyebrow": "What you’ll receive",
+    "receiveTitle": "Clarity. Compassion. A new relationship with yourself.",
+    "receiveIntro": "A personalized, nervous-system-informed map that helps you understand what is happening beneath the pattern — without shame or diagnosis.",
+    "receiveItems": [
+      "Your dominant and secondary protective roles",
+      "How they were formed and what they protect",
+      "The cost of these patterns in your life today",
+      "Personalized insights and gentle next steps"
+    ],
+    "stepsEyebrow": "How it works",
+    "steps": [
+      { "title": "Answer", "body": "Move through a guided 30–40 minute questionnaire." },
+      { "title": "Receive", "body": "Get your personalized SakanBody Audit Report." },
+      { "title": "Understand", "body": "Gain clarity and choose your next aligned step." }
+    ],
+    "testimonialQuote": "It felt like someone finally decoded my body for me. I saw my patterns with so much compassion.",
+    "testimonialAuthor": "S., Morocco",
+    "finalEyebrow": "Come home to yourself",
+    "finalTitle": "Your patterns make sense. Let’s understand why.",
+    "finalBody": "Meet the protective intelligence beneath your reactions and receive a personal map for moving forward with more choice, softness, and self-trust.",
+    "pillars": ["Rooted in Somatics", "Nervous System Informed", "Holistic", "Compassion for You"],
+    "disclaimer": "The SakanBody Audit is an educational self-reflection tool. It is not a diagnosis, therapy, medical care, or crisis support.",
     "faqs": [
       {"question": "How long does it take?", "answer": "Most people complete it in 10 to 15 minutes. It is reflective, but not endless."},
       {"question": "Is this therapy?", "answer": "No. It is a self-reflection tool, not a diagnosis or a replacement for therapy, medical care, or crisis support."},
