@@ -1,520 +1,242 @@
 "use client";
 
-import * as Accordion from "@radix-ui/react-accordion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import {
-  ArrowDown,
   ArrowRight,
-  CheckCircle2,
-  ChevronDown,
-  Eye,
-  HeartHandshake,
+  Check,
+  ClipboardPenLine,
+  Compass,
+  FileText,
+  Globe2,
+  Heart,
+  Leaf,
   LockKeyhole,
-  Moon,
-  Shield,
+  Scale,
+  ShieldCheck,
   Sparkles,
-  Waves,
+  Sprout,
+  Timer,
+  UsersRound,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import styles from "./LandingPage.module.css";
 
-type StoryBeatText = { eyebrow: string; title: string; body: string; reveal: string; previewTitle: string; locks: string[] };
-type CardText = { title: string; text: string };
+type Truth = { title: string; body: string };
+type Step = { title: string; body: string };
 
-const storyMeta = [
-  { score: "86%", icon: Eye, accent: "#A95888" },
-  { score: "04", icon: Shield, accent: "#7C3C60" },
-  { score: "15", icon: Sparkles, accent: "#DDA8C8" },
-];
+const stepIcons = [ClipboardPenLine, FileText, Compass];
+const pillarIcons = [Sprout, ShieldCheck, Heart, Sparkles];
+const receiveIcons = [UsersRound, Sprout, Scale, Compass];
 
-const useStoryBeats = () => {
-  const t = useTranslations("landing");
-  return useMemo(
-    () => (t.raw("storyBeats") as StoryBeatText[]).map((beat, index) => ({ ...beat, ...storyMeta[index] })),
-    [t],
-  );
-};
+function TruthIllustration({ index }: { index: number }) {
+  if (index === 0) {
+    return (
+      <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
+        <path d="M100 40c17 13 35 15 48 17v43c0 35-22 57-48 70-26-13-48-35-48-70V57c13-2 31-4 48-17Z" />
+        <circle cx="100" cy="75" r="12" />
+        <path d="M76 124c3-20 13-31 24-31s21 11 24 31" />
+        <path d="M46 145c-10-7-18-18-20-31M154 145c10-7 18-18 20-31" className={styles.illustrationAccent} />
+      </svg>
+    );
+  }
 
-function PrimaryCTA({ children }: { children?: React.ReactNode }) {
-  const t = useTranslations("landing");
+  if (index === 1) {
+    return (
+      <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
+        <circle cx="101" cy="61" r="21" />
+        <path d="M70 156c2-40 10-70 31-70s29 30 31 70" />
+        <path d="M65 102c12 17 24 27 36 31 12-4 24-14 36-31" />
+        <path d="M90 118c-10 3-18 0-24-7M112 118c10 3 18 0 24-7" className={styles.illustrationAccent} />
+        <circle cx="152" cy="56" r="18" className={styles.illustrationSun} />
+      </svg>
+    );
+  }
+
   return (
-    <Link
-      href="/questionnaire/start"
-      className="group sakan-gradient inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.28)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(124,60,96,0.34)] focus:outline-none focus:ring-2 focus:ring-[#DDA8C8] focus:ring-offset-2 focus:ring-offset-[#fbf7ef]"
-    >
-      {children ?? t("primaryCta")}
-      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden />
+    <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
+      <circle cx="67" cy="72" r="17" />
+      <circle cx="133" cy="72" r="17" />
+      <path d="M38 154c2-36 11-61 29-61 16 0 27 18 33 43 6-25 17-43 33-43 18 0 27 25 29 61" />
+      <path d="M77 119c9 2 16 8 23 17 7-9 14-15 23-17" className={styles.illustrationAccent} />
+      <path d="M100 111c-15-15-31-4-31 9 0 13 17 24 31 34 14-10 31-21 31-34 0-13-16-24-31-9Z" />
+    </svg>
+  );
+}
+
+function AuditButton({ compact = false }: { compact?: boolean }) {
+  const t = useTranslations("landing");
+
+  return (
+    <Link href="/questionnaire/start" className={compact ? styles.compactCta : styles.primaryCta}>
+      <span>{compact ? t("navCta") : t("primaryCta")}</span>
+      <ArrowRight aria-hidden size={compact ? 16 : 18} strokeWidth={1.7} />
     </Link>
   );
 }
 
-function ChartFrame({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setMounted(true));
-
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  if (!mounted) {
-    return <div className="h-full w-full rounded-[8px] bg-[#f5e4ee]/70" />;
-  }
-
-  return children;
-}
-
-function StoryVisual({
-  stateRefs,
-  progressRef,
-}: {
-  stateRefs?: React.MutableRefObject<Array<HTMLDivElement | null>>;
-  progressRef?: React.RefObject<HTMLDivElement | null>;
-}) {
-  const t = useTranslations("landing");
-  const storyBeats = useStoryBeats();
-  const roleNames = t.raw("roleChart") as string[];
-  const protectiveRoleData = roleNames.map((role, index) => ({ role, score: [86, 64, 72, 58][index] }));
-
+function BrandMark() {
   return (
-    <div className="relative min-h-[34rem] overflow-hidden rounded-[8px] border border-[#ead5e2] bg-[#fffaf2]/88 p-5 shadow-[0_28px_90px_rgba(124,60,96,0.16)] backdrop-blur sm:p-7">
-      <div className="absolute inset-0 sakan-gradient-soft opacity-80" />
-      <div className="relative">
-        <div className="mb-6 overflow-hidden rounded-full bg-[#ead5e2]">
-          <div
-            ref={progressRef}
-            className="sakan-gradient h-2 origin-left rounded-full"
-            style={{ transform: "scaleX(0.33)" }}
-          />
-        </div>
-
-        <div className="h-56">
-          <ChartFrame>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={protectiveRoleData}>
-                <PolarGrid stroke="#e3cfe0" />
-                <PolarAngleAxis dataKey="role" tick={{ fill: "#6c4b37", fontSize: 11 }} />
-                <Radar dataKey="score" stroke="#7C3C60" fill="#A95888" fillOpacity={0.3} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </ChartFrame>
-        </div>
-
-        <div className="relative mt-5 min-h-64">
-          {storyBeats.map((beat, beatIndex) => (
-            <div
-              key={beat.previewTitle}
-              ref={(node) => {
-                if (stateRefs) {
-                  stateRefs.current[beatIndex] = node;
-                }
-              }}
-              className="absolute inset-0 rounded-[8px] border border-[#ead5e2] bg-white/72 p-4"
-              style={{ opacity: beatIndex === 0 ? 1 : 0 }}
-            >
-              <div className="flex items-start justify-between gap-4 border-b border-[#ead5e2] pb-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#7C3C60]">
-                    {t("liveMirror")}
-                  </p>
-                  <h2 className="mt-2 text-3xl font-semibold text-[#352317]">
-                    {beat.previewTitle}
-                  </h2>
-                </div>
-                <div className="sakan-gradient grid h-16 w-16 shrink-0 place-items-center rounded-full text-lg font-semibold text-[#fffaf2]">
-                  {beat.score}
-                </div>
-              </div>
-              <div className="mt-4 grid gap-3">
-                {beat.locks.map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center justify-between gap-4 rounded-[8px] bg-[#fffaf2]/78 p-3 text-sm font-semibold text-[#6c4b37]"
-                  >
-                    {item}
-                    <LockKeyhole className="h-4 w-4 shrink-0 text-[#A95888]" aria-hidden />
-                  </div>
-                ))}
-              </div>
-              <p className="mt-4 text-sm leading-6 text-[#7C3C60]">{beat.reveal}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function HeroScene() {
-  const t = useTranslations("landing");
-  const heroRef = useRef<HTMLElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || window.innerWidth < 1024) return;
-
-    const context = gsap.context(() => {
-      gsap.from(copyRef.current, {
-        autoAlpha: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        y: 28,
-      });
-      gsap.from(cardRef.current, {
-        autoAlpha: 0,
-        delay: 0.12,
-        duration: 1,
-        ease: "power3.out",
-        rotate: -2,
-        scale: 0.96,
-        y: 32,
-      });
-      gsap.to(glowRef.current, {
-        ease: "none",
-        scale: 1.12,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-        yPercent: 18,
-      });
-      gsap.to(cardRef.current, {
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-        yPercent: -8,
-      });
-    }, heroRef);
-
-    return () => context.revert();
-  }, []);
-
-  return (
-    <section ref={heroRef} className="relative isolate min-h-screen overflow-hidden px-5 py-6 sm:px-8 lg:px-12">
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,rgba(255,250,242,0.96),rgba(253,238,247,0.9)_45%,rgba(221,168,200,0.34))]" />
-      <div
-        ref={glowRef}
-        className="absolute inset-x-0 top-12 -z-10 mx-auto h-[34rem] max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(221,168,200,0.5),rgba(169,88,136,0.17)_48%,transparent_70%)] blur-3xl"
-      />
-
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 py-4">
-        <Link href="/" className="text-base font-semibold tracking-[0.24em] text-[#7C3C60] sm:text-lg">
-          SAKAN EROUH
-        </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <LanguageSwitcher />
-          <div className="hidden min-[370px]:block">
-            <PrimaryCTA>{t("navBegin")}</PrimaryCTA>
-          </div>
-        </div>
-      </nav>
-
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-10 py-10 lg:grid-cols-[0.95fr_1.05fr]">
-        <div ref={copyRef}>
-          <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] text-[#352317] sm:text-5xl lg:text-7xl">
-            {t("heroTitle")}
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6c4b37] sm:text-xl">
-            {t("heroBody")}
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <PrimaryCTA />
-            <a
-              href="#story"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/45 px-6 py-3 text-sm font-semibold text-[#7C3C60] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/75 focus:outline-none focus:ring-2 focus:ring-[#DDA8C8] focus:ring-offset-2 focus:ring-offset-[#fbf7ef]"
-            >
-              <ArrowDown className="h-4 w-4" aria-hidden />
-              {t("followStory")}
-            </a>
-          </div>
-        </div>
-
-        <div ref={cardRef} className="relative">
-          <div className="rounded-[8px] border border-[#ead5e2] bg-white/55 p-4 shadow-[0_30px_90px_rgba(124,60,96,0.18)] backdrop-blur-xl">
-            <StoryVisual />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ScrollyStory() {
-  const storyBeats = useStoryBeats();
-  const sectionRef = useRef<HTMLElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const visualRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const textRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const visualStateRefs = useRef<Array<HTMLDivElement | null>>([]);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    const context = gsap.context(() => {
-      const textPanels = textRefs.current.filter(Boolean);
-      const visualStates = visualStateRefs.current.filter(Boolean);
-
-      gsap.set(textPanels, { autoAlpha: 0, y: 44 });
-      gsap.set(textPanels[0], { autoAlpha: 1, y: 0 });
-      gsap.set(visualStates, { autoAlpha: 0, scale: 0.96, y: 22 });
-      gsap.set(visualStates[0], { autoAlpha: 1, scale: 1, y: 0 });
-      gsap.set(progressRef.current, { scaleX: 1 / storyBeats.length });
-
-      const timeline = gsap.timeline({
-        defaults: { ease: "power2.inOut" },
-        scrollTrigger: {
-          anticipatePin: 1,
-          end: () => `+=${storyBeats.length * 900}`,
-          pin: pinRef.current,
-          scrub: 0.85,
-          start: "top top",
-          trigger: sectionRef.current,
-        },
-      });
-
-      storyBeats.forEach((_, index) => {
-        const position = index;
-
-        timeline.to(
-          progressRef.current,
-          {
-            duration: 0.6,
-            scaleX: (index + 1) / storyBeats.length,
-          },
-          position,
-        );
-
-        timeline.to(
-          visualRef.current,
-          {
-            duration: 0.45,
-            rotate: index % 2 === 0 ? 0 : -1.4,
-            scale: index === storyBeats.length - 1 ? 1.03 : 1,
-          },
-          position,
-        );
-
-        if (index === 0) return;
-
-        timeline
-          .to(
-            textPanels[index - 1],
-            {
-              autoAlpha: 0,
-              duration: 0.32,
-              y: -36,
-            },
-            position,
-          )
-          .fromTo(
-            textPanels[index],
-            { autoAlpha: 0, y: 44 },
-            { autoAlpha: 1, duration: 0.42, y: 0 },
-            position + 0.12,
-          )
-          .to(
-            visualStates[index - 1],
-            {
-              autoAlpha: 0,
-              duration: 0.28,
-              scale: 0.96,
-              y: -18,
-            },
-            position,
-          )
-          .fromTo(
-            visualStates[index],
-            { autoAlpha: 0, scale: 1.04, y: 24 },
-            { autoAlpha: 1, duration: 0.42, scale: 1, y: 0 },
-            position + 0.12,
-          );
-      });
-    }, sectionRef);
-
-    return () => context.revert();
-  }, [storyBeats]);
-
-  return (
-    <section ref={sectionRef} id="story" className="relative px-5 py-10 sm:px-8 lg:px-12">
-      <div ref={pinRef} className="mx-auto grid min-h-screen max-w-7xl items-center gap-10 py-8 lg:grid-cols-[0.95fr_1.05fr]">
-        <div ref={visualRef}>
-          <StoryVisual stateRefs={visualStateRefs} progressRef={progressRef} />
-        </div>
-
-        <div className="relative lg:min-h-[34rem]">
-          {storyBeats.map((beat, index) => {
-            const Icon = beat.icon;
-
-            return (
-              <div
-                key={beat.title}
-                ref={(node) => {
-                  textRefs.current[index] = node;
-                }}
-                className="relative mb-6 flex min-h-[24rem] items-center lg:absolute lg:inset-0 lg:mb-0 lg:min-h-0"
-              >
-                <div className="max-w-xl">
-                  <div
-                    className="mb-6 grid h-14 w-14 place-items-center rounded-full text-[#fffaf2] shadow-[0_16px_40px_rgba(124,60,96,0.18)]"
-                    style={{ background: beat.accent }}
-                  >
-                    <Icon className="h-6 w-6" aria-hidden />
-                  </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
-                    0{index + 1} / {beat.eyebrow}
-                  </p>
-                  <h2 className="mt-4 text-4xl font-semibold leading-tight text-[#352317] sm:text-5xl">
-                    {beat.title}
-                  </h2>
-                  <p className="mt-5 text-lg leading-8 text-[#6c4b37]">{beat.body}</p>
-                  <p className="mt-6 rounded-[8px] border border-[#ead5e2] bg-white/58 p-4 text-base font-semibold leading-7 text-[#7C3C60]">
-                    {beat.reveal}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-function CuriosityBridge() {
-  const t = useTranslations("landing");
-  const cards = t.raw("bridgeCards") as CardText[];
-  const icons = [Waves, HeartHandshake, Moon, CheckCircle2];
-  return (
-    <section className="px-5 py-16 sm:px-8 lg:px-12">
-      <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/35 p-7 text-[#fffaf2] shadow-[0_30px_90px_rgba(124,60,96,0.28)] sm:p-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#f8d7ea]">
-            {t("bridgeEyebrow")}
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold leading-tight sm:text-5xl">
-            {t("bridgeTitle")}
-          </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#f8ead7]">
-            {t("bridgeBody")}
-          </p>
-          <div className="mt-8">
-            <PrimaryCTA>{t("findPattern")}</PrimaryCTA>
-          </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          {cards.map((item, index) => {
-            const Icon = icons[index];
-
-            return (
-              <div key={item.title} className="rounded-[8px] border border-[#ead5e2] bg-white/58 p-5 shadow-[0_18px_50px_rgba(124,60,96,0.08)]">
-                <div className="mb-5 grid h-11 w-11 place-items-center rounded-full bg-[#f5e4ee] text-[#7C3C60]">
-                  <Icon className="h-5 w-5" aria-hidden />
-                </div>
-                <h3 className="text-lg font-semibold text-[#352317]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#6c4b37]">{item.text}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FinalInvitation() {
-  const t = useTranslations("landing");
-  return (
-    <section className="px-5 py-16 sm:px-8 lg:px-12 lg:py-24">
-      <div className="mx-auto max-w-4xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
-          {t("finalEyebrow")}
-        </p>
-        <h2 className="mt-5 text-4xl font-semibold leading-tight text-[#352317] sm:text-6xl">
-          {t("finalTitle")}
-        </h2>
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-[#6c4b37]">
-          {t("finalBody")}
-        </p>
-        <div className="mt-8">
-          <PrimaryCTA>{t("startQuestionnaire")}</PrimaryCTA>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FAQ() {
-  const t = useTranslations("landing");
-  const faqs = t.raw("faqs") as Array<{ question: string; answer: string }>;
-  return (
-    <section className="px-5 pb-28 sm:px-8 lg:px-12">
-      <Accordion.Root type="single" collapsible className="mx-auto max-w-3xl space-y-3">
-        {faqs.map((faq, index) => (
-          <Accordion.Item
-            key={faq.question}
-            value={`item-${index}`}
-            className="rounded-[8px] border border-[#ead5e2] bg-white/55 px-5 shadow-[0_14px_45px_rgba(124,60,96,0.06)]"
-          >
-            <Accordion.Header>
-              <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 py-5 text-left text-base font-semibold text-[#352317]">
-                {faq.question}
-                <ChevronDown className="h-5 w-5 shrink-0 text-[#7C3C60] transition group-data-[state=open]:rotate-180" />
-              </Accordion.Trigger>
-            </Accordion.Header>
-            <Accordion.Content className="overflow-hidden pb-5 text-sm leading-7 text-[#6c4b37] data-[state=closed]:animate-none">
-              {faq.answer}
-            </Accordion.Content>
-          </Accordion.Item>
-        ))}
-      </Accordion.Root>
-    </section>
-  );
-}
-
-function StickyCTA() {
-  const t = useTranslations("landing");
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#DDA8C8]/55 bg-[#fffaf2]/88 p-3 shadow-[0_-16px_40px_rgba(124,60,96,0.14)] backdrop-blur md:hidden">
-      <Link
-        href="/questionnaire/start"
-        className="sakan-gradient flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-[#fffaf2]"
-      >
-        {t("primaryCta")}
-        <ArrowRight className="h-4 w-4" aria-hidden />
-      </Link>
-    </div>
+    <Link href="/" className={styles.brand} aria-label="Sakan eRouh home">
+      <span className={styles.brandIcon} aria-hidden>
+        <Leaf size={16} strokeWidth={1.5} />
+      </span>
+      <span>
+        SAKAN <i>e</i>ROUH
+      </span>
+    </Link>
   );
 }
 
 export function LandingPage() {
+  const t = useTranslations("landing");
+  const truths = t.raw("truths") as Truth[];
+  const steps = t.raw("steps") as Step[];
+  const receive = t.raw("receiveItems") as string[];
+  const pillars = t.raw("pillars") as string[];
+
   return (
-    <main className="relative overflow-hidden pb-20 md:pb-0">
-      <div className="grain" />
-      <HeroScene />
-      <ScrollyStory />
-      <CuriosityBridge />
-      <FinalInvitation />
-      <FAQ />
-      <StickyCTA />
+    <main className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <BrandMark />
+          <div className={styles.headerActions}>
+            <LanguageSwitcher theme="olive" />
+            <AuditButton compact />
+          </div>
+        </div>
+      </header>
+
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>{t("heroEyebrow")}</p>
+          <h1>{t("heroTitle")}</h1>
+          <p className={styles.heroSubtitle}>{t("heroSubtitle")}</p>
+          <p className={styles.heroBody}>{t("heroBody")}</p>
+
+          <div className={styles.meta} aria-label={t("detailsLabel")}>
+            <span><Timer aria-hidden size={19} />{t("duration")}</span>
+            <span><FileText aria-hidden size={19} />{t("report")}</span>
+            <span><Globe2 aria-hidden size={19} />{t("languages")}</span>
+          </div>
+
+          <div className={styles.heroAction}>
+            <AuditButton />
+            <p><LockKeyhole aria-hidden size={14} />{t("secure")}</p>
+          </div>
+        </div>
+
+        <div className={styles.heroVisual}>
+          <div className={styles.photoArch}>
+            <Image
+              src="/sakanbody-portrait.jpeg"
+              alt={t("heroImageAlt")}
+              width={1600}
+              height={900}
+              priority
+              sizes="100vw"
+              className={styles.heroImage}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.truths} id="truths">
+        <div className={styles.sectionHeading}>
+          <p className={styles.eyebrow}>{t("truthsEyebrow")}</p>
+          <h2>{t("truthsTitle")}</h2>
+        </div>
+        <div className={styles.truthGrid}>
+          {truths.map((truth, index) => {
+            return (
+              <article className={styles.truthCard} key={truth.title}>
+                <div className={styles.truthIllustration}>
+                  <div className={styles.truthHalo} />
+                  <TruthIllustration index={index} />
+                  <Leaf className={styles.truthLeaf} aria-hidden size={34} strokeWidth={0.9} />
+                </div>
+                <div className={styles.truthCopy}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <div>
+                    <h3>{truth.title}</h3>
+                    <p>{truth.body}</p>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className={styles.valueSection}>
+        <div className={styles.valueCopy}>
+          <p className={styles.eyebrow}>{t("receiveEyebrow")}</p>
+          <h2>{t("receiveTitle")}</h2>
+          <p className={styles.valueIntro}>{t("receiveIntro")}</p>
+          <ul>
+            {receive.map((item, index) => {
+              const Icon = receiveIcons[index] ?? Check;
+              return <li key={item}><span><Icon aria-hidden size={17} /></span>{item}</li>;
+            })}
+          </ul>
+        </div>
+
+        <div className={styles.stepsPanel}>
+          <p className={styles.eyebrow}>{t("stepsEyebrow")}</p>
+          <div className={styles.steps}>
+            {steps.map((step, index) => {
+              const Icon = stepIcons[index];
+              return (
+                <article className={styles.step} key={step.title}>
+                  <div className={styles.stepIcon}><Icon aria-hidden size={29} strokeWidth={1.25} /></div>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.body}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.testimonialSection}>
+        <div className={styles.testimonial}>
+          <Heart aria-hidden size={25} strokeWidth={1.25} />
+          <blockquote>“{t("testimonialQuote")}”</blockquote>
+          <p>— {t("testimonialAuthor")}</p>
+        </div>
+      </section>
+
+      <section className={styles.finalCta}>
+        <div>
+          <p className={styles.eyebrow}>{t("finalEyebrow")}</p>
+          <h2>{t("finalTitle")}</h2>
+          <p>{t("finalBody")}</p>
+        </div>
+        <div className={styles.finalAction}>
+          <AuditButton />
+          <small><LockKeyhole aria-hidden size={13} />{t("secure")}</small>
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.pillars}>
+          {pillars.map((pillar, index) => {
+            const Icon = pillarIcons[index];
+            return <div key={pillar}><Icon aria-hidden size={24} strokeWidth={1.2} /><span>{pillar}</span></div>;
+          })}
+        </div>
+        <div className={styles.footerBottom}>
+          <BrandMark />
+          <p>{t("disclaimer")}</p>
+          <span>© {new Date().getFullYear()} Sakan eRouh</span>
+        </div>
+      </footer>
+
+      <div className={styles.mobileCta}>
+        <AuditButton />
+      </div>
     </main>
   );
 }
