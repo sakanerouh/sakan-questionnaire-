@@ -30,29 +30,29 @@ export function ResultTeaser({
       className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.1fr_0.9fr]"
     >
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#82542A]">
           {t("identified")}
         </p>
-        <div className="mt-5 rounded-[8px] border border-[#dfc59b] bg-[#fffaf2]/82 p-6 shadow-[0_28px_80px_rgba(75,47,32,0.12)] sm:p-8">
+        <div className="mt-5 rounded-[8px] border border-[#C6C7BD] bg-[#FBF9F8]/82 p-6 shadow-[0_28px_80px_rgba(40,48,28,0.1)] sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="sakan-gradient grid h-14 w-14 shrink-0 place-items-center rounded-full text-[#fffaf2]">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#3E4631] text-[#FBF9F8]">
               <Icon className="h-6 w-6" aria-hidden />
             </div>
             <div>
-              <h1 className="text-4xl font-semibold leading-tight text-[#352317] sm:text-5xl">
+              <h1 className="text-4xl font-semibold leading-tight text-[#28301C] sm:text-5xl">
                 {dominantName}
               </h1>
-              <p className="mt-3 text-lg leading-8 text-[#6c4b37]">{roles(`${result.dominant}.short`)}</p>
+              <p className="mt-3 text-lg leading-8 text-[#464840]">{roles(`${result.dominant}.short`)}</p>
             </div>
           </div>
           <div className="mt-8">
             <ArchetypeChart scores={result.scores} />
           </div>
-          <div className="sakan-gradient-soft mt-6 rounded-[8px] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
+          <div className="mt-6 rounded-[8px] bg-[#EFeded] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#3E4631]">
               {t("patternNote")}
             </p>
-            <p className="mt-3 text-base leading-8 text-[#5d402d]">{opening}</p>
+            <p className="mt-3 text-base leading-8 text-[#464840]">{opening}</p>
           </div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">

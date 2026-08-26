@@ -29,41 +29,11 @@ type Step = { title: string; body: string };
 const stepIcons = [ClipboardPenLine, FileText, Compass];
 const pillarIcons = [Sprout, ShieldCheck, Heart, Sparkles];
 const receiveIcons = [UsersRound, Sprout, Scale, Compass];
-
-function TruthIllustration({ index }: { index: number }) {
-  if (index === 0) {
-    return (
-      <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
-        <path d="M100 40c17 13 35 15 48 17v43c0 35-22 57-48 70-26-13-48-35-48-70V57c13-2 31-4 48-17Z" />
-        <circle cx="100" cy="75" r="12" />
-        <path d="M76 124c3-20 13-31 24-31s21 11 24 31" />
-        <path d="M46 145c-10-7-18-18-20-31M154 145c10-7 18-18 20-31" className={styles.illustrationAccent} />
-      </svg>
-    );
-  }
-
-  if (index === 1) {
-    return (
-      <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
-        <circle cx="101" cy="61" r="21" />
-        <path d="M70 156c2-40 10-70 31-70s29 30 31 70" />
-        <path d="M65 102c12 17 24 27 36 31 12-4 24-14 36-31" />
-        <path d="M90 118c-10 3-18 0-24-7M112 118c10 3 18 0 24-7" className={styles.illustrationAccent} />
-        <circle cx="152" cy="56" r="18" className={styles.illustrationSun} />
-      </svg>
-    );
-  }
-
-  return (
-    <svg className={styles.narrativeIcon} viewBox="0 0 200 210" aria-hidden>
-      <circle cx="67" cy="72" r="17" />
-      <circle cx="133" cy="72" r="17" />
-      <path d="M38 154c2-36 11-61 29-61 16 0 27 18 33 43 6-25 17-43 33-43 18 0 27 25 29 61" />
-      <path d="M77 119c9 2 16 8 23 17 7-9 14-15 23-17" className={styles.illustrationAccent} />
-      <path d="M100 111c-15-15-31-4-31 9 0 13 17 24 31 34 14-10 31-21 31-34 0-13-16-24-31-9Z" />
-    </svg>
-  );
-}
+const truthImages = [
+  "/truth-protection.jpeg",
+  "/truth-compassion.jpeg",
+  "/truth-reconnection.jpeg",
+];
 
 function AuditButton({ compact = false }: { compact?: boolean }) {
   const t = useTranslations("landing");
@@ -152,9 +122,13 @@ export function LandingPage() {
             return (
               <article className={styles.truthCard} key={truth.title}>
                 <div className={styles.truthIllustration}>
-                  <div className={styles.truthHalo} />
-                  <TruthIllustration index={index} />
-                  <Leaf className={styles.truthLeaf} aria-hidden size={34} strokeWidth={0.9} />
+                  <Image
+                    src={truthImages[index]}
+                    alt=""
+                    fill
+                    sizes="(max-width: 560px) 180px, 200px"
+                    className={styles.truthImage}
+                  />
                 </div>
                 <div className={styles.truthCopy}>
                   <span>{String(index + 1).padStart(2, "0")}</span>

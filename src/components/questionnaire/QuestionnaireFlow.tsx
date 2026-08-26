@@ -103,9 +103,9 @@ export function QuestionnaireFlow() {
         title: ui("analysisErrorTitle"),
         text: message,
         icon: "warning",
-        confirmButtonColor: "#7C3C60",
-        background: "#fffaf2",
-        color: "#352317",
+        confirmButtonColor: "#3E4631",
+        background: "#FBF9F8",
+        color: "#28301C",
       });
     }
   }, [answers, email, locale, router, sessionId, setResult, ui]);
@@ -116,9 +116,9 @@ export function QuestionnaireFlow() {
         title: ui("validationTitle"),
         text: ui("validationText"),
         icon: "info",
-        confirmButtonColor: "#7C3C60",
-        background: "#fffaf2",
-        color: "#352317",
+        confirmButtonColor: "#3E4631",
+        background: "#FBF9F8",
+        color: "#28301C",
       });
       return;
     }
@@ -196,16 +196,16 @@ export function QuestionnaireFlow() {
 
   if (analyzing) {
     return (
-      <main className="min-h-screen bg-[#fbf7ef] px-5 py-10 text-[#352317] sm:px-8">
+      <main className="min-h-screen bg-[#FBF9F8] px-5 py-10 text-[#28301C] sm:px-8">
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-2xl flex-col items-center justify-center text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-[#A95888]" aria-hidden />
-          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
+          <Loader2 className="h-10 w-10 animate-spin text-[#82542A]" aria-hidden />
+          <p className="mt-8 text-xs font-semibold uppercase tracking-[0.28em] text-[#82542A]">
             {ui("readingPattern")}
           </p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
             {ui("analyzingTitle")}
           </h1>
-          <p className="mt-5 text-lg leading-8 text-[#6c4b37]">
+          <p className="mt-5 text-lg leading-8 text-[#464840]">
             {ui("analyzingBody")}
           </p>
         </div>
@@ -214,7 +214,7 @@ export function QuestionnaireFlow() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#fbf7ef] px-5 py-6 text-[#352317] sm:px-8">
+    <main className="min-h-screen overflow-hidden bg-[#FBF9F8] px-5 py-6 text-[#28301C] sm:px-8">
       <div className="grain" />
       <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-6xl flex-col">
         <div className="flex items-start gap-4 pt-3">
@@ -225,7 +225,7 @@ export function QuestionnaireFlow() {
               label={t(`sections.${screen.sectionId}`)}
             />
           </div>
-          <LanguageSwitcher className="shrink-0" />
+          <LanguageSwitcher className="shrink-0" theme="olive" />
         </div>
 
         <div className="grid flex-1 place-items-center py-12">
@@ -258,23 +258,23 @@ export function QuestionnaireFlow() {
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#e4cda9] py-5">
+        <div className="flex items-center justify-between gap-3 border-t border-[#C6C7BD] py-5">
           <button
             type="button"
             onClick={back}
             aria-keyshortcuts="ArrowLeft PageUp"
             disabled={currentIndex === 0}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#DDA8C8]/70 bg-white/50 px-5 text-sm font-semibold text-[#7C3C60] transition hover:bg-white/80 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C6C7BD] bg-[#FBF9F8]/70 px-5 text-sm font-semibold text-[#3E4631] transition hover:bg-[#EAE8E7] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
             {common("back")}
           </button>
-          <p className="hidden text-sm text-[#7C3C60] sm:block">{ui("progressSaved")}</p>
+          <p className="hidden text-sm text-[#3E4631] sm:block">{ui("progressSaved")}</p>
           <button
             type="button"
             onClick={next}
             aria-keyshortcuts="Enter ArrowRight PageDown"
-            className="sakan-gradient inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.22)] transition hover:-translate-y-0.5"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#3E4631] px-6 text-sm font-semibold text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)] transition hover:-translate-y-0.5 hover:bg-[#28301C]"
           >
             {currentIndex >= questionnaireScreens.length - 1 ? ui("seeResult") : common("continue")}
             <ArrowRight className="h-4 w-4" aria-hidden />

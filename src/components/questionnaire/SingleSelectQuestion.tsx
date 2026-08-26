@@ -24,8 +24,8 @@ export function SingleSelectQuestion({
             onClick={() => onChange(option.id)}
             className={`rounded-[8px] border p-4 text-left text-base leading-7 transition ${
               selected
-                ? "sakan-gradient border-[#A95888] text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.2)]"
-                : "border-[#ead5e2] bg-white/58 text-[#5d402d] hover:border-[#DDA8C8] hover:bg-white/80"
+                ? "border-[#3E4631] bg-[#3E4631] text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)]"
+                : "border-[#C6C7BD] bg-[#FBF9F8]/72 text-[#464840] hover:border-[#ABB499] hover:bg-[#F5F3F3]"
             }`}
           >
             {getLabel(option.id)}

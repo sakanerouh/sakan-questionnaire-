@@ -38,14 +38,14 @@ export function QuestionScreen({
       transition={{ duration: 0.45 }}
       className="mx-auto max-w-3xl"
     >
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
+      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#82542A]">
         {section}
       </p>
-      <h1 className="mt-4 text-3xl font-semibold leading-tight text-[#352317] sm:text-4xl">
+      <h1 className="mt-4 text-3xl font-semibold leading-tight text-[#28301C] sm:text-4xl">
         {prompt}
       </h1>
       {helper && (
-        <p className="mt-4 text-base leading-7 text-[#7a5a41]">{helper}</p>
+        <p className="mt-4 text-base leading-7 text-[#464840]">{helper}</p>
       )}
       <div className="mt-8">
         {screen.questionType === "single" && (
@@ -79,13 +79,13 @@ export function QuestionScreen({
               value={otherValue ?? ""}
               onChange={(event) => onOtherChange(event.target.value)}
               placeholder={common("otherPlaceholder")}
-              className="min-h-28 w-full resize-y rounded-[8px] border border-[#ead5e2] bg-white/62 p-4 text-base leading-7 text-[#352317] outline-none transition placeholder:text-[#9b7a61] focus:border-[#A95888]"
+              className="min-h-28 w-full resize-y rounded-[8px] border border-[#C6C7BD] bg-[#FBF9F8]/72 p-4 text-base leading-7 text-[#28301C] outline-none transition placeholder:text-[#76786F] focus:border-[#82542A]"
             />
           </div>
         )}
       </div>
       {screen.optional && (
-        <p className="mt-4 text-sm text-[#8f6240]">{ui("optional")}</p>
+        <p className="mt-4 text-sm text-[#82542A]">{ui("optional")}</p>
       )}
     </motion.div>
   );

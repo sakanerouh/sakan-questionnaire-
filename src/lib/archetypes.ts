@@ -34,7 +34,7 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
     bodyStrategy: "scanning ahead, reading the room, running scenarios, and staying ready",
     promise: "If I anticipate, I stay safe.",
     currency: "anxiety, vigilance, and the energy spent preparing for what may never happen",
-    color: "#A95888",
+    color: "#82542A",
     icon: Activity,
     practices: [
       "60-second orienting practice: name five neutral things in the room before solving anything.",
@@ -53,7 +53,7 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
     bodyStrategy: "producing, improving, optimizing, and staying impressive",
     promise: "If I achieve, I stay worthy.",
     currency: "achievement, urgency, self-improvement, and rest that has to be earned",
-    color: "#DDA8C8",
+    color: "#ABB499",
     icon: Award,
     practices: [
       "Rest without earning practice: take ten minutes before completing the next useful thing.",
@@ -72,7 +72,7 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
     bodyStrategy: "peacemaking, caretaking, staying small, and sensing what others need",
     promise: "If I harmonize, I stay loved.",
     currency: "belonging, self-silencing, emotional labor, and the cost of not disappointing anyone",
-    color: "#7C3C60",
+    color: "#3E4631",
     icon: HeartHandshake,
     practices: [
       "One honest no: choose a low-stakes place to let a clean no exist.",
@@ -91,7 +91,7 @@ export const archetypes: Record<ArchetypeId, ArchetypeMeta> = {
     bodyStrategy: "withdrawing, sleeping, losing interest, slowing down, and avoiding pressure",
     promise: "If I withdraw, I preserve myself.",
     currency: "withdrawal, depletion, postponed desire, and the quiet grief of stopping at the threshold",
-    color: "#8d7a6d",
+    color: "#76786F",
     icon: Moon,
     practices: [
       "Tiny next step practice: choose one action that takes less than three minutes.",

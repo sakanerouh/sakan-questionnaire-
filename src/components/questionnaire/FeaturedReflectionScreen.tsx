@@ -33,34 +33,34 @@ export function FeaturedReflectionScreen({
       transition={{ duration: 0.45 }}
       className="mx-auto max-w-5xl"
     >
-      <p className="text-center text-xs font-semibold uppercase tracking-[0.28em] text-[#7C3C60]">
+      <p className="text-center text-xs font-semibold uppercase tracking-[0.28em] text-[#82542A]">
         {ui("featuredReflection")}
       </p>
-      <h1 className="mt-4 text-center text-4xl font-semibold leading-tight text-[#352317] sm:text-5xl">
+      <h1 className="mt-4 text-center text-4xl font-semibold leading-tight text-[#28301C] sm:text-5xl">
         {title}
       </h1>
-      <p className="mx-auto mt-5 max-w-2xl text-center text-lg leading-8 text-[#6c4b37]">
+      <p className="mx-auto mt-5 max-w-2xl text-center text-lg leading-8 text-[#464840]">
         {body}
       </p>
       <div className="mt-9 grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-stretch">
-        <div className="rounded-[8px] border border-[#e4cda9] bg-white/62 p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
+        <div className="rounded-[8px] border border-[#C6C7BD] bg-[#FBF9F8]/72 p-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#82542A]">
             {ui("childhoodProtection")}
           </p>
-          <ul className="mt-4 space-y-3 text-base leading-7 text-[#5d402d]">
+          <ul className="mt-4 space-y-3 text-base leading-7 text-[#464840]">
             {(childhood.length ? childhood : [ui("childhoodPending")]).map((item) => (
               <li key={item}>{childhood.length ? label(childhoodQuestionId, item) : item}</li>
             ))}
           </ul>
         </div>
-        <div className="grid place-items-center text-[#A95888]">
+        <div className="grid place-items-center text-[#82542A]">
           <ArrowRight className="hidden h-8 w-8 md:block" aria-hidden />
         </div>
-        <div className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/45 p-5 text-[#fffaf2]">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#f8d7ea]">
+        <div className="rounded-[8px] border border-[#ABB499]/45 bg-[#28301C] p-5 text-[#FBF9F8]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#DDE6C9]">
             {ui("sabotageNow")}
           </p>
-          <ul className="mt-4 space-y-3 text-base leading-7 text-[#f8ead7]">
+          <ul className="mt-4 space-y-3 text-base leading-7 text-[#E7E2D9]">
             {(sabotage.length ? sabotage : [ui("sabotagePending")]).map((item) => (
               <li key={item}>{sabotage.length ? label(sabotageQuestionId, item) : item}</li>
             ))}

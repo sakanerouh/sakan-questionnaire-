@@ -27,23 +27,23 @@ export function ArchetypeChart({
   }));
 
   if (!mounted) {
-    return <div className="h-72 rounded-[8px] bg-[#f5e4ee]" />;
+    return <div className="h-72 rounded-[8px] bg-[#EFeded]" />;
   }
 
   return (
     <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ left: -24, right: 12, top: 10, bottom: 0 }}>
-          <XAxis dataKey="name" tick={{ fill: "#6c4b37", fontSize: 12 }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="name" tick={{ fill: "#464840", fontSize: 12 }} axisLine={false} tickLine={false} />
           <YAxis hide domain={[0, 100]} />
           <Tooltip
             formatter={(value) => [`${value}/100`, resultUi("intensityScore")]}
-            cursor={{ fill: "rgba(221,168,200,0.14)" }}
+            cursor={{ fill: "rgba(171,180,153,0.18)" }}
             contentStyle={{
-              background: "#fffaf2",
-              border: "1px solid #ead5e2",
+              background: "#FBF9F8",
+              border: "1px solid #C6C7BD",
               borderRadius: 8,
-              color: "#352317",
+              color: "#28301C",
             }}
           />
           <Bar dataKey="value" radius={[8, 8, 0, 0]}>
