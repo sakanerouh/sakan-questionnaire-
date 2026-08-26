@@ -11,13 +11,13 @@ export function ProgressBar({
 
   return (
     <div className="w-full">
-      <div className="mb-3 flex items-center justify-between gap-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#7C3C60]">
+      <div className="mb-3 flex items-center justify-between gap-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#82542A]">
         <span>{label}</span>
         <span>{percent}%</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-[#f1d6e6]">
+      <div className="h-2 overflow-hidden rounded-full bg-[#E4E2E2]">
         <div
-          className="sakan-gradient h-full rounded-full transition-all duration-500"
+          className="h-full rounded-full bg-[#3E4631] transition-all duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>

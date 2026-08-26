@@ -29,13 +29,13 @@ export function MultiSelectQuestion({
             onClick={() => toggle(option.id)}
             className={`flex items-start gap-3 rounded-[8px] border p-4 text-left text-base leading-7 transition ${
               selected
-                ? "sakan-gradient border-[#A95888] text-[#fffaf2] shadow-[0_18px_45px_rgba(124,60,96,0.2)]"
-                : "border-[#ead5e2] bg-white/58 text-[#5d402d] hover:border-[#DDA8C8] hover:bg-white/80"
+                ? "border-[#3E4631] bg-[#3E4631] text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)]"
+                : "border-[#C6C7BD] bg-[#FBF9F8]/72 text-[#464840] hover:border-[#ABB499] hover:bg-[#F5F3F3]"
             }`}
           >
             <span
               className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded border ${
-                selected ? "border-[#fffaf2] bg-[#fffaf2] text-[#7C3C60]" : "border-[#DDA8C8]"
+                selected ? "border-[#FBF9F8] bg-[#FBF9F8] text-[#3E4631]" : "border-[#ABB499]"
               }`}
             >
               {selected && <Check className="h-3.5 w-3.5" aria-hidden />}

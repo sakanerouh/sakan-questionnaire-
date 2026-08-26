@@ -70,9 +70,9 @@ export function ResultPageClient() {
 
   if (!mounted || !result) {
     return (
-      <main className="min-h-screen bg-[#fbf7ef] px-5 py-10 text-[#352317] sm:px-8">
+      <main className="min-h-screen bg-[#FBF9F8] px-5 py-10 text-[#28301C] sm:px-8">
         <div className="mx-auto grid min-h-[calc(100vh-5rem)] place-items-center">
-          <p className="max-w-xl text-center text-lg leading-8 text-[#6c4b37]">
+          <p className="max-w-xl text-center text-lg leading-8 text-[#464840]">
             {analysisError ?? t("preparing")}
           </p>
         </div>
@@ -81,17 +81,17 @@ export function ResultPageClient() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fbf7ef] px-5 py-8 text-[#352317] sm:px-8">
+    <main className="min-h-screen bg-[#FBF9F8] px-5 py-8 text-[#28301C] sm:px-8">
       <div className="grain" />
       <div className="mx-auto mb-8 flex max-w-6xl items-center justify-between gap-4">
         <Link
           href="/questionnaire/start"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#6c4b37]"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[#464840]"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />
           {t("returnToAnswers")}
         </Link>
-        <LanguageSwitcher />
+        <LanguageSwitcher theme="olive" />
       </div>
       <ResultTeaser result={result} />
     </main>
