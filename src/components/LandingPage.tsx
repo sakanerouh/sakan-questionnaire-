@@ -93,6 +93,7 @@ export function LandingPage() {
 
           <div className={styles.heroAction}>
             <AuditButton />
+            <p className={styles.foundingPrice}>{t("foundingPrice")}</p>
             <p><LockKeyhole aria-hidden size={14} />{t("secure")}</p>
           </div>
         </div>
@@ -190,6 +191,7 @@ export function LandingPage() {
         </div>
         <div className={styles.finalAction}>
           <AuditButton />
+          <small className={styles.foundingPrice}>{t("foundingPrice")}</small>
           <small><LockKeyhole aria-hidden size={13} />{t("secure")}</small>
         </div>
       </section>
