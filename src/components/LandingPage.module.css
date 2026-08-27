@@ -55,6 +55,7 @@
 .meta svg { color: var(--primary-container); stroke-width: 1.35; }
 .heroAction { margin-top: 26px; }
 .heroAction p, .finalAction small { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 12px; color: var(--outline); font-size: 10px; }
+.heroAction .foundingPrice, .finalAction .foundingPrice { color: var(--secondary); font-size: 11px; font-weight: 700; }
 
 .heroVisual { position: absolute; inset: 0; z-index: 1; }
 .photoArch { position: absolute; inset: 0; overflow: hidden; background: var(--surface-low); }
@@ -104,6 +105,7 @@
 .finalCta .primaryCta:hover { background: var(--surface-highest); }
 .finalAction { flex: 0 0 auto; }
 .finalAction small { color: var(--on-primary-container); }
+.finalAction .foundingPrice { color: var(--secondary-fixed-dim); }
 
 .footer { border-top: 1px solid var(--outline-variant); background: var(--surface-high); }
 .pillars { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0 auto; padding: 31px 0; }
