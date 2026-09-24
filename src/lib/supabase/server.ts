@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createClient } from "@supabase/supabase-js";
 
 const hasRealValue = (value: string | undefined): value is string =>

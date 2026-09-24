@@ -7,6 +7,7 @@ import { archetypes } from "./archetypes";
 import { generatedReportSchema, type GeneratedReport } from "./generatedReport";
 import { localizedAnswersForReport, localizedArchetype } from "./localizedQuestionnaire";
 import { calculateResult } from "./scoring";
+import { bundledQuestionnaireSnapshot, type QuestionnaireSnapshot } from "./questionnaireSnapshot";
 import { reportLanguageInstruction } from "./reportLocale";
 import type { Answers, SakanResult, SupportedLocale } from "./schemas";
 
@@ -14,12 +15,14 @@ type ResultGenerationInput = {
   sessionId: string;
   answers: Answers;
   locale: SupportedLocale;
+  snapshot?: QuestionnaireSnapshot;
 };
 
 type ReportGenerationInput = {
   answers: Answers;
   result: SakanResult;
   locale: SupportedLocale;
+  snapshot?: QuestionnaireSnapshot;
 };
 
 const archetypeIdSchema = z.enum(["anticipator", "performer", "harmonizer", "quiter"]);
@@ -102,6 +105,7 @@ export async function generateAiResult({
   sessionId,
   answers,
   locale,
+  snapshot = bundledQuestionnaireSnapshot,
 }: ResultGenerationInput): Promise<SakanResult> {
   const openai = createOpenAIClient();
   const model = getReportModel();
@@ -119,7 +123,7 @@ export async function generateAiResult({
           task:
             "Analyze these questionnaire answers and decide the SakanBody protective role result.",
           protectiveRoles: archetypeReference,
-          answers: localizedAnswersForReport(answers, locale),
+          answers: localizedAnswersForReport(answers, locale, snapshot),
         }),
       },
     ],
@@ -137,7 +141,7 @@ export async function generateAiResult({
   }
 
   const result = aiResultSchema.parse(parsed);
-  const stableThemes = calculateResult(sessionId, answers, locale);
+  const stableThemes = calculateResult(sessionId, answers, locale, snapshot.screens);
   const secondary =
     result.secondary === result.dominant
       ? (Object.entries(result.scores)
@@ -167,6 +171,7 @@ export async function generateAiReport({
   answers,
   result,
   locale,
+  snapshot = bundledQuestionnaireSnapshot,
 }: ReportGenerationInput): Promise<GeneratedReport> {
   const openai = createOpenAIClient();
   const dominant = localizedArchetype(locale, result.dominant);
@@ -222,7 +227,7 @@ export async function generateAiReport({
             dreamSabotageThemes: result.dreamSabotageThemes,
             protectionThemes: result.protectionThemes,
           },
-          answers: localizedAnswersForReport(answers, locale),
+          answers: localizedAnswersForReport(answers, locale, snapshot),
         }),
       },
     ],

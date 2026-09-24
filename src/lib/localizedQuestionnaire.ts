@@ -2,6 +2,7 @@ import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
 import type { AppLocale } from "@/i18n/routing";
 import { questionnaireScreens } from "./questionnaire";
+import type { QuestionnaireSnapshot } from "./questionnaireSnapshot";
 import type { Answers } from "./schemas";
 
 const dictionaries = { en, fr } as const;
@@ -12,7 +13,11 @@ export function questionnaireOptionLabel(
   locale: AppLocale,
   questionId: string,
   optionId: string,
+  snapshot?: QuestionnaireSnapshot,
 ): string {
+  if (snapshot) {
+    return snapshot.translations[locale].screens[questionId]?.options?.[optionId] ?? optionId;
+  }
   const screens = getDictionary(locale).questionnaire.screens as Record<
     string,
     { options?: Record<string, string> }
@@ -20,9 +25,14 @@ export function questionnaireOptionLabel(
   return screens[questionId]?.options?.[optionId] ?? optionId;
 }
 
-export function localizedAnswersForReport(answers: Answers, locale: AppLocale) {
+export function localizedAnswersForReport(
+  answers: Answers,
+  locale: AppLocale,
+  snapshot?: QuestionnaireSnapshot,
+) {
+  const screens = snapshot?.screens ?? questionnaireScreens;
   return Object.fromEntries(
-    questionnaireScreens
+    screens
       .filter((screen) => screen.type === "question")
       .map((screen) => {
         const value = answers[screen.id];
@@ -43,7 +53,7 @@ export function localizedAnswersForReport(answers: Answers, locale: AppLocale) {
           {
             selections: ids.map((id) => ({
               id,
-              label: questionnaireOptionLabel(locale, screen.id, id),
+              label: questionnaireOptionLabel(locale, screen.id, id, snapshot),
             })),
             other:
               ids.includes("other") && typeof other === "string" ? other : undefined,
