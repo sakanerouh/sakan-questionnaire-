@@ -5,6 +5,7 @@ import { generatedReportSchema } from "@/lib/generatedReport";
 import { answersSchema, localeSchema, resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { migrateLegacyAnswers } from "@/lib/questionnaireMigration";
+import { getQuestionnaireSnapshotById } from "@/lib/questionnaireRepository";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 
@@ -26,6 +27,7 @@ const resultRowSchema = z.object({
 
 const answerRowSchema = z.object({
   answers: answersSchema,
+  questionnaire_version_id: z.string().uuid().nullable().optional(),
 });
 
 const toClientError = (error: unknown) =>
@@ -123,7 +125,7 @@ export async function POST(
 
   const { data: answerRow, error: answerError } = await supabase
     .from("questionnaire_responses")
-    .select("answers")
+    .select("answers, questionnaire_version_id")
     .eq("session_id", report.session_id)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -151,10 +153,14 @@ export async function POST(
     completedAt: resultData.created_at,
     resultLocale: locale,
   });
-  const answers = migrateLegacyAnswers(answerRowSchema.parse(answerRow).answers);
+  const parsedAnswerRow = answerRowSchema.parse(answerRow);
+  const answers = migrateLegacyAnswers(parsedAnswerRow.answers);
+  const snapshot = await getQuestionnaireSnapshotById(
+    parsedAnswerRow.questionnaire_version_id,
+  );
 
   try {
-    const content = await generateAiReport({ answers, result, locale });
+    const content = await generateAiReport({ answers, result, locale, snapshot });
     const generatedAt = new Date().toISOString();
 
     const primaryContent = generatedReportSchema.safeParse(report.content).success;

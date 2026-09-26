@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Answers } from "@/lib/schemas";
+import type { QuestionnaireTranslation } from "@/lib/questionnaireSnapshot";
 
 const asArray = (value: unknown) => (Array.isArray(value) ? value : []);
 
@@ -11,19 +12,20 @@ export function FeaturedReflectionScreen({
   childhoodQuestionId,
   sabotageQuestionId,
   answers,
+  translation,
 }: {
   title: string;
   body: string;
   childhoodQuestionId: string;
   sabotageQuestionId: string;
   answers: Answers;
+  translation: QuestionnaireTranslation;
 }) {
-  const t = useTranslations("questionnaire");
   const ui = useTranslations("questionnaireUi");
   const childhood = asArray(answers[childhoodQuestionId]);
   const sabotage = asArray(answers[sabotageQuestionId]);
   const label = (questionId: string, id: string) =>
-    t.has(`screens.${questionId}.options.${id}`) ? t(`screens.${questionId}.options.${id}`) : id;
+    translation.screens[questionId]?.options?.[id] ?? id;
 
   return (
     <motion.div

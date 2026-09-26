@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Libre_Caslon_Text, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -16,6 +17,12 @@ const libreCaslon = Libre_Caslon_Text({
   style: ["normal", "italic"],
 });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] });
+const notoSansArabic = localFont({
+  src: "../../../public/fonts/NotoSansArabic.ttf",
+  variable: "--font-noto-sans-arabic",
+  weight: "100 900",
+  style: "normal",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -36,10 +43,10 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} ${libreCaslon.variable} ${manrope.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${libreCaslon.variable} ${manrope.variable} ${notoSansArabic.variable} antialiased`}
       >
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>

@@ -8,7 +8,11 @@ import Swal from "sweetalert2";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
-import { questionnaireScreens, totalQuestionCount } from "@/lib/questionnaire";
+import {
+  bundledQuestionnaireSnapshot,
+  questionScreensFrom,
+  type QuestionnaireSnapshot,
+} from "@/lib/questionnaireSnapshot";
 import { useQuestionnaireStore } from "@/lib/questionnaireStore";
 import type { SakanResult } from "@/lib/schemas";
 import { ProgressBar } from "./ProgressBar";
@@ -27,11 +31,12 @@ const isTypingTarget = (target: EventTarget | null) => {
 export function QuestionnaireFlow() {
   const router = useRouter();
   const locale = useLocale() as AppLocale;
-  const t = useTranslations("questionnaire");
   const ui = useTranslations("questionnaireUi");
   const common = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [snapshot, setSnapshot] = useState<QuestionnaireSnapshot | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const {
     sessionId,
     email,
@@ -39,6 +44,7 @@ export function QuestionnaireFlow() {
     currentIndex,
     setAnswer,
     setCurrentIndex,
+    setQuestionnaireVersionId,
     setResult,
   } = useQuestionnaireStore();
 
@@ -48,28 +54,64 @@ export function QuestionnaireFlow() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  const screen = questionnaireScreens[currentIndex] ?? questionnaireScreens[0];
+  useEffect(() => {
+    if (!mounted) return;
+    const controller = new AbortController();
+    const params = new URLSearchParams({ sessionId, locale });
+    fetch(`/api/questionnaire/definition?${params}`, {
+      signal: controller.signal,
+      cache: "no-store",
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Questionnaire content could not be loaded.");
+        return response.json() as Promise<QuestionnaireSnapshot>;
+      })
+      .then((loaded) => {
+        setSnapshot(loaded);
+        setQuestionnaireVersionId(loaded.id);
+        setLoadError(null);
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        setLoadError(error instanceof Error ? error.message : "Questionnaire content could not be loaded.");
+      });
+    return () => controller.abort();
+  }, [locale, mounted, sessionId, setQuestionnaireVersionId]);
+
+  const activeSnapshot = snapshot ?? bundledQuestionnaireSnapshot;
+  const screens = activeSnapshot.screens;
+  const translation = activeSnapshot.translations[locale];
+  const screen = screens[currentIndex] ?? screens[0];
+  const totalQuestionCount = questionScreensFrom(screens).length;
   const questionNumber = useMemo(
     () =>
-      questionnaireScreens
+      screens
         .slice(0, currentIndex + 1)
         .filter((item) => item.type === "question").length,
-    [currentIndex],
+    [currentIndex, screens],
   );
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !snapshot) return;
 
     const timeout = window.setTimeout(() => {
       fetch("/api/questionnaire/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, email, answers, locale, completed: false }),
+        body: JSON.stringify({
+          sessionId,
+          email,
+          answers,
+          locale,
+          completed: false,
+          questionnaireVersionId: snapshot.id,
+          currentScreenId: screen.id,
+        }),
       }).catch(() => undefined);
     }, 900);
 
     return () => window.clearTimeout(timeout);
-  }, [answers, email, locale, mounted, sessionId]);
+  }, [answers, email, locale, mounted, screen.id, sessionId, snapshot]);
 
   const valueIsEmpty = useCallback(() => {
     if (screen.type !== "question" || screen.optional) return false;
@@ -85,7 +127,15 @@ export function QuestionnaireFlow() {
       const response = await fetch("/api/questionnaire/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, email, answers, locale, completed: true }),
+        body: JSON.stringify({
+          sessionId,
+          email,
+          answers,
+          locale,
+          completed: true,
+          questionnaireVersionId: activeSnapshot.id,
+          currentScreenId: screen.id,
+        }),
       });
       const data = (await response.json()) as { result?: SakanResult; error?: string };
 
@@ -108,7 +158,7 @@ export function QuestionnaireFlow() {
         color: "#28301C",
       });
     }
-  }, [answers, email, locale, router, sessionId, setResult, ui]);
+  }, [activeSnapshot.id, answers, email, locale, router, screen.id, sessionId, setResult, ui]);
 
   const next = useCallback(async () => {
     if (valueIsEmpty()) {
@@ -123,13 +173,13 @@ export function QuestionnaireFlow() {
       return;
     }
 
-    if (currentIndex >= questionnaireScreens.length - 1) {
+    if (currentIndex >= screens.length - 1) {
       await finish();
       return;
     }
 
     setCurrentIndex(currentIndex + 1);
-  }, [currentIndex, finish, setCurrentIndex, ui, valueIsEmpty]);
+  }, [currentIndex, finish, screens.length, setCurrentIndex, ui, valueIsEmpty]);
 
   const back = useCallback(() => {
     if (currentIndex > 0) {
@@ -194,6 +244,29 @@ export function QuestionnaireFlow() {
     return null;
   }
 
+  if (!snapshot) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-[#FBF9F8] px-5 text-[#28301C]">
+        <div className="text-center">
+          {loadError ? (
+            <>
+              <p className="text-lg font-semibold">Questionnaire unavailable</p>
+              <p className="mt-2 text-sm text-[#82542A]">{loadError}</p>
+              <button type="button" onClick={() => window.location.reload()} className="mt-5 rounded-full bg-[#28301C] px-5 py-3 text-sm font-semibold text-white">
+                Try again
+              </button>
+            </>
+          ) : (
+            <>
+              <Loader2 className="mx-auto h-9 w-9 animate-spin text-[#82542A]" aria-hidden />
+              <p className="mt-4 text-sm">Loading your questionnaire…</p>
+            </>
+          )}
+        </div>
+      </main>
+    );
+  }
+
   if (analyzing) {
     return (
       <main className="min-h-screen bg-[#FBF9F8] px-5 py-10 text-[#28301C] sm:px-8">
@@ -222,7 +295,7 @@ export function QuestionnaireFlow() {
             <ProgressBar
               current={Math.max(questionNumber, 1)}
               total={totalQuestionCount}
-              label={t(`sections.${screen.sectionId}`)}
+              label={translation.sections[screen.sectionId] ?? screen.sectionId}
             />
           </div>
           <LanguageSwitcher className="shrink-0" theme="olive" />
@@ -233,17 +306,18 @@ export function QuestionnaireFlow() {
             <motion.div key={screen.id} className="w-full">
               {screen.type === "intro" || screen.type === "insight" ? (
                 <SectionIntro
-                  eyebrow={t.has(`screens.${screen.id}.eyebrow`) ? t(`screens.${screen.id}.eyebrow`) : undefined}
-                  title={t(`screens.${screen.id}.title`)}
-                  body={t(`screens.${screen.id}.body`)}
+                  eyebrow={translation.screens[screen.id]?.eyebrow}
+                  title={translation.screens[screen.id]?.title ?? screen.id}
+                  body={translation.screens[screen.id]?.body ?? ""}
                 />
               ) : screen.type === "featured" ? (
                 <FeaturedReflectionScreen
-                  title={t(`screens.${screen.id}.title`)}
-                  body={t(`screens.${screen.id}.body`)}
+                  title={translation.screens[screen.id]?.title ?? screen.id}
+                  body={translation.screens[screen.id]?.body ?? ""}
                   childhoodQuestionId={screen.childhoodQuestionId}
                   sabotageQuestionId={screen.sabotageQuestionId}
                   answers={answers}
+                  translation={translation}
                 />
               ) : screen.type === "question" ? (
                 <QuestionScreen
@@ -252,6 +326,8 @@ export function QuestionnaireFlow() {
                   onChange={(value) => setAnswer(screen.id, value)}
                   otherValue={typeof answers[`${screen.id}__other`] === "string" ? answers[`${screen.id}__other`] as string : ""}
                   onOtherChange={(value) => setAnswer(`${screen.id}__other`, value)}
+                  copy={translation.screens[screen.id] ?? {}}
+                  section={translation.sections[screen.sectionId] ?? screen.sectionId}
                 />
               ) : null}
             </motion.div>
@@ -276,7 +352,7 @@ export function QuestionnaireFlow() {
             aria-keyshortcuts="Enter ArrowRight PageDown"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#3E4631] px-6 text-sm font-semibold text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)] transition hover:-translate-y-0.5 hover:bg-[#28301C]"
           >
-            {currentIndex >= questionnaireScreens.length - 1 ? ui("seeResult") : common("continue")}
+            {currentIndex >= screens.length - 1 ? ui("seeResult") : common("continue")}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
         </div>

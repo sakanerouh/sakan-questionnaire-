@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import PDFDocument from "pdfkit/js/pdfkit.standalone";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { z } from "zod";
 import { archetypeOrder, archetypes } from "@/lib/archetypes";
 import {
@@ -50,17 +52,55 @@ type PdfContent = {
   disclaimer: string;
 };
 
+const pdfLabels = {
+  en: {
+    scores: "Protective Role Scores",
+    dominant: "Dominant protective role",
+    secondary: "Secondary protective role",
+    day: "Day",
+  },
+  fr: {
+    scores: "Scores des rôles protecteurs",
+    dominant: "Rôle protecteur dominant",
+    secondary: "Rôle protecteur secondaire",
+    day: "Jour",
+  },
+  ar: {
+    scores: "درجات أدوار الحماية",
+    dominant: "دور الحماية الأساسي",
+    secondary: "دور الحماية الثانوي",
+    day: "اليوم",
+  },
+} as const;
+
+const pdfFont = (locale: SupportedLocale, bold = false) =>
+  locale === "ar" ? (bold ? "Arabic-Bold" : "Arabic") : bold ? "Helvetica-Bold" : "Helvetica";
+
+const localizedTextOptions = (
+  locale: SupportedLocale,
+  options: PDFKit.Mixins.TextOptions = {},
+): PDFKit.Mixins.TextOptions =>
+  locale === "ar"
+    ? { align: "right", features: ["rtla", "rtlm"], ...options }
+    : options;
+
 const legacyToPdfContent = (
   blocks: LegacyReportBlock[],
   result: PdfResult,
+  locale: SupportedLocale,
 ): PdfContent => {
-  const dominant = archetypes[result.dominant];
-  const secondary = archetypes[result.secondary];
+  const dominant = localizedArchetype(locale, result.dominant);
+  const secondary = localizedArchetype(locale, result.secondary);
   const [opening, ...rest] = blocks;
 
   return {
     reportTitle: dominant.name,
-    reportSubtitle: `${dominant.short} Your secondary protective role is ${secondary.name}.`,
+    reportSubtitle:
+      locale === "ar"
+        ? `${dominant.short} دور الحماية الثانوي لديك هو ${secondary.name}.`
+        : locale === "fr"
+          ? `${dominant.short} Votre rôle protecteur secondaire est ${secondary.name}.`
+          : `${dominant.short} Your secondary protective role is ${secondary.name}.`,
     openingLetter: opening?.body ?? "Your answers have been gathered into this SakanBody Audit report.",
     blocks: rest.map((block) => ({
       title: normalizeProtectiveRoleCopy(block.title),
@@ -70,14 +110,18 @@ const legacyToPdfContent = (
     })),
     sevenDayPlan: [],
     disclaimer:
-      "This report is a self-reflection tool. It is not medical, diagnostic, or therapeutic advice.",
+      locale === "ar"
+        ? "هذا التقرير أداة للتأمل الذاتي، وليس نصيحة طبية أو تشخيصية أو علاجية."
+        : locale === "fr"
+          ? "Ce rapport est un outil d’introspection. Il ne constitue pas un avis médical, diagnostique ou thérapeutique."
+          : "This report is a self-reflection tool. It is not medical, diagnostic, or therapeutic advice.",
   };
 };
 
-const toPdfContent = (content: ReportContent, result: PdfResult): PdfContent =>
+const toPdfContent = (content: ReportContent, result: PdfResult, locale: SupportedLocale): PdfContent =>
   generatedReportSchema.safeParse(content).success
     ? (content as GeneratedReport)
-    : legacyToPdfContent(z.array(legacyReportBlockSchema).parse(content), result);
+    : legacyToPdfContent(z.array(legacyReportBlockSchema).parse(content), result, locale);
 
 const collectPdf = (doc: PDFKit.PDFDocument) =>
   new Promise<Buffer>((resolve, reject) => {
@@ -88,16 +132,16 @@ const collectPdf = (doc: PDFKit.PDFDocument) =>
     doc.on("error", reject);
   });
 
-const writeHeading = (doc: PDFKit.PDFDocument, text: string) => {
+const writeHeading = (doc: PDFKit.PDFDocument, text: string, locale: SupportedLocale) => {
   doc.moveDown(0.8);
-  doc.fillColor("#7c3c60").font("Helvetica-Bold").fontSize(20);
-  doc.text(normalizeProtectiveRoleCopy(text), { lineGap: 3 });
+  doc.fillColor("#7c3c60").font(pdfFont(locale, true)).fontSize(20);
+  doc.text(normalizeProtectiveRoleCopy(text), localizedTextOptions(locale, { lineGap: 3 }));
   doc.moveDown(0.35);
 };
 
-const writeBody = (doc: PDFKit.PDFDocument, text: string, options: PDFKit.Mixins.TextOptions = {}) => {
-  doc.fillColor("#352317").font("Helvetica").fontSize(11.5);
-  doc.text(normalizeProtectiveRoleCopy(text), { lineGap: 4, ...options });
+const writeBody = (doc: PDFKit.PDFDocument, text: string, locale: SupportedLocale, options: PDFKit.Mixins.TextOptions = {}) => {
+  doc.fillColor("#352317").font(pdfFont(locale)).fontSize(11.5);
+  doc.text(normalizeProtectiveRoleCopy(text), localizedTextOptions(locale, { lineGap: 4, ...options }));
 };
 
 const ensureSpace = (doc: PDFKit.PDFDocument, height = 120) => {
@@ -106,20 +150,20 @@ const ensureSpace = (doc: PDFKit.PDFDocument, height = 120) => {
   }
 };
 
-const writeList = (doc: PDFKit.PDFDocument, items: string[]) => {
+const writeList = (doc: PDFKit.PDFDocument, items: string[], locale: SupportedLocale) => {
   for (const item of items) {
     ensureSpace(doc, 42);
-    doc.fillColor("#6c4b37").font("Helvetica").fontSize(10.5);
-    doc.text(`- ${normalizeProtectiveRoleCopy(item)}`, {
+    doc.fillColor("#6c4b37").font(pdfFont(locale)).fontSize(10.5);
+    doc.text(`• ${normalizeProtectiveRoleCopy(item)}`, localizedTextOptions(locale, {
       indent: 10,
       lineGap: 3,
-    });
+    }));
     doc.moveDown(0.25);
   }
 };
 
 const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult, locale: SupportedLocale) => {
-  writeHeading(doc, locale === "fr" ? "Scores des rôles protecteurs" : "Protective Role Scores");
+  writeHeading(doc, pdfLabels[locale].scores, locale);
 
   for (const id of archetypeOrder) {
     const meta = archetypes[id];
@@ -130,9 +174,14 @@ const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult, locale: Supp
     const barY = y + 22;
 
     ensureSpace(doc, 54);
-    doc.fillColor("#352317").font("Helvetica-Bold").fontSize(10.5);
-    doc.text(localizedArchetype(locale, id).name, x, y, { continued: true });
-    doc.text(`${score}/100`, { align: "right" });
+    doc.fillColor("#352317").font(pdfFont(locale, true)).fontSize(10.5);
+    if (locale === "ar") {
+      doc.text(localizedArchetype(locale, id).name, x + 100, y, localizedTextOptions(locale, { width: width - 100 }));
+      doc.font("Helvetica-Bold").text(`${score}/100`, x, y, { align: "left", width: 90 });
+    } else {
+      doc.text(localizedArchetype(locale, id).name, x, y, { continued: true });
+      doc.text(`${score}/100`, { align: "right" });
+    }
     doc.roundedRect(x, barY, width, 8, 4).fill("#eadbc5");
     doc.roundedRect(x, barY, (width * score) / 100, 8, 4).fill(meta.color);
     doc.y = barY + 22;
@@ -150,64 +199,77 @@ const buildPdf = async (content: PdfContent, result: PdfResult, locale: Supporte
   const reportUi = getDictionary(locale).reportUi;
   const pdf = collectPdf(doc);
 
+  if (locale === "ar") {
+    const arabicFont = readFileSync(path.join(process.cwd(), "public", "fonts", "NotoSansArabic.ttf"));
+    doc.registerFont("Arabic", arabicFont);
+    doc.registerFont("Arabic-Bold", arabicFont);
+  }
+
   doc.addPage({ margin: 0 });
   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#7c3c60");
-  doc.fillColor("#f8d7ea").font("Helvetica-Bold").fontSize(11);
-  doc.text(reportUi.reportEyebrow.toUpperCase(), 54, 76, { characterSpacing: 2 });
-  doc.fillColor("#fffaf2").font("Helvetica-Bold").fontSize(42);
+  doc.fillColor("#f8d7ea").font(pdfFont(locale, true)).fontSize(11);
+  doc.text(
+    locale === "ar" ? "تقرير تقييم سكن بادي" : reportUi.reportEyebrow.toUpperCase(),
+    54,
+    76,
+    localizedTextOptions(locale, { characterSpacing: locale === "ar" ? 0 : 2, width: doc.page.width - 108 }),
+  );
+  doc.fillColor("#fffaf2").font(pdfFont(locale, true)).fontSize(42);
   doc.text(normalizeProtectiveRoleCopy(content.reportTitle), 54, 142, {
+    ...localizedTextOptions(locale),
     lineGap: 8,
     width: doc.page.width - 108,
   });
-  doc.fillColor("#f8ead7").font("Helvetica").fontSize(16);
+  doc.fillColor("#f8ead7").font(pdfFont(locale)).fontSize(16);
   doc.text(normalizeProtectiveRoleCopy(content.reportSubtitle), 54, 300, {
+    ...localizedTextOptions(locale),
     lineGap: 7,
     width: doc.page.width - 108,
   });
-  doc.fillColor("#f8ead7").font("Helvetica").fontSize(13);
-  doc.text(`${locale === "fr" ? "Rôle protecteur dominant" : "Dominant protective role"}: ${dominant.name}`, 54, 706);
-  doc.text(`${locale === "fr" ? "Rôle protecteur secondaire" : "Secondary protective role"}: ${secondary.name}`, 54, 728);
+  doc.fillColor("#f8ead7").font(pdfFont(locale)).fontSize(13);
+  doc.text(`${pdfLabels[locale].dominant}: ${dominant.name}`, 54, 706, localizedTextOptions(locale, { width: doc.page.width - 108 }));
+  doc.text(`${pdfLabels[locale].secondary}: ${secondary.name}`, 54, 728, localizedTextOptions(locale, { width: doc.page.width - 108 }));
 
   doc.addPage();
-  writeHeading(doc, reportUi.openingLetter);
-  writeBody(doc, content.openingLetter);
+  writeHeading(doc, reportUi.openingLetter, locale);
+  writeBody(doc, content.openingLetter, locale);
   writeScoreRows(doc, result, locale);
 
   for (const block of content.blocks) {
     ensureSpace(doc, 180);
-    writeHeading(doc, block.title);
-    writeBody(doc, block.body);
+    writeHeading(doc, block.title, locale);
+    writeBody(doc, block.body, locale);
 
     if (block.reflectionPrompts.length) {
-      writeHeading(doc, reportUi.reflection);
-      writeList(doc, block.reflectionPrompts);
+      writeHeading(doc, reportUi.reflection, locale);
+      writeList(doc, block.reflectionPrompts, locale);
     }
 
     if (block.practices.length) {
-      writeHeading(doc, reportUi.practices);
-      writeList(doc, block.practices);
+      writeHeading(doc, reportUi.practices, locale);
+      writeList(doc, block.practices, locale);
     }
   }
 
   if (content.sevenDayPlan.length) {
     doc.addPage();
-    writeHeading(doc, reportUi.sevenDayPlan);
+    writeHeading(doc, reportUi.sevenDayPlan, locale);
 
     for (const item of content.sevenDayPlan) {
       ensureSpace(doc, 78);
-      doc.fillColor("#7c3c60").font("Helvetica-Bold").fontSize(12);
-      doc.text(`${locale === "fr" ? "Jour" : "Day"} ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`);
-      writeBody(doc, item.practice);
-      doc.fillColor("#6c4b37").font("Helvetica-Oblique").fontSize(10.5);
-      doc.text(normalizeProtectiveRoleCopy(item.reflection), { lineGap: 3 });
+      doc.fillColor("#7c3c60").font(pdfFont(locale, true)).fontSize(12);
+      doc.text(`${pdfLabels[locale].day} ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`, localizedTextOptions(locale));
+      writeBody(doc, item.practice, locale);
+      doc.fillColor("#6c4b37").font(locale === "ar" ? pdfFont(locale) : "Helvetica-Oblique").fontSize(10.5);
+      doc.text(normalizeProtectiveRoleCopy(item.reflection), localizedTextOptions(locale, { lineGap: 3 }));
       doc.moveDown(0.7);
     }
   }
 
   ensureSpace(doc, 80);
   doc.moveDown();
-  doc.fillColor("#6c4b37").font("Helvetica").fontSize(9.5);
-  doc.text(normalizeProtectiveRoleCopy(content.disclaimer), { lineGap: 3 });
+  doc.fillColor("#6c4b37").font(pdfFont(locale)).fontSize(9.5);
+  doc.text(normalizeProtectiveRoleCopy(content.disclaimer), localizedTextOptions(locale, { lineGap: 3 }));
   doc.end();
 
   return pdf;
@@ -282,7 +344,7 @@ export async function GET(
   }
 
   const result = resultRowSchema.parse(resultRow);
-  const pdf = await buildPdf(toPdfContent(content, result), result, locale);
+  const pdf = await buildPdf(toPdfContent(content, result, locale), result, locale);
 
   return pdfResponse(pdf, id);
 }
@@ -302,7 +364,7 @@ export async function POST(
   }
 
   const { content, result, locale } = parsed.data;
-  const pdf = await buildPdf(toPdfContent(content, result), result, locale);
+  const pdf = await buildPdf(toPdfContent(content, result, locale), result, locale);
 
   return pdfResponse(pdf, id);
 }

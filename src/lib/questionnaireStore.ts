@@ -10,17 +10,19 @@ type QuestionnaireState = {
   email: string;
   answers: Answers;
   currentIndex: number;
+  questionnaireVersionId?: string;
   result?: SakanResult;
   setEmail: (email: string) => void;
   setAnswer: (id: string, value: string | string[]) => void;
   setCurrentIndex: (index: number) => void;
+  setQuestionnaireVersionId: (id: string) => void;
   setResult: (result: SakanResult) => void;
   reset: () => void;
 };
 
 type PersistedQuestionnaireState = Pick<
   QuestionnaireState,
-  "sessionId" | "email" | "answers" | "currentIndex" | "result"
+  "sessionId" | "email" | "answers" | "currentIndex" | "questionnaireVersionId" | "result"
 >;
 
 const createSessionId = () =>
@@ -37,6 +39,7 @@ export const useQuestionnaireStore = create<QuestionnaireState>()(
       setAnswer: (id, value) =>
         set((state) => ({ answers: { ...state.answers, [id]: value } })),
       setCurrentIndex: (currentIndex) => set({ currentIndex }),
+      setQuestionnaireVersionId: (questionnaireVersionId) => set({ questionnaireVersionId }),
       setResult: (result) => set({ result }),
       reset: () =>
         set({
@@ -44,6 +47,7 @@ export const useQuestionnaireStore = create<QuestionnaireState>()(
           email: "",
           answers: {},
           currentIndex: 0,
+          questionnaireVersionId: undefined,
           result: undefined,
         }),
     }),
@@ -62,6 +66,7 @@ export const useQuestionnaireStore = create<QuestionnaireState>()(
         email: state.email,
         answers: state.answers,
         currentIndex: state.currentIndex,
+        questionnaireVersionId: state.questionnaireVersionId,
         result: state.result,
       }),
     },

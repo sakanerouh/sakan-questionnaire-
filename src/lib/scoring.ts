@@ -1,5 +1,5 @@
 import { archetypeOrder, emptyScores, type ArchetypeId } from "./archetypes";
-import { questionnaireScreens } from "./questionnaire";
+import { questionnaireScreens, type Screen } from "./questionnaire";
 import type { Answers, SakanResult } from "./schemas";
 import type { SupportedLocale } from "./schemas";
 
@@ -30,6 +30,7 @@ export function calculateResult(
   sessionId: string,
   answers: Answers,
   locale: SupportedLocale = "en",
+  screens: Screen[] = questionnaireScreens,
 ): SakanResult {
   const scores = emptyScores();
   const keyPatterns: string[] = [];
@@ -37,7 +38,7 @@ export function calculateResult(
   const dreamSabotageThemes: string[] = [];
   const protectionThemes: string[] = [];
 
-  for (const screen of questionnaireScreens) {
+  for (const screen of screens) {
     if (screen.type !== "question") continue;
 
     const values = asArray(answers[screen.id]);

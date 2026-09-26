@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import en from "../messages/en.json";
 import fr from "../messages/fr.json";
+import ar from "../messages/ar.json";
 import { preservePathAndSearch } from "../i18n/path";
 import { questionnaireScreens } from "./questionnaire";
 import { LEGACY_ANSWER_LABELS, migrateLegacyAnswers } from "./questionnaireMigration";
@@ -8,10 +9,12 @@ import { calculateResult } from "./scoring";
 import { localeSchema, sessionPayloadSchema } from "./schemas";
 
 describe("localized presentation", () => {
-  it("contains complete English and French landing content", () => {
-    expect(en.landing.heroTitle).toContain("pattern");
+  it("contains complete English, French, and Arabic landing content", () => {
+    expect(en.landing.heroTitle).toContain("SakanBody");
     expect(fr.landing.heroTitle).toContain("schéma");
     expect(en.landing.faqs).toHaveLength(fr.landing.faqs.length);
+    expect(ar.landing.heroTitle).toContain("SakanBody");
+    expect(en.landing.faqs).toHaveLength(ar.landing.faqs.length);
   });
 
   it("resolves both display languages from the same stable question and option IDs", () => {
@@ -21,6 +24,7 @@ describe("localized presentation", () => {
     expect(question.options?.[0].id).toBe("the_responsible_one");
     expect(en.questionnaire.screens["family-role"].options.the_responsible_one).toBe("The responsible one");
     expect(fr.questionnaire.screens["family-role"].options.the_responsible_one).not.toBe("The responsible one");
+    expect(ar.questionnaire.screens["family-role"].options.the_responsible_one).toBe("المسؤولة");
   });
 
   it("preserves route and query parameters during locale switching", () => {
@@ -70,6 +74,7 @@ describe("stable questionnaire answers", () => {
   it("produces identical scoring regardless of locale", () => {
     const answers = { "family-role": ["the_responsible_one", "the_peacemaker"] };
     expect(calculateResult("a", answers, "en").scores).toEqual(calculateResult("b", answers, "fr").scores);
+    expect(calculateResult("a", answers, "en").scores).toEqual(calculateResult("c", answers, "ar").scores);
   });
 });
 
@@ -97,6 +102,7 @@ describe("legacy answer migration", () => {
 describe("locale validation", () => {
   it("accepts supported locales and safely falls back for invalid legacy values", () => {
     expect(localeSchema.safeParse("fr").success).toBe(true);
+    expect(localeSchema.safeParse("ar").success).toBe(true);
     const payload = sessionPayloadSchema.parse({ sessionId: "s", answers: {}, locale: "xx" });
     expect(payload.locale).toBe("en");
   });

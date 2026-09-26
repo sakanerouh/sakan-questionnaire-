@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import type { Screen } from "@/lib/questionnaire";
+import type { QuestionnaireScreenCopy } from "@/lib/questionnaireSnapshot";
 import { MultiSelectQuestion } from "./MultiSelectQuestion";
 import { SingleSelectQuestion } from "./SingleSelectQuestion";
 import { TextReflectionQuestion } from "./TextReflectionQuestion";
@@ -11,23 +12,23 @@ export function QuestionScreen({
   onChange,
   otherValue,
   onOtherChange,
+  copy,
+  section,
 }: {
   screen: Extract<Screen, { type: "question" }>;
   value: string | string[] | undefined;
   onChange: (value: string | string[]) => void;
   otherValue?: string;
   onOtherChange: (value: string) => void;
+  copy: QuestionnaireScreenCopy;
+  section: string;
 }) {
-  const t = useTranslations("questionnaire");
   const ui = useTranslations("questionnaireUi");
   const common = useTranslations("common");
-  const section = t(`sections.${screen.sectionId}`);
-  const prompt = t(`screens.${screen.id}.prompt`);
-  const helper = t.has(`screens.${screen.id}.helper`) ? t(`screens.${screen.id}.helper`) : undefined;
-  const placeholder = t.has(`screens.${screen.id}.placeholder`)
-    ? t(`screens.${screen.id}.placeholder`)
-    : ui("defaultPlaceholder");
-  const getLabel = (id: string) => t(`screens.${screen.id}.options.${id}`);
+  const prompt = copy.prompt ?? screen.id;
+  const helper = copy.helper;
+  const placeholder = copy.placeholder || ui("defaultPlaceholder");
+  const getLabel = (id: string) => copy.options?.[id] ?? id;
   const hasOther = typeof value === "string" ? value === "other" : value?.includes("other");
 
   return (

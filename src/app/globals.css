@@ -41,6 +41,30 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+html[lang="ar"] body {
+  font-family: var(--font-noto-sans-arabic), Arial, sans-serif;
+}
+
+html[lang="ar"] .font-serif {
+  font-family: var(--font-noto-sans-arabic), Arial, sans-serif;
+}
+
+html[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+html[dir="rtl"] [dir="ltr"] .text-left {
+  text-align: left;
+}
+
+html[dir="rtl"] [dir="ltr"] .text-right {
+  text-align: right;
+}
+
 ::selection {
   background: rgba(221, 168, 200, 0.5);
   color: #352317;

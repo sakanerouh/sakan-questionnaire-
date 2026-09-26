@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const localeSchema = z.enum(["en", "fr"]);
+export const localeSchema = z.enum(["en", "fr", "ar"]);
 
 export const answerValueSchema = z.union([
   z.string(),
@@ -33,6 +33,8 @@ export const sessionPayloadSchema = z.object({
   email: z.string().email().optional().or(z.literal("")),
   answers: answersSchema,
   locale: localeSchema.catch("en").default("en"),
+  questionnaireVersionId: z.string().uuid().optional(),
+  currentScreenId: z.string().min(1).optional(),
   result: resultSchema.optional(),
   completed: z.boolean().optional(),
 });

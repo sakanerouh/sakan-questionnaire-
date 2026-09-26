@@ -19,7 +19,7 @@ vi.mock("@/lib/supabase/errors", () => ({
 vi.mock("@/lib/schemas", async () => {
   const { z } = await import("zod");
 
-  return { localeSchema: z.enum(["en", "fr"]) };
+  return { localeSchema: z.enum(["en", "fr", "ar"]) };
 });
 
 import { POST } from "./route";

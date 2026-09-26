@@ -378,7 +378,7 @@ export const LEGACY_ANSWER_LABELS: Record<string, Record<string, string>> = {
   }
 };
 
-export const QUESTIONNAIRE_STATE_VERSION = 2;
+export const QUESTIONNAIRE_STATE_VERSION = 3;
 
 export function migrateLegacyAnswers(answers: Answers): Answers {
   return Object.fromEntries(Object.entries(answers).map(([questionId, value]) => {
