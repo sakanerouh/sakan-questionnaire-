@@ -9,6 +9,15 @@ import type {
 } from "@/lib/questionnaireSnapshot";
 import type { QuestionnaireVersionSummary } from "@/lib/admin/questionnaire";
 
+type EditorLocale = "en" | "fr" | "ar";
+
+const editorLocales: EditorLocale[] = ["en", "fr", "ar"];
+const editorLocaleLabels: Record<EditorLocale, string> = {
+  en: "English",
+  fr: "Français",
+  ar: "العربية",
+};
+
 const clone = <T,>(value: T): T => structuredClone(value);
 
 const move = <T,>(items: T[], index: number, direction: -1 | 1) => {
@@ -36,7 +45,7 @@ export function QuestionnaireEditor({
   const [message, setMessage] = useState<string | null>(null);
   const [changeSummary, setChangeSummary] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewLocale, setPreviewLocale] = useState<"en" | "fr">("en");
+  const [previewLocale, setPreviewLocale] = useState<EditorLocale>("en");
   const [previewIndex, setPreviewIndex] = useState(0);
 
   useEffect(() => {
@@ -56,7 +65,8 @@ export function QuestionnaireEditor({
     return payload.screens.filter((screen) => {
       const en = payload.translations.en.screens[screen.id];
       const fr = payload.translations.fr.screens[screen.id];
-      return [screen.id, screen.sectionId, en?.prompt, en?.title, fr?.prompt, fr?.title]
+      const ar = payload.translations.ar.screens[screen.id];
+      return [screen.id, screen.sectionId, en?.prompt, en?.title, fr?.prompt, fr?.title, ar?.prompt, ar?.title]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(needle));
     });
@@ -80,7 +90,7 @@ export function QuestionnaireEditor({
   };
 
   const updateCopy = (
-    locale: "en" | "fr",
+    locale: EditorLocale,
     screenId: string,
     patch: Partial<QuestionnaireScreenCopy>,
   ) => {
@@ -95,7 +105,7 @@ export function QuestionnaireEditor({
   };
 
   const updateOptionLabel = (
-    locale: "en" | "fr",
+    locale: EditorLocale,
     screenId: string,
     optionId: string,
     value: string,
@@ -104,7 +114,7 @@ export function QuestionnaireEditor({
     updateCopy(locale, screenId, { options: { ...copy.options, [optionId]: value } });
   };
 
-  const updateSectionLabel = (locale: "en" | "fr", sectionId: string, value: string) => {
+  const updateSectionLabel = (locale: EditorLocale, sectionId: string, value: string) => {
     updatePayload((current) => {
       const next = clone(current);
       next.translations[locale].sections[sectionId] = value;
@@ -230,15 +240,16 @@ export function QuestionnaireEditor({
 
           {selected.type === "question" && <label className="flex items-center gap-3 rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-4 text-sm font-semibold"><input type="checkbox" checked={Boolean(selected.optional)} onChange={(event) => updatePayload((current) => ({ ...current, screens: current.screens.map((screen) => screen.id === selected.id && screen.type === "question" ? { ...screen, optional: event.target.checked || undefined } : screen) }))} />This question is optional</label>}
 
-          <div className="grid gap-5 xl:grid-cols-2">
-            {(["en", "fr"] as const).map((locale) => {
+          <div className="grid gap-5 xl:grid-cols-3">
+            {editorLocales.map((locale) => {
               const copy = payload.translations[locale].screens[selected.id] ?? {};
-              const field = (key: "eyebrow" | "title" | "body" | "prompt" | "helper" | "placeholder", label: string, rows = 2) => <label className="block text-xs font-semibold text-[#464840]">{label}<textarea rows={rows} value={copy[key] ?? ""} onChange={(event) => updateCopy(locale, selected.id, { [key]: event.target.value })} className="mt-1 w-full rounded-lg border border-[#C6C7BD] bg-white p-3 text-sm font-normal leading-6 text-[#28301C]" /></label>;
-              return <article key={locale} className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><h2 className="text-sm font-bold uppercase tracking-[0.18em] text-[#82542A]">{locale === "en" ? "English" : "Français"}</h2><div className="mt-4 space-y-4"><label className="block text-xs font-semibold text-[#464840]">Section label<input value={payload.translations[locale].sections[selected.sectionId] ?? ""} onChange={(event) => updateSectionLabel(locale, selected.sectionId, event.target.value)} className="mt-1 w-full rounded-lg border border-[#C6C7BD] bg-white p-3 text-sm font-normal text-[#28301C]" /></label>{selected.type === "question" ? <>{field("prompt", "Question prompt", 3)}{field("helper", "Helper text")}{selected.questionType === "text" && field("placeholder", "Placeholder")}</> : <>{field("eyebrow", "Eyebrow")}{field("title", "Title", 2)}{field("body", "Body", 5)}</>}</div></article>;
+              const direction = locale === "ar" ? "rtl" : "ltr";
+              const field = (key: "eyebrow" | "title" | "body" | "prompt" | "helper" | "placeholder", label: string, rows = 2) => <label className="block text-xs font-semibold text-[#464840]">{label}<textarea dir={direction} rows={rows} value={copy[key] ?? ""} onChange={(event) => updateCopy(locale, selected.id, { [key]: event.target.value })} className="mt-1 w-full rounded-lg border border-[#C6C7BD] bg-white p-3 text-sm font-normal leading-6 text-[#28301C]" /></label>;
+              return <article key={locale} className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><h2 className="text-sm font-bold uppercase tracking-[0.18em] text-[#82542A]">{editorLocaleLabels[locale]}</h2><div className="mt-4 space-y-4"><label className="block text-xs font-semibold text-[#464840]">Section label<input dir={direction} value={payload.translations[locale].sections[selected.sectionId] ?? ""} onChange={(event) => updateSectionLabel(locale, selected.sectionId, event.target.value)} className="mt-1 w-full rounded-lg border border-[#C6C7BD] bg-white p-3 text-sm font-normal text-[#28301C]" /></label>{selected.type === "question" ? <>{field("prompt", "Question prompt", 3)}{field("helper", "Helper text")}{selected.questionType === "text" && field("placeholder", "Placeholder")}</> : <>{field("eyebrow", "Eyebrow")}{field("title", "Title", 2)}{field("body", "Body", 5)}</>}</div></article>;
             })}
           </div>
 
-          {selected.type === "question" && selected.options?.length ? <section className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><h2 className="font-serif text-2xl">Existing choices</h2><p className="mt-1 text-xs text-[#76786F]">Labels and order are editable. IDs and scoring weights are protected.</p><div className="mt-4 space-y-3">{selected.options.map((option, optionIndex) => <div key={option.id} className="grid gap-3 rounded-xl border border-[#E4E2E2] bg-white p-4 lg:grid-cols-[180px_1fr_1fr_auto]"><div><p className="font-mono text-xs">{option.id}</p><p className="mt-1 text-[10px] text-[#76786F]">{JSON.stringify(option.weights ?? {})}</p></div>{(["en", "fr"] as const).map((locale) => <label key={locale} className="text-[10px] font-bold uppercase tracking-wide text-[#82542A]">{locale}<input value={payload.translations[locale].screens[selected.id]?.options?.[option.id] ?? ""} onChange={(event) => updateOptionLabel(locale, selected.id, option.id, event.target.value)} className="mt-1 w-full rounded-lg border border-[#C6C7BD] px-3 py-2 text-sm font-normal normal-case text-[#28301C]" /></label>)}<div className="flex gap-1"><button type="button" disabled={optionIndex === 0} onClick={() => updatePayload((current) => ({ ...current, screens: current.screens.map((screen): Screen => screen.id === selected.id && screen.type === "question" ? { ...screen, options: move(screen.options ?? [], optionIndex, -1) } : screen) }))} className="rounded border px-2 disabled:opacity-30" aria-label={`Move ${option.id} up`}>↑</button><button type="button" disabled={optionIndex === selected.options!.length - 1} onClick={() => updatePayload((current) => ({ ...current, screens: current.screens.map((screen): Screen => screen.id === selected.id && screen.type === "question" ? { ...screen, options: move(screen.options ?? [], optionIndex, 1) } : screen) }))} className="rounded border px-2 disabled:opacity-30" aria-label={`Move ${option.id} down`}>↓</button></div></div>)}</div></section> : null}
+          {selected.type === "question" && selected.options?.length ? <section className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><h2 className="font-serif text-2xl">Existing choices</h2><p className="mt-1 text-xs text-[#76786F]">Labels and order are editable. IDs and scoring weights are protected.</p><div className="mt-4 space-y-3">{selected.options.map((option, optionIndex) => <div key={option.id} className="grid gap-3 rounded-xl border border-[#E4E2E2] bg-white p-4 lg:grid-cols-[180px_repeat(3,minmax(0,1fr))_auto]"><div><p className="font-mono text-xs">{option.id}</p><p className="mt-1 text-[10px] text-[#76786F]">{JSON.stringify(option.weights ?? {})}</p></div>{editorLocales.map((locale) => <label key={locale} className="text-[10px] font-bold uppercase tracking-wide text-[#82542A]">{locale}<input dir={locale === "ar" ? "rtl" : "ltr"} value={payload.translations[locale].screens[selected.id]?.options?.[option.id] ?? ""} onChange={(event) => updateOptionLabel(locale, selected.id, option.id, event.target.value)} className="mt-1 w-full rounded-lg border border-[#C6C7BD] px-3 py-2 text-sm font-normal normal-case text-[#28301C]" /></label>)}<div className="flex gap-1"><button type="button" disabled={optionIndex === 0} onClick={() => updatePayload((current) => ({ ...current, screens: current.screens.map((screen): Screen => screen.id === selected.id && screen.type === "question" ? { ...screen, options: move(screen.options ?? [], optionIndex, -1) } : screen) }))} className="rounded border px-2 disabled:opacity-30" aria-label={`Move ${option.id} up`}>↑</button><button type="button" disabled={optionIndex === selected.options!.length - 1} onClick={() => updatePayload((current) => ({ ...current, screens: current.screens.map((screen): Screen => screen.id === selected.id && screen.type === "question" ? { ...screen, options: move(screen.options ?? [], optionIndex, 1) } : screen) }))} className="rounded border px-2 disabled:opacity-30" aria-label={`Move ${option.id} down`}>↓</button></div></div>)}</div></section> : null}
 
           <section className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><div className="flex flex-wrap gap-3"><button type="button" disabled={busy || !dirty} onClick={() => void save()} className="rounded-xl bg-[#3E4631] px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">Save draft</button><button type="button" onClick={() => { setPreviewIndex(Math.max(selectedIndex, 0)); setPreviewOpen(true); }} className="rounded-xl border border-[#3E4631] px-5 py-3 text-sm font-semibold">Preview flow</button></div><div className="mt-5 grid gap-3 md:grid-cols-[1fr_auto]"><label className="text-xs font-semibold">Publication summary<input value={changeSummary} onChange={(event) => setChangeSummary(event.target.value)} placeholder="What changed in this version?" className="mt-1 w-full rounded-lg border border-[#C6C7BD] bg-white px-3 py-2 text-sm font-normal" /></label><button type="button" disabled={busy} onClick={() => void publish()} className="self-end rounded-xl bg-[#82542A] px-5 py-3 text-sm font-semibold text-white disabled:opacity-50">Save and publish</button></div>{message && <p role="status" className="mt-4 rounded-lg bg-[#EAE8E7] p-3 text-sm text-[#464840]">{message}</p>}<p className="mt-3 text-xs text-[#76786F]">Draft ID: {draftId}</p></section>
 
@@ -246,7 +257,7 @@ export function QuestionnaireEditor({
         </section>
       </div>
 
-      {previewOpen && <div className="fixed inset-0 z-[100] overflow-auto bg-[#28301C]/70 p-4"><div className="mx-auto my-5 max-w-4xl rounded-3xl bg-[#FBF9F8] p-6 shadow-2xl"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#C6C7BD] pb-4"><div><p className="text-xs font-bold uppercase tracking-wide text-[#82542A]">Draft preview · {previewIndex + 1}/{payload.screens.length}</p><p className="font-mono text-xs">{previewScreen.id}</p></div><div className="flex gap-2"><button type="button" onClick={() => setPreviewLocale("en")} className={`rounded-lg px-3 py-2 text-xs ${previewLocale === "en" ? "bg-[#28301C] text-white" : "border"}`}>EN</button><button type="button" onClick={() => setPreviewLocale("fr")} className={`rounded-lg px-3 py-2 text-xs ${previewLocale === "fr" ? "bg-[#28301C] text-white" : "border"}`}>FR</button><button type="button" onClick={() => setPreviewOpen(false)} className="rounded-lg border px-3 py-2 text-xs">Close</button></div></div><div className="mx-auto min-h-[420px] max-w-2xl py-12"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#82542A]">{payload.translations[previewLocale].sections[previewScreen.sectionId]}</p>{previewScreen.type === "question" ? <><h2 className="mt-4 font-serif text-4xl leading-tight">{previewCopy.prompt}</h2>{previewCopy.helper && <p className="mt-4 leading-7 text-[#464840]">{previewCopy.helper}</p>}{previewScreen.questionType === "text" ? <div className="mt-8 min-h-40 rounded-xl border border-[#C6C7BD] bg-white p-4 text-[#76786F]">{previewCopy.placeholder}</div> : <div className="mt-8 grid gap-3">{previewScreen.options?.map((option) => <div key={option.id} className="rounded-xl border border-[#C6C7BD] bg-white p-4">{previewCopy.options?.[option.id]}</div>)}</div>}</> : <div className="text-center"><h2 className="mt-4 font-serif text-5xl leading-tight">{previewCopy.title}</h2><p className="mt-6 text-lg leading-8 text-[#464840]">{previewCopy.body}</p></div>}</div><div className="flex justify-between border-t border-[#C6C7BD] pt-4"><button type="button" disabled={previewIndex === 0} onClick={() => setPreviewIndex((index) => Math.max(index - 1, 0))} className="rounded-lg border px-4 py-2 disabled:opacity-30">Back</button><button type="button" disabled={previewIndex === payload.screens.length - 1} onClick={() => setPreviewIndex((index) => Math.min(index + 1, payload.screens.length - 1))} className="rounded-lg bg-[#28301C] px-4 py-2 text-white disabled:opacity-30">Next</button></div></div></div>}
+      {previewOpen && <div className="fixed inset-0 z-[100] overflow-auto bg-[#28301C]/70 p-4"><div className="mx-auto my-5 max-w-4xl rounded-3xl bg-[#FBF9F8] p-6 shadow-2xl"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#C6C7BD] pb-4"><div><p className="text-xs font-bold uppercase tracking-wide text-[#82542A]">Draft preview · {previewIndex + 1}/{payload.screens.length}</p><p className="font-mono text-xs">{previewScreen.id}</p></div><div className="flex gap-2">{editorLocales.map((locale) => <button key={locale} type="button" onClick={() => setPreviewLocale(locale)} className={`rounded-lg px-3 py-2 text-xs ${previewLocale === locale ? "bg-[#28301C] text-white" : "border"}`}>{locale.toUpperCase()}</button>)}<button type="button" onClick={() => setPreviewOpen(false)} className="rounded-lg border px-3 py-2 text-xs">Close</button></div></div><div dir={previewLocale === "ar" ? "rtl" : "ltr"} className="mx-auto min-h-[420px] max-w-2xl py-12"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#82542A]">{payload.translations[previewLocale].sections[previewScreen.sectionId]}</p>{previewScreen.type === "question" ? <><h2 className="mt-4 font-serif text-4xl leading-tight">{previewCopy.prompt}</h2>{previewCopy.helper && <p className="mt-4 leading-7 text-[#464840]">{previewCopy.helper}</p>}{previewScreen.questionType === "text" ? <div className="mt-8 min-h-40 rounded-xl border border-[#C6C7BD] bg-white p-4 text-[#76786F]">{previewCopy.placeholder}</div> : <div className="mt-8 grid gap-3">{previewScreen.options?.map((option) => <div key={option.id} className="rounded-xl border border-[#C6C7BD] bg-white p-4">{previewCopy.options?.[option.id]}</div>)}</div>}</> : <div className="text-center"><h2 className="mt-4 font-serif text-5xl leading-tight">{previewCopy.title}</h2><p className="mt-6 text-lg leading-8 text-[#464840]">{previewCopy.body}</p></div>}</div><div className="flex justify-between border-t border-[#C6C7BD] pt-4"><button type="button" disabled={previewIndex === 0} onClick={() => setPreviewIndex((index) => Math.max(index - 1, 0))} className="rounded-lg border px-4 py-2 disabled:opacity-30">Back</button><button type="button" disabled={previewIndex === payload.screens.length - 1} onClick={() => setPreviewIndex((index) => Math.min(index + 1, payload.screens.length - 1))} className="rounded-lg bg-[#28301C] px-4 py-2 text-white disabled:opacity-30">Next</button></div></div></div>}
     </>
   );
 }

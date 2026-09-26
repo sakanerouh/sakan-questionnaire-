@@ -25,6 +25,7 @@ export function localizedMetadata({
       languages: {
         en: `${siteUrl}/en${path}`,
         fr: `${siteUrl}/fr${path}`,
+        ar: `${siteUrl}/ar${path}`,
         "x-default": `${siteUrl}/en${path}`,
       },
     },
@@ -32,8 +33,10 @@ export function localizedMetadata({
       title,
       description,
       url: canonical,
-      locale: locale === "fr" ? "fr_FR" : "en_US",
-      alternateLocale: [locale === "fr" ? "en_US" : "fr_FR"],
+      locale: locale === "fr" ? "fr_FR" : locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: ["en_US", "fr_FR", "ar_SA"].filter(
+        (item) => item !== (locale === "fr" ? "fr_FR" : locale === "ar" ? "ar_SA" : "en_US"),
+      ),
       siteName: "Sakan eRouh",
       type: "website",
     },

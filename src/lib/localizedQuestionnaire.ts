@@ -1,11 +1,12 @@
 import en from "@/messages/en.json";
 import fr from "@/messages/fr.json";
+import ar from "@/messages/ar.json";
 import type { AppLocale } from "@/i18n/routing";
 import { questionnaireScreens } from "./questionnaire";
 import type { QuestionnaireSnapshot } from "./questionnaireSnapshot";
 import type { Answers } from "./schemas";
 
-const dictionaries = { en, fr } as const;
+const dictionaries = { en, fr, ar } as const;
 
 export const getDictionary = (locale: AppLocale) => dictionaries[locale];
 

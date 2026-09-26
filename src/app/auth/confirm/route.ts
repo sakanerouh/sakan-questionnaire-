@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAppLocale } from "@/i18n/routing";
 import { createSupabaseAuthServerClient } from "@/lib/supabase/authServer";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 
@@ -7,7 +8,8 @@ export async function GET(request: Request) {
   const tokenHash = url.searchParams.get("token_hash");
   const code = url.searchParams.get("code");
   const next = url.searchParams.get("next");
-  const locale = next === "/fr/admin" ? "fr" : "en";
+  const requestedLocale = next?.split("/").filter(Boolean)[0];
+  const locale = isAppLocale(requestedLocale) ? requestedLocale : "en";
   const safeNext = `/${locale}/admin`;
   const authClient = await createSupabaseAuthServerClient();
   const serviceClient = getSupabaseAdmin();

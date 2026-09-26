@@ -3,7 +3,7 @@ create extension if not exists pgcrypto;
 create table if not exists anonymous_sessions (
   id text primary key,
   email text,
-  locale text not null default 'en' check (locale in ('en', 'fr')),
+  locale text not null default 'en' check (locale in ('en', 'fr', 'ar')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -12,7 +12,7 @@ create table if not exists questionnaire_responses (
   id uuid primary key default gen_random_uuid(),
   session_id text not null references anonymous_sessions(id) on delete cascade,
   answers jsonb not null default '{}',
-  locale text not null default 'en' check (locale in ('en', 'fr')),
+  locale text not null default 'en' check (locale in ('en', 'fr', 'ar')),
   completed boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -53,7 +53,7 @@ create table if not exists reports (
   generation_status text not null default 'not_started',
   generated_at timestamptz,
   generation_error text,
-  result_locale text not null default 'en' check (result_locale in ('en', 'fr')),
+  result_locale text not null default 'en' check (result_locale in ('en', 'fr', 'ar')),
   localized_content jsonb not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -296,7 +296,8 @@ returns table (
   currency text,
   report_failures bigint,
   english bigint,
-  french bigint
+  french bigint,
+  arabic bigint
 )
 language sql
 stable
@@ -334,7 +335,8 @@ as $$
     coalesce(max(payment.currency) filter (where payment.status = 'paid'), 'eur'),
     count(*) filter (where report.generation_status = 'failed')::bigint,
     count(*) filter (where session.locale = 'en')::bigint,
-    count(*) filter (where session.locale = 'fr')::bigint
+    count(*) filter (where session.locale = 'fr')::bigint,
+    count(*) filter (where session.locale = 'ar')::bigint
   from filtered_sessions session
   left join latest_response response on response.session_id = session.id
   left join latest_payment payment on payment.session_id = session.id

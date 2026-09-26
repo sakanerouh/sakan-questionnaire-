@@ -15,6 +15,16 @@ describe("safe questionnaire versions", () => {
     expect(payload.screens.filter((screen) => screen.type === "featured")).toHaveLength(1);
   });
 
+  it("hydrates Arabic copy for legacy English/French-only versions", () => {
+    const payload = copyPayload();
+    const legacy = {
+      screens: payload.screens,
+      translations: { en: payload.translations.en, fr: payload.translations.fr },
+    };
+    const parsed = validateQuestionnairePayload(legacy);
+    expect(parsed.translations.ar.screens["family-role"].options?.the_responsible_one).toBe("المسؤولة");
+  });
+
   it("allows wording, optional status, screen order, and choice order changes", () => {
     const payload = copyPayload();
     payload.translations.en.screens["why-now"].prompt = "Updated safe wording";

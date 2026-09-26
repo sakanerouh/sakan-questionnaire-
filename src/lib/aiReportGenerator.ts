@@ -191,6 +191,8 @@ export async function generateAiReport({
           task:
             locale === "fr"
               ? "Créez un rapport introspectif personnalisé et approfondi de 8 à 12 pages à partir de ce résultat."
+              : locale === "ar"
+                ? "أنشئي تقريرًا شخصيًا عميقًا للتأمل الذاتي من 8 إلى 12 صفحة استنادًا إلى هذه النتيجة."
               : "Create a premium 8-12 page custom self-reflection report from this questionnaire result.",
           reportShape: {
             blocks:

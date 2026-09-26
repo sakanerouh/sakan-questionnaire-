@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const localeSchema = z.enum(["en", "fr"]);
+export const localeSchema = z.enum(["en", "fr", "ar"]);
 
 export const answerValueSchema = z.union([
   z.string(),

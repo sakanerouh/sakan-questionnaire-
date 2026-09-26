@@ -10,4 +10,9 @@ describe("AI report language", () => {
   it("requests English for English completion", () => {
     expect(reportLanguageInstruction("en")).toContain("English");
   });
+
+  it("requests feminine Modern Standard Arabic for Arabic completion", () => {
+    expect(reportLanguageInstruction("ar")).toContain("Modern Standard Arabic");
+    expect(reportLanguageInstruction("ar")).toContain("feminine singular");
+  });
 });

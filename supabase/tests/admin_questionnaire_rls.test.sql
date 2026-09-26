@@ -1,6 +1,6 @@
 begin;
 
-select plan(17);
+select plan(21);
 
 select ok(
   (select relrowsecurity from pg_class where oid = 'public.admin_users'::regclass),
@@ -31,6 +31,40 @@ select ok(not has_function_privilege('anon', 'public.publish_questionnaire_draft
 select ok(not has_function_privilege('authenticated', 'public.publish_questionnaire_draft(uuid,uuid,text)', 'execute'), 'authenticated cannot publish questionnaire drafts');
 select ok(not has_function_privilege('anon', 'public.admin_operations_metrics(timestamptz,timestamptz,text)', 'execute'), 'anon cannot read admin metrics');
 select ok(not has_function_privilege('authenticated', 'public.admin_operations_metrics(timestamptz,timestamptz,text)', 'execute'), 'authenticated cannot read admin metrics');
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.anonymous_sessions'::regclass
+      and conname = 'anonymous_sessions_locale_check'
+      and pg_get_constraintdef(oid) like '%ar%'
+  ),
+  'anonymous sessions accept the Arabic locale'
+);
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.questionnaire_responses'::regclass
+      and conname = 'questionnaire_responses_locale_check'
+      and pg_get_constraintdef(oid) like '%ar%'
+  ),
+  'questionnaire responses accept the Arabic locale'
+);
+select ok(
+  exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.reports'::regclass
+      and conname = 'reports_result_locale_check'
+      and pg_get_constraintdef(oid) like '%ar%'
+  ),
+  'reports accept the Arabic locale'
+);
+select ok(
+  pg_get_function_result('public.admin_operations_metrics(timestamptz,timestamptz,text)'::regprocedure) like '%arabic bigint%',
+  'admin metrics exposes an Arabic count'
+);
 select ok(
   exists (
     select 1

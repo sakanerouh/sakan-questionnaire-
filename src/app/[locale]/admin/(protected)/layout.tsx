@@ -13,7 +13,7 @@ export default async function AdminLayout({
   const locale = normalizeLocale((await params).locale);
   const admin = await requireAdminPage(locale);
   return (
-    <div className="min-h-screen bg-[#F5F3F3] text-[#28301C]">
+    <div dir="ltr" className="min-h-screen bg-[#F5F3F3] text-[#28301C]">
       <header className="border-b border-[#C6C7BD] bg-[#FBF9F8]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import en from "../messages/en.json";
 import fr from "../messages/fr.json";
+import ar from "../messages/ar.json";
 import { questionnaireScreens, type Screen } from "./questionnaire";
 
 const archetypeWeightsSchema = z
@@ -57,10 +58,21 @@ export const questionnaireTranslationSchema = z.object({
 
 export const questionnairePayloadSchema = z.object({
   screens: z.array(screenSchema).min(1),
-  translations: z.object({
-    en: questionnaireTranslationSchema,
-    fr: questionnaireTranslationSchema,
-  }),
+  translations: z.preprocess(
+    (value) => {
+      if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+      const translations = value as Record<string, unknown>;
+      return {
+        ...translations,
+        ar: translations.ar ?? ar.questionnaire,
+      };
+    },
+    z.object({
+      en: questionnaireTranslationSchema,
+      fr: questionnaireTranslationSchema,
+      ar: questionnaireTranslationSchema,
+    }),
+  ),
 });
 
 export type QuestionnaireScreenCopy = z.infer<typeof questionnaireScreenCopySchema>;
@@ -83,6 +95,7 @@ export const BUNDLED_QUESTIONNAIRE_VERSION_ID =
 const bundledTranslations = {
   en: en.questionnaire,
   fr: fr.questionnaire,
+  ar: ar.questionnaire,
 } as unknown as QuestionnairePayload["translations"];
 
 export const bundledQuestionnairePayload: QuestionnairePayload =
@@ -151,7 +164,7 @@ export function validateQuestionnairePayload(input: unknown): QuestionnairePaylo
     }
   }
 
-  for (const locale of ["en", "fr"] as const) {
+  for (const locale of ["en", "fr", "ar"] as const) {
     const translation = payload.translations[locale];
     for (const sectionId of new Set(payload.screens.map((screen) => screen.sectionId))) {
       if (!translation.sections[sectionId]?.trim()) {

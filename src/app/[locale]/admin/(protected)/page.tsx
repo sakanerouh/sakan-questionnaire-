@@ -17,7 +17,7 @@ export default async function AdminOperationsPage({
   const routeLocale = normalizeLocale((await params).locale);
   await requireAdminPage(routeLocale);
   const query = await searchParams;
-  const selectedLocale = query.locale === "en" || query.locale === "fr" ? query.locale : "all";
+  const selectedLocale = query.locale === "en" || query.locale === "fr" || query.locale === "ar" ? query.locale : "all";
   const data = await getOperationsData({ from: query.from, to: query.to, locale: selectedLocale });
   const exportParams = new URLSearchParams();
   if (query.from) exportParams.set("from", query.from);
@@ -29,7 +29,7 @@ export default async function AdminOperationsPage({
     ["Paid", `${data.metrics.paid} (${data.metrics.conversionRate}%)`],
     ["Revenue", formatMoney(data.metrics.revenue, data.metrics.currency)],
     ["Report failures", data.metrics.reportFailures],
-    ["Languages", `${data.metrics.english} EN · ${data.metrics.french} FR`],
+    ["Languages", `${data.metrics.english} EN · ${data.metrics.french} FR · ${data.metrics.arabic} AR`],
   ];
 
   return (
@@ -41,7 +41,7 @@ export default async function AdminOperationsPage({
       <form className="mt-7 flex flex-wrap items-end gap-3 rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-4">
         <label className="text-xs font-semibold">From<input name="from" type="date" defaultValue={query.from} className="mt-1 block rounded-lg border border-[#C6C7BD] bg-white px-3 py-2" /></label>
         <label className="text-xs font-semibold">To<input name="to" type="date" defaultValue={query.to} className="mt-1 block rounded-lg border border-[#C6C7BD] bg-white px-3 py-2" /></label>
-        <label className="text-xs font-semibold">Language<select name="locale" defaultValue={selectedLocale} className="mt-1 block rounded-lg border border-[#C6C7BD] bg-white px-3 py-2"><option value="all">All</option><option value="en">English</option><option value="fr">French</option></select></label>
+        <label className="text-xs font-semibold">Language<select name="locale" defaultValue={selectedLocale} className="mt-1 block rounded-lg border border-[#C6C7BD] bg-white px-3 py-2"><option value="all">All</option><option value="en">English</option><option value="fr">French</option><option value="ar">Arabic</option></select></label>
         <button className="rounded-lg bg-[#3E4631] px-4 py-2 text-sm font-semibold text-white">Apply filters</button>
       </form>
       <section className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{cards.map(([label, value]) => <article key={label} className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#82542A]">{label}</p><p className="mt-3 text-3xl font-semibold">{value}</p></article>)}</section>

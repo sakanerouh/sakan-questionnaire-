@@ -66,7 +66,7 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
   const sessionIds = (sessions ?? []).map((session) => session.id);
   if (!sessionIds.length) {
     return {
-      metrics: { starts: 0, completions: 0, completionRate: 0, paid: 0, conversionRate: 0, revenue: 0, currency: "eur", reportFailures: 0, english: 0, french: 0 },
+      metrics: { starts: 0, completions: 0, completionRate: 0, paid: 0, conversionRate: 0, revenue: 0, currency: "eur", reportFailures: 0, english: 0, french: 0, arabic: 0 },
       rows: [] as OperationRow[],
       truncated: false,
     };
@@ -130,6 +130,7 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
       reportFailures: Number(metric?.report_failures ?? rows.filter((row) => row.reportStatus === "failed").length),
       english: Number(metric?.english ?? rows.filter((row) => row.locale === "en").length),
       french: Number(metric?.french ?? rows.filter((row) => row.locale === "fr").length),
+      arabic: Number(metric?.arabic ?? rows.filter((row) => row.locale === "ar").length),
     },
     rows,
     truncated: rows.length === limit,

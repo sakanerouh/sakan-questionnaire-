@@ -7,7 +7,13 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { preservePathAndSearch } from "@/i18n/path";
 
-const choices: AppLocale[] = ["en", "fr"];
+const choices: AppLocale[] = ["en", "fr", "ar"];
+
+const languageLabels: Record<AppLocale, string> = {
+  en: "EN",
+  fr: "FR",
+  ar: "AR",
+};
 
 function LanguageSwitcherInner({
   className = "",
@@ -48,7 +54,9 @@ function LanguageSwitcherInner({
             type="button"
             lang={choice}
             aria-pressed={choice === locale}
-            aria-label={t("switchLanguage", { language: choice.toUpperCase() })}
+            aria-label={t("switchLanguage", {
+              language: choice === "ar" ? "العربية" : languageLabels[choice],
+            })}
             onClick={() => selectLocale(choice)}
             className={`min-h-9 min-w-10 rounded-full px-2 transition focus:outline-none focus-visible:ring-2 ${
               theme === "olive" ? "focus-visible:ring-[#82542a]" : "focus-visible:ring-[#A95888]"
@@ -58,7 +66,7 @@ function LanguageSwitcherInner({
                 : theme === "olive" ? "text-[#3e4631] hover:bg-[#eae8e7]" : "text-[#7C3C60] hover:bg-[#f5e4ee]"
             }`}
           >
-            {choice.toUpperCase()}
+            {languageLabels[choice]}
           </button>
         </span>
       ))}
@@ -74,7 +82,7 @@ export function LanguageSwitcher({
   theme?: "rose" | "olive";
 }) {
   return (
-    <Suspense fallback={<div className={`h-11 w-[106px] ${className}`} aria-hidden />}>
+    <Suspense fallback={<div className={`h-11 w-[154px] ${className}`} aria-hidden />}>
       <LanguageSwitcherInner className={className} theme={theme} />
     </Suspense>
   );
