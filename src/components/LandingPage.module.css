@@ -33,7 +33,7 @@
 :global(html[lang="ar"]) .page h3,
 :global(html[lang="ar"]) .page blockquote,
 :global(html[lang="ar"]) .heroSubtitle {
-  font-family: var(--font-noto-sans-arabic), Arial, sans-serif;
+  font-family: var(--font-amiri), Georgia, serif;
 }
 
 .header { position: absolute; z-index: 20; top: 0; inset-inline-start: 0; width: 100%; }

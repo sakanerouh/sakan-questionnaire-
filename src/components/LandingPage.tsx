@@ -101,11 +101,11 @@ export function LandingPage() {
         <div className={styles.heroVisual}>
           <div className={styles.photoArch}>
             <Image
-              src="/sakanbody-portrait.jpeg"
+              src="/sakanbody-portrait-tablet.jpeg"
               alt={t("heroImageAlt")}
-              width={1600}
-              height={900}
-              priority
+              width={1448}
+              height={1086}
+              preload
               sizes="100vw"
               className={styles.heroImage}
             />
