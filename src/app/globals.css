@@ -42,11 +42,11 @@ body {
 }
 
 html[lang="ar"] body {
-  font-family: var(--font-noto-sans-arabic), Arial, sans-serif;
+  font-family: var(--font-amiri), Georgia, serif;
 }
 
 html[lang="ar"] .font-serif {
-  font-family: var(--font-noto-sans-arabic), Arial, sans-serif;
+  font-family: var(--font-amiri), Georgia, serif;
 }
 
 html[dir="rtl"] .text-left {
