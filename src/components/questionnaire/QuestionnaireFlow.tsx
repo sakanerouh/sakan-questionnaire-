@@ -334,13 +334,13 @@ export function QuestionnaireFlow() {
           </AnimatePresence>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#C6C7BD] py-5">
+        <div className="flex items-center justify-between gap-3 border-t border-[#C6C7BD] py-5 rtl:flex-row-reverse">
           <button
             type="button"
             onClick={back}
             aria-keyshortcuts="ArrowLeft PageUp"
             disabled={currentIndex === 0}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C6C7BD] bg-[#FBF9F8]/70 px-5 text-sm font-semibold text-[#3E4631] transition hover:bg-[#EAE8E7] disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#C6C7BD] bg-[#FBF9F8]/70 px-5 text-sm font-semibold text-[#3E4631] transition hover:bg-[#EAE8E7] disabled:cursor-not-allowed disabled:opacity-40 rtl:flex-row-reverse"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
             {common("back")}
@@ -350,7 +350,7 @@ export function QuestionnaireFlow() {
             type="button"
             onClick={next}
             aria-keyshortcuts="Enter ArrowRight PageDown"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#3E4631] px-6 text-sm font-semibold text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)] transition hover:-translate-y-0.5 hover:bg-[#28301C]"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#3E4631] px-6 text-sm font-semibold text-[#FBF9F8] shadow-[0_18px_45px_rgba(40,48,28,0.18)] transition hover:-translate-y-0.5 hover:bg-[#28301C] rtl:flex-row-reverse"
           >
             {currentIndex >= screens.length - 1 ? ui("seeResult") : common("continue")}
             <ArrowRight className="h-4 w-4" aria-hidden />
