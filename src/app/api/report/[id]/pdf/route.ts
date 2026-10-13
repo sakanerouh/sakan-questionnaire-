@@ -13,6 +13,7 @@ import {
   type ReportContent,
 } from "@/lib/generatedReport";
 import { normalizeProtectiveRoleCopy, roleScoreValue } from "@/lib/protectiveRoleCopy";
+import { writePdfText } from "@/lib/pdfText";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { getDictionary, localizedArchetype } from "@/lib/localizedQuestionnaire";
 import { localeSchema, type SupportedLocale } from "@/lib/schemas";
@@ -76,14 +77,6 @@ const pdfLabels = {
 const pdfFont = (locale: SupportedLocale, bold = false) =>
   locale === "ar" ? (bold ? "Arabic-Bold" : "Arabic") : bold ? "Helvetica-Bold" : "Helvetica";
 
-const localizedTextOptions = (
-  locale: SupportedLocale,
-  options: PDFKit.Mixins.TextOptions = {},
-): PDFKit.Mixins.TextOptions =>
-  locale === "ar"
-    ? { align: "right", features: ["rtla", "rtlm"], ...options }
-    : options;
-
 const legacyToPdfContent = (
   blocks: LegacyReportBlock[],
   result: PdfResult,
@@ -135,13 +128,13 @@ const collectPdf = (doc: PDFKit.PDFDocument) =>
 const writeHeading = (doc: PDFKit.PDFDocument, text: string, locale: SupportedLocale) => {
   doc.moveDown(0.8);
   doc.fillColor("#7c3c60").font(pdfFont(locale, true)).fontSize(20);
-  doc.text(normalizeProtectiveRoleCopy(text), localizedTextOptions(locale, { lineGap: 3 }));
+  writePdfText(doc, normalizeProtectiveRoleCopy(text), locale, { lineGap: 3 });
   doc.moveDown(0.35);
 };
 
 const writeBody = (doc: PDFKit.PDFDocument, text: string, locale: SupportedLocale, options: PDFKit.Mixins.TextOptions = {}) => {
   doc.fillColor("#352317").font(pdfFont(locale)).fontSize(11.5);
-  doc.text(normalizeProtectiveRoleCopy(text), localizedTextOptions(locale, { lineGap: 4, ...options }));
+  writePdfText(doc, normalizeProtectiveRoleCopy(text), locale, { lineGap: 4, ...options });
 };
 
 const ensureSpace = (doc: PDFKit.PDFDocument, height = 120) => {
@@ -154,10 +147,10 @@ const writeList = (doc: PDFKit.PDFDocument, items: string[], locale: SupportedLo
   for (const item of items) {
     ensureSpace(doc, 42);
     doc.fillColor("#6c4b37").font(pdfFont(locale)).fontSize(10.5);
-    doc.text(`• ${normalizeProtectiveRoleCopy(item)}`, localizedTextOptions(locale, {
+    writePdfText(doc, `• ${normalizeProtectiveRoleCopy(item)}`, locale, {
       indent: 10,
       lineGap: 3,
-    }));
+    });
     doc.moveDown(0.25);
   }
 };
@@ -176,7 +169,7 @@ const writeScoreRows = (doc: PDFKit.PDFDocument, result: PdfResult, locale: Supp
     ensureSpace(doc, 54);
     doc.fillColor("#352317").font(pdfFont(locale, true)).fontSize(10.5);
     if (locale === "ar") {
-      doc.text(localizedArchetype(locale, id).name, x + 100, y, localizedTextOptions(locale, { width: width - 100 }));
+      writePdfText(doc, localizedArchetype(locale, id).name, locale, { width: width - 100 }, { x: x + 100, y });
       doc.font("Helvetica-Bold").text(`${score}/100`, x, y, { align: "left", width: 90 });
     } else {
       doc.text(localizedArchetype(locale, id).name, x, y, { continued: true });
@@ -208,27 +201,26 @@ const buildPdf = async (content: PdfContent, result: PdfResult, locale: Supporte
   doc.addPage({ margin: 0 });
   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#7c3c60");
   doc.fillColor("#f8d7ea").font(pdfFont(locale, true)).fontSize(11);
-  doc.text(
+  writePdfText(
+    doc,
     locale === "ar" ? "تقرير تقييم سكن بادي" : reportUi.reportEyebrow.toUpperCase(),
-    54,
-    76,
-    localizedTextOptions(locale, { characterSpacing: locale === "ar" ? 0 : 2, width: doc.page.width - 108 }),
+    locale,
+    { characterSpacing: locale === "ar" ? 0 : 2, width: doc.page.width - 108 },
+    { x: 54, y: 76 },
   );
   doc.fillColor("#fffaf2").font(pdfFont(locale, true)).fontSize(42);
-  doc.text(normalizeProtectiveRoleCopy(content.reportTitle), 54, 142, {
-    ...localizedTextOptions(locale),
+  writePdfText(doc, normalizeProtectiveRoleCopy(content.reportTitle), locale, {
     lineGap: 8,
     width: doc.page.width - 108,
-  });
+  }, { x: 54, y: 142 });
   doc.fillColor("#f8ead7").font(pdfFont(locale)).fontSize(16);
-  doc.text(normalizeProtectiveRoleCopy(content.reportSubtitle), 54, 300, {
-    ...localizedTextOptions(locale),
+  writePdfText(doc, normalizeProtectiveRoleCopy(content.reportSubtitle), locale, {
     lineGap: 7,
     width: doc.page.width - 108,
-  });
+  }, { x: 54, y: 300 });
   doc.fillColor("#f8ead7").font(pdfFont(locale)).fontSize(13);
-  doc.text(`${pdfLabels[locale].dominant}: ${dominant.name}`, 54, 706, localizedTextOptions(locale, { width: doc.page.width - 108 }));
-  doc.text(`${pdfLabels[locale].secondary}: ${secondary.name}`, 54, 728, localizedTextOptions(locale, { width: doc.page.width - 108 }));
+  writePdfText(doc, `${pdfLabels[locale].dominant}: ${dominant.name}`, locale, { width: doc.page.width - 108 }, { x: 54, y: 706 });
+  writePdfText(doc, `${pdfLabels[locale].secondary}: ${secondary.name}`, locale, { width: doc.page.width - 108 }, { x: 54, y: 728 });
 
   doc.addPage();
   writeHeading(doc, reportUi.openingLetter, locale);
@@ -258,10 +250,10 @@ const buildPdf = async (content: PdfContent, result: PdfResult, locale: Supporte
     for (const item of content.sevenDayPlan) {
       ensureSpace(doc, 78);
       doc.fillColor("#7c3c60").font(pdfFont(locale, true)).fontSize(12);
-      doc.text(`${pdfLabels[locale].day} ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`, localizedTextOptions(locale));
+      writePdfText(doc, `${pdfLabels[locale].day} ${item.day}: ${normalizeProtectiveRoleCopy(item.title)}`, locale);
       writeBody(doc, item.practice, locale);
       doc.fillColor("#6c4b37").font(locale === "ar" ? pdfFont(locale) : "Helvetica-Oblique").fontSize(10.5);
-      doc.text(normalizeProtectiveRoleCopy(item.reflection), localizedTextOptions(locale, { lineGap: 3 }));
+      writePdfText(doc, normalizeProtectiveRoleCopy(item.reflection), locale, { lineGap: 3 });
       doc.moveDown(0.7);
     }
   }
@@ -269,7 +261,7 @@ const buildPdf = async (content: PdfContent, result: PdfResult, locale: Supporte
   ensureSpace(doc, 80);
   doc.moveDown();
   doc.fillColor("#6c4b37").font(pdfFont(locale)).fontSize(9.5);
-  doc.text(normalizeProtectiveRoleCopy(content.disclaimer), localizedTextOptions(locale, { lineGap: 3 }));
+  writePdfText(doc, normalizeProtectiveRoleCopy(content.disclaimer), locale, { lineGap: 3 });
   doc.end();
 
   return pdf;
