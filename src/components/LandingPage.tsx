@@ -1,16 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { Lora } from "next/font/google";
+import localFont from "next/font/local";
 import { ArrowRight, ClipboardPenLine, Compass, FileText, Heart, ShieldCheck, Sprout, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import styles from "./LandingPage.module.css";
 
-const landingSerif = Lora({
-  subsets: ["latin"],
-  weight: ["400", "500"],
+// Bundle Lora so builds do not depend on Google Fonts URL parsing.
+const landingSerif = localFont({
+  src: "../assets/fonts/lora/Lora-Latin-Variable.woff2",
+  weight: "400 500",
+  style: "normal",
   variable: "--font-landing-serif",
   display: "swap",
 });
