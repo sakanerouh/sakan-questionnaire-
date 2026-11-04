@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Download, Loader2, Sparkles } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ReportNextSteps } from "@/components/next-steps/ReportNextSteps";
 import { Link } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import {
@@ -105,30 +106,41 @@ export function ReportPageClient({ id }: { id: string }) {
   const [generating, setGenerating] = useState(false);
   const [generationAttempted, setGenerationAttempted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
       mountedRef.current = false;
-    },
-    [],
-  );
+    };
+  }, []);
 
   const fetchReport = useCallback(
     async ({ quiet = false }: { quiet?: boolean } = {}) => {
       if (!quiet) {
         setLoading(true);
+        setLoadFailed(false);
       }
 
       try {
         const response = await fetch(`/api/report/${encodeURIComponent(id)}?locale=${locale}`, {
           cache: "no-store",
+          signal: AbortSignal.timeout(20_000),
         });
 
         if (!response.ok) {
+          if (mountedRef.current && !quiet) {
+            setLoadFailed(response.status !== 404);
+          }
           return null;
         }
 
         const data = (await response.json()) as ReportApiResponse;
+
+        if (!data.report) {
+          throw new Error("Report response is missing.");
+        }
 
         if (mountedRef.current && data.report) {
           setReport(data.report);
@@ -138,6 +150,7 @@ export function ReportPageClient({ id }: { id: string }) {
       } catch {
         if (mountedRef.current && !quiet) {
           setReport(null);
+          setLoadFailed(true);
         }
 
         return null;
@@ -174,7 +187,7 @@ export function ReportPageClient({ id }: { id: string }) {
       };
 
       if (!response.ok || !data.content) {
-        throw new Error(t("generationError"));
+        throw new Error(data.error || t("generationError"));
       }
 
       const content = data.content;
@@ -296,15 +309,21 @@ export function ReportPageClient({ id }: { id: string }) {
         <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-2xl flex-col items-center justify-center text-center">
           <Sparkles className="h-10 w-10 text-[#A95888]" aria-hidden />
           <h1 className="mt-6 text-4xl font-semibold">
-            {loading ? t("openingReport") : t("notFound")}
+            {loading ? t("openingReport") : loadFailed ? t("loadErrorTitle") : t("notFound")}
           </h1>
           <p className="mt-4 text-lg leading-8 text-[#6c4b37]">
             {loading
               ? t("checking")
-              : t("notFoundBody")}
+              : loadFailed ? t("loadErrorBody") : t("notFoundBody")}
           </p>
           {!loading && (
-            <Link
+            loadFailed ? <button
+              type="button"
+              onClick={() => void fetchReport()}
+              className="sakan-gradient mt-8 inline-flex min-h-12 items-center justify-center rounded-full px-6 text-sm font-semibold text-[#fffaf2]"
+            >
+              {t("retryLoading")}
+            </button> : <Link
               href="/questionnaire/start"
               className="sakan-gradient mt-8 inline-flex min-h-12 items-center justify-center rounded-full px-6 text-sm font-semibold text-[#fffaf2]"
             >
@@ -385,6 +404,12 @@ export function ReportPageClient({ id }: { id: string }) {
           <p className="-mt-4 mb-6 text-right text-sm font-semibold text-[#A95888]">
             {pdfError}
           </p>
+        )}
+
+        {generatedContent && unlocked && (
+          <div className="mb-6">
+            <ReportNextSteps locale={locale} />
+          </div>
         )}
 
         <section className="sakan-gradient-deep rounded-[8px] border border-[#DDA8C8]/45 p-6 text-[#fffaf2] shadow-[0_28px_80px_rgba(124,60,96,0.28)] sm:p-10">

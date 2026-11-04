@@ -16,6 +16,13 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Local development uses Node.js 24 or newer and enables Node's environment proxy
+support. On networks that require a proxy, configure `HTTP_PROXY`, `HTTPS_PROXY`,
+and `NO_PROXY` in the terminal before running `npm run dev`. Include `localhost`
+and `127.0.0.1` in `NO_PROXY`. This lets server-side OpenAI requests use the same
+proxy as the rest of your local tools; an API balance cannot prevent connection
+timeouts when direct access is blocked.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

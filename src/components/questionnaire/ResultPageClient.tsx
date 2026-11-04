@@ -46,7 +46,7 @@ export function ResultPageClient() {
         const data = (await response.json()) as { result?: SakanResult; error?: string };
 
         if (!response.ok || !data.result) {
-          throw new Error(t("preparing"));
+          throw new Error(data.error || t("preparing"));
         }
 
         if (!cancelled) {

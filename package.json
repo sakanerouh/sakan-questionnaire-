@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --use-env-proxy ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:report-ui": "node scripts/check-report-loading.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
