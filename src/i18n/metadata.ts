@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
-import type { AppLocale } from "./routing";
+import { routing, type AppLocale } from "./routing";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "http://localhost:3000";
+const openGraphLocales: Record<AppLocale, string> = {
+  en: "en_US",
+  fr: "fr_FR",
+  ar: "ar_SA",
+};
 
 export function localizedMetadata({
   locale,
@@ -23,9 +28,7 @@ export function localizedMetadata({
     alternates: {
       canonical,
       languages: {
-        en: `${siteUrl}/en${path}`,
-        fr: `${siteUrl}/fr${path}`,
-        ar: `${siteUrl}/ar${path}`,
+        ...Object.fromEntries(routing.locales.map((item) => [item, `${siteUrl}/${item}${path}`])),
         "x-default": `${siteUrl}/en${path}`,
       },
     },
@@ -33,10 +36,10 @@ export function localizedMetadata({
       title,
       description,
       url: canonical,
-      locale: locale === "fr" ? "fr_FR" : locale === "ar" ? "ar_SA" : "en_US",
-      alternateLocale: ["en_US", "fr_FR", "ar_SA"].filter(
-        (item) => item !== (locale === "fr" ? "fr_FR" : locale === "ar" ? "ar_SA" : "en_US"),
-      ),
+      locale: openGraphLocales[locale],
+      alternateLocale: routing.locales
+        .filter((item) => item !== locale)
+        .map((item) => openGraphLocales[item]),
       siteName: "Sakan eRouh",
       type: "website",
     },

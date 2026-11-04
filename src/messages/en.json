@@ -26,6 +26,28 @@
     }
   },
   "landing": {
+    "reference": {
+      "homeLabel": "Sakan eRouh home",
+      "eyebrow": "SakanBody Audit",
+      "titleStart": "How did you learn",
+      "titleEnd": "to see yourself?",
+      "heroBody": "Discover the protective patterns that have shaped your self-image—and how they influence your choices.",
+      "primaryCta": "Start my Audit",
+      "auditDetails": "Around 45 minutes · Personalised report",
+      "patternsTitle": "Your patterns are part of your story.",
+      "patterns": [
+        { "title": "Recognise your patterns", "body": "Notice how you learned to protect yourself." },
+        { "title": "Understand your self-image", "body": "Explore how these patterns shaped the way you see yourself." },
+        { "title": "Explore new possibilities", "body": "Begin considering different choices." }
+      ],
+      "understandingTitle": "Your first step is understanding.",
+      "understandingBody": "Answer with curiosity.\nReceive your report.\nDiscover what you want\nto explore next.",
+      "steps": ["Take the Audit", "Read your report", "Find your next step"],
+      "closingLabel": "A new way to see yourself",
+      "quote": "How you learned to see yourself doesn’t have to be the only way you see yourself.",
+      "pillars": ["Self-awareness", "New perspective", "Self-compassion", "Possibility"],
+      "finalCta": "Begin my SakanBody Audit"
+    },
     "navBegin": "Begin",
     "primaryCta": "Get Your Audit Now — €11",
     "foundingPrice": "Founding price: €11 for the first 100 people.",
@@ -82,7 +104,7 @@
     "detailsLabel": "Audit details",
     "duration": "30–40 min",
     "report": "Personalized Audit Report",
-    "languages": "English & Français",
+    "languages": "English & Arabic",
     "secure": "Secure checkout. Instant access.",
     "heroImageAlt": "A warm portrait of the SakanBody practitioner",
     "heroQuote": "This is not just a program. It’s a return to yourself.",
@@ -228,6 +250,9 @@
     "retry": "Retry generation",
     "generationError": "Report generation failed.",
     "openingReport": "Opening your report...",
+    "loadErrorTitle": "Your report could not be loaded.",
+    "loadErrorBody": "Please try opening your saved report again.",
+    "retryLoading": "Try again",
     "notFound": "Report not found.",
     "checking": "We are checking this browser and your saved report.",
     "notFoundBody": "Complete the questionnaire first, or check that Supabase is configured locally.",

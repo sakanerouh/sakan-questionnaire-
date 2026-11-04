@@ -140,7 +140,7 @@ export function QuestionnaireFlow() {
       const data = (await response.json()) as { result?: SakanResult; error?: string };
 
       if (!response.ok || !data.result) {
-        throw new Error(ui("analysisError"));
+        throw new Error(data.error || ui("analysisError"));
       }
 
       setResult(data.result);

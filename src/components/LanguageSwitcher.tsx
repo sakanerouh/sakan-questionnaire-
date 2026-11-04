@@ -4,10 +4,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import type { AppLocale } from "@/i18n/routing";
+import { routing, type AppLocale } from "@/i18n/routing";
 import { preservePathAndSearch } from "@/i18n/path";
 
-const choices: AppLocale[] = ["en", "fr", "ar"];
+const choices = routing.locales;
 
 const languageLabels: Record<AppLocale, string> = {
   en: "EN",

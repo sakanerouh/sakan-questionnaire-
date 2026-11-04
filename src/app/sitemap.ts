@@ -3,7 +3,7 @@ import { routing } from "@/i18n/routing";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-  const paths = ["", "/questionnaire/start"];
+  const paths = ["", "/questionnaire/start", "/next-steps"];
 
   return paths.flatMap((path) =>
     routing.locales.map((locale) => ({
