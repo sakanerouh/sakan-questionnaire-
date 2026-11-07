@@ -12,8 +12,8 @@
 }
 .page h1, .page h2, .page h3, .page blockquote { font-family: var(--font-landing-serif), Georgia, serif; font-weight: 400; }
 .brand { font-family: var(--font-libre-caslon), Georgia, serif; font-weight: 400; }
-.hero { position: relative; min-height: 650px; height: min(61vw, 860px); isolation: isolate; }
-.heroImage { z-index: -2; object-fit: cover; object-position: center 30%; }
+.hero { position: relative; min-height: clamp(650px, 61vw, 860px); isolation: isolate; }
+.heroImage { z-index: -2; object-fit: cover; object-position: center top; }
 .hero::after { position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(250,243,234,.35), transparent 65%); content: ""; }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: min(100% - 112px, 1280px); margin: 0 auto; padding-top: 30px; }
 .brand { display: inline-flex; align-items: center; gap: 13px; color: var(--ink); font-size: clamp(25px, 2.8vw, 38px); line-height: 1; letter-spacing: -.055em; }
@@ -29,6 +29,11 @@
 .auditButton:hover { background: #4e532e; transform: translateY(-2px); }
 .auditButton:focus-visible, .brand:focus-visible { outline: 2px solid var(--gold); outline-offset: 5px; }
 .auditDetails { margin-top: 15px; color: #75644e; font-size: clamp(14px, 1.65vw, 21px); letter-spacing: -.02em; }
+.videoSection { width: min(calc(100% - 48px), 1040px); margin: 0 auto; padding-block: 64px; }
+.videoHeading { max-width: 720px; margin: 0 auto 28px; text-align: center; }
+.videoEyebrow { color: #946539; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.videoHeading h2 { margin-top: 12px; font-size: clamp(30px, 4vw, 48px); line-height: 1.2; letter-spacing: -.035em; }
+.videoDescription { margin-top: 14px; color: #464840; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; }
 .patterns { max-width: 1280px; margin: 0 auto; padding: 20px 30px 18px; }
 .sectionHeading { text-align: center; }
 .heartDivider { display: flex; align-items: center; justify-content: center; gap: 25px; color: var(--gold); }
@@ -122,13 +127,16 @@
   .finalButton { min-height: 44px; font-size: 17px; }
 }
 @media (max-width: 640px) {
-  .hero { min-height: 0; height: auto; padding-bottom: 76vw; }
+  .videoSection { width: calc(100% - 40px); padding-block: 38px; }
+  .videoHeading { margin-bottom: 22px; }
+  .videoEyebrow { font-size: 10px; }
+  .hero { min-height: 0; height: auto; padding-bottom: 98vw; }
   .header, .heroCopy { width: calc(100% - 40px); }
   .header { padding-top: 18px; gap: 8px; }
   .brand { gap: 6px; font-size: 25px; }
   .brand > svg { width: 34px; height: 40px; }
   .heroImage { object-fit: cover; object-position: 76% bottom; height: 98vw !important; top: auto !important; bottom: 0; }
-  .hero::after { background: linear-gradient(180deg, var(--cream) 0%, var(--cream) 51%, rgba(250,243,234,.7) 61%, transparent 75%); }
+  .hero::after { background: linear-gradient(180deg, var(--cream) 0%, var(--cream) 52%, transparent 58%); }
   .heroCopy { padding: 44px 0 24px; }
   .eyebrow { gap: 14px; font-size: 11px; letter-spacing: .25em; }
   .eyebrow > span { width: 70px; }
