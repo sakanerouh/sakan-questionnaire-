@@ -1,4 +1,18 @@
 {
+  "auditVideo": {
+    "recommended": "Recommended before your audit",
+    "watch": "Watch introduction",
+    "trigger": "Watch before you begin",
+    "optional": "Optional",
+    "title": "Before you begin",
+    "description": "We recommend watching this introduction before starting your audit. You can also continue straight to the questions.",
+    "frameTitle": "SakanBody Audit introduction video",
+    "close": "Close video",
+    "fallback": "If the player does not load, you can watch on YouTube.",
+    "youtube": "Open on YouTube",
+    "start": "Start my Audit",
+    "continue": "Continue to audit"
+  },
   "common": {
     "languageSelector": "Choose language",
     "switchLanguage": "Switch language to {language}",

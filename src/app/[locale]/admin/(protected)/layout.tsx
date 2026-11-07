@@ -22,6 +22,7 @@ export default async function AdminLayout({
           </div>
           <nav className="flex items-center gap-2 text-sm font-semibold" aria-label="Admin navigation">
             <a className="rounded-full px-4 py-2 hover:bg-[#EAE8E7]" href={`/${locale}/admin`}>Operations</a>
+            <a className="rounded-full px-4 py-2 hover:bg-[#EAE8E7]" href={`/${locale}/admin/contacts`}>Contacts</a>
             <a className="rounded-full px-4 py-2 hover:bg-[#EAE8E7]" href={`/${locale}/admin/questionnaire`}>Questionnaire</a>
           </nav>
           <div className="flex items-center gap-3 text-xs text-[#464840]">

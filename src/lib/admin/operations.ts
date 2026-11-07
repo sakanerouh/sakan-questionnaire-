@@ -3,16 +3,19 @@ import "server-only";
 import { createHash } from "node:crypto";
 import type { AppLocale } from "@/i18n/routing";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/admin/auth";
 
 export type OperationsFilters = {
   from?: string;
   to?: string;
   locale?: AppLocale | "all";
   limit?: number;
+  includeEmails?: boolean;
 };
 
 export type OperationRow = {
   participantRef: string;
+  email?: string | null;
   locale: string;
   startedAt: string;
   updatedAt: string;
@@ -40,6 +43,7 @@ const applyDateFilters = <T>(query: T, from?: string, to?: string) => {
 };
 
 export async function getOperationsData(filters: OperationsFilters = {}) {
+  await requireAdmin();
   const supabase = getSupabaseAdmin();
   if (!supabase) throw new Error("Supabase is not configured.");
   const limit = Math.min(Math.max(filters.limit ?? 100, 1), 5000);
@@ -72,6 +76,13 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
     };
   }
 
+  const emails = new Map<string, string | null>();
+  if (filters.includeEmails) {
+    const { data, error } = await supabase.from("anonymous_sessions").select("id, email").in("id", sessionIds);
+    if (error) throw new Error("Audit emails could not be loaded.");
+    for (const session of data ?? []) emails.set(session.id, session.email);
+  }
+
   const [{ data: responses }, { data: payments }, { data: reports }, { data: results }] =
     await Promise.all([
       supabase.from("questionnaire_responses").select("session_id, completed, current_screen_id, updated_at").in("session_id", sessionIds).order("updated_at", { ascending: false }),
@@ -96,6 +107,7 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
     const result = resultMap.get(session.id);
     return {
       participantRef: participantRef(session.id),
+      ...(filters.includeEmails ? { email: emails.get(session.id) ?? null } : {}),
       locale: session.locale,
       startedAt: session.created_at,
       updatedAt: response?.updated_at ?? session.updated_at,

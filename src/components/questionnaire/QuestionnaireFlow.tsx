@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AuditIntroVideo } from "@/components/AuditIntroVideo";
 import { useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import {
@@ -191,7 +192,7 @@ export function QuestionnaireFlow() {
     if (!mounted || analyzing) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || document.querySelector("dialog[open]")) {
         return;
       }
 
@@ -330,6 +331,7 @@ export function QuestionnaireFlow() {
                   section={translation.sections[screen.sectionId] ?? screen.sectionId}
                 />
               ) : null}
+              {currentIndex === 0 && <div className="mt-6 text-center"><AuditIntroVideo onContinue={() => { void next(); }} /></div>}
             </motion.div>
           </AnimatePresence>
         </div>

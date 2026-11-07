@@ -6,6 +6,7 @@ import { ArrowRight, ClipboardPenLine, Compass, FileText, Heart, ShieldCheck, Sp
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { AuditIntroVideo } from "./AuditIntroVideo";
 import styles from "./LandingPage.module.css";
 
 // Bundle Lora so builds do not depend on Google Fonts URL parsing.
@@ -53,6 +54,7 @@ function AuditButton({ final = false }: { final?: boolean }) {
 export function LandingPage() {
   const t = useTranslations("landing.reference");
   const original = useTranslations("landing");
+  const video = useTranslations("auditVideo");
   const patterns = t.raw("patterns") as { title: string; body: string }[];
   const steps = t.raw("steps") as string[];
   const pillars = t.raw("pillars") as string[];
@@ -60,7 +62,7 @@ export function LandingPage() {
   return (
     <main className={`${styles.page} ${landingSerif.variable}`}>
       <section className={styles.hero} aria-labelledby="audit-title">
-        <Image src="/sakanbody-portrait-tablet.jpeg" alt={original("heroImageAlt")} fill preload sizes="100vw" className={styles.heroImage} />
+        <Image src="/sakanbody-hero.jpeg" alt={original("heroImageAlt")} fill preload sizes="100vw" className={styles.heroImage} />
         <header className={styles.header}>
           <Link href="/" className={styles.brand} aria-label={t("homeLabel")}>
             <Lotus /><span dir="ltr">Sakan eRouh</span>
@@ -74,6 +76,15 @@ export function LandingPage() {
           <AuditButton />
           <p className={styles.auditDetails}>{t("auditDetails")}</p>
         </div>
+      </section>
+
+      <section className={styles.videoSection} aria-labelledby="intro-video-title">
+        <div className={styles.videoHeading}>
+          <p className={styles.videoEyebrow}>{video("recommended")}</p>
+          <h2 id="intro-video-title">{video("title")}</h2>
+          <p className={styles.videoDescription}>{video("description")}</p>
+        </div>
+        <AuditIntroVideo preview />
       </section>
 
       <section className={styles.patterns} aria-labelledby="patterns-title">

@@ -10,6 +10,7 @@ describe("privacy-safe operations export", () => {
     const csv = operationsToCsv([
       {
         participantRef: "ABC123",
+        email: "private@example.com",
         locale: "en",
         startedAt: "2026-08-27T10:00:00.000Z",
         updatedAt: "2026-08-27T10:10:00.000Z",

@@ -1,4 +1,18 @@
 {
+  "auditVideo": {
+    "recommended": "Recommandé avant votre audit",
+    "watch": "Regarder l’introduction",
+    "trigger": "À regarder avant de commencer",
+    "optional": "Facultatif",
+    "title": "Avant de commencer",
+    "description": "Nous vous recommandons de regarder cette introduction avant de commencer votre audit. Vous pouvez aussi passer directement aux questions.",
+    "frameTitle": "Vidéo de présentation de l’audit SakanBody",
+    "close": "Fermer la vidéo",
+    "fallback": "Si le lecteur ne se charge pas, vous pouvez regarder la vidéo sur YouTube.",
+    "youtube": "Ouvrir sur YouTube",
+    "start": "Commencer mon audit",
+    "continue": "Poursuivre l’audit"
+  },
   "common": {
     "languageSelector": "Choisir la langue",
     "switchLanguage": "Passer la langue en {language}",

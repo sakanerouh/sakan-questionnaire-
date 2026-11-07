@@ -18,7 +18,7 @@ export default async function AdminOperationsPage({
   await requireAdminPage(routeLocale);
   const query = await searchParams;
   const selectedLocale = query.locale === "en" || query.locale === "fr" || query.locale === "ar" ? query.locale : "all";
-  const data = await getOperationsData({ from: query.from, to: query.to, locale: selectedLocale });
+  const data = await getOperationsData({ from: query.from, to: query.to, locale: selectedLocale, includeEmails: true });
   const exportParams = new URLSearchParams();
   if (query.from) exportParams.set("from", query.from);
   if (query.to) exportParams.set("to", query.to);
@@ -35,7 +35,7 @@ export default async function AdminOperationsPage({
   return (
     <main className="mx-auto max-w-7xl px-5 py-8">
       <div className="flex flex-wrap items-end justify-between gap-5">
-        <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#82542A]">Operations</p><h1 className="mt-2 font-serif text-4xl">Audit overview</h1><p className="mt-2 text-sm text-[#464840]">Participant references are anonymized. Written answers and emails are never loaded here.</p></div>
+        <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#82542A]">Operations</p><h1 className="mt-2 font-serif text-4xl">Audit overview</h1><p className="mt-2 text-sm text-[#464840]">Audit emails are visible to administrators. Written answers stay private.</p><a href={`/${routeLocale}/admin/contacts`} className="mt-2 inline-block text-sm font-semibold underline underline-offset-4">View and export email contacts</a></div>
         <a href={`/api/admin/operations/export?${exportParams}`} className="rounded-xl bg-[#28301C] px-5 py-3 text-sm font-semibold text-white">Export privacy-safe CSV</a>
       </div>
       <form className="mt-7 flex flex-wrap items-end gap-3 rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-4">
@@ -46,7 +46,7 @@ export default async function AdminOperationsPage({
       </form>
       <section className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{cards.map(([label, value]) => <article key={label} className="rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8] p-5"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#82542A]">{label}</p><p className="mt-3 text-3xl font-semibold">{value}</p></article>)}</section>
       <section className="mt-8 overflow-hidden rounded-2xl border border-[#C6C7BD] bg-[#FBF9F8]">
-        <div className="overflow-x-auto"><table className="w-full min-w-[1000px] text-left text-sm"><thead className="bg-[#EAE8E7] text-xs uppercase tracking-wide"><tr>{["Reference","Language","Started","Progress","Result","Payment","Amount","Report"].map((heading) => <th key={heading} className="px-4 py-3">{heading}</th>)}</tr></thead><tbody>{data.rows.map((row) => <tr key={row.participantRef} className="border-t border-[#E4E2E2]"><td className="px-4 py-3 font-mono text-xs">{row.participantRef}</td><td className="px-4 py-3 uppercase">{row.locale}</td><td className="px-4 py-3">{new Date(row.startedAt).toLocaleString()}</td><td className="px-4 py-3">{row.completed ? "Completed" : row.currentScreenId ?? "Started"}</td><td className="px-4 py-3">{row.dominant ? `${row.dominant} / ${row.secondary}` : "—"}</td><td className="px-4 py-3">{row.paymentStatus}</td><td className="px-4 py-3">{row.amount != null && row.currency ? formatMoney(row.amount, row.currency) : "—"}</td><td className="px-4 py-3">{row.reportStatus}</td></tr>)}</tbody></table></div>
+        <div className="overflow-x-auto"><table className="w-full min-w-[1000px] text-left text-sm"><thead className="bg-[#EAE8E7] text-xs uppercase tracking-wide"><tr>{["Reference","Email","Language","Started","Progress","Result","Payment","Amount","Report"].map((heading) => <th key={heading} className="px-4 py-3">{heading}</th>)}</tr></thead><tbody>{data.rows.map((row) => <tr key={row.participantRef} className="border-t border-[#E4E2E2]"><td className="px-4 py-3 font-mono text-xs">{row.participantRef}</td><td className="max-w-[280px] break-all px-4 py-3">{row.email ? <a className="underline underline-offset-4" href={`mailto:${encodeURIComponent(row.email)}`}>{row.email}</a> : <span className="text-[#76786F]">Not provided</span>}</td><td className="px-4 py-3 uppercase">{row.locale}</td><td className="px-4 py-3">{new Date(row.startedAt).toLocaleString()}</td><td className="px-4 py-3">{row.completed ? "Completed" : row.currentScreenId ?? "Started"}</td><td className="px-4 py-3">{row.dominant ? `${row.dominant} / ${row.secondary}` : "—"}</td><td className="px-4 py-3">{row.paymentStatus}</td><td className="px-4 py-3">{row.amount != null && row.currency ? formatMoney(row.amount, row.currency) : "—"}</td><td className="px-4 py-3">{row.reportStatus}</td></tr>)}</tbody></table></div>
         {!data.rows.length && <p className="p-8 text-center text-sm text-[#76786F]">No sessions match these filters.</p>}
         {data.truncated && <p className="border-t border-[#E4E2E2] p-3 text-xs text-[#82542A]">Showing the newest 100 records. Use filters or CSV export for a larger set.</p>}
       </section>
