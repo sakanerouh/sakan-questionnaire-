@@ -116,6 +116,23 @@ export function ReportPageClient({ id }: { id: string }) {
     };
   }, []);
 
+  useEffect(() => {
+    const checkoutId = new URLSearchParams(window.location.search).get("checkout_session_id");
+    if (!checkoutId) return;
+    let cancelled = false;
+    void (async () => {
+      // Legacy returns also reconcile with Stripe if their webhook is delayed.
+      const response = await fetch(`/api/report/${encodeURIComponent(id)}?locale=${locale}`, { cache: "no-store" });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (cancelled || !data.report?.result?.sessionId) return;
+      const verified = await fetch("/api/checkout/verify", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: data.report.result.sessionId, checkoutId }) });
+      if (!cancelled && verified.ok) window.location.replace(window.location.pathname);
+    })().catch(() => undefined);
+    return () => { cancelled = true; };
+  }, [id, locale]);
+
   const fetchReport = useCallback(
     async ({ quiet = false }: { quiet?: boolean } = {}) => {
       if (!quiet) {

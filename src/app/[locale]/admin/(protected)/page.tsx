@@ -4,7 +4,7 @@ import { normalizeLocale } from "@/i18n/routing";
 import { connection } from "next/server";
 
 const formatMoney = (minor: number, currency: string) =>
-  new Intl.NumberFormat("en", { style: "currency", currency: currency.toUpperCase() }).format(minor / 100);
+  currency === "mixed" ? "Multiple currencies" : new Intl.NumberFormat("en", { style: "currency", currency: currency.toUpperCase() }).format(minor / 100);
 
 export default async function AdminOperationsPage({
   params,

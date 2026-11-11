@@ -66,3 +66,7 @@ set email = excluded.email,
 The first versioned-content request seeds the current bundled questionnaire as immutable version 1 and creates a private draft. Unknown emails cannot create an account through the admin login because magic-link requests use `shouldCreateUser: false`.
 
 For local database security checks, run `supabase test db` after the migration. The pgTAP assertions live in `supabase/tests/admin_questionnaire_rls.test.sql`.
+
+## Audit prepayment
+
+New audits support payment before the questionnaire, with Stripe card checkout and admin-approved bank transfers. Apply the database migration before deploying the application. See [audit prepayment setup and operations](docs/audit-prepayment.md) for the deployment order, bank-transfer workflow, recovery links, and local verification.

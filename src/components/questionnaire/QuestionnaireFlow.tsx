@@ -64,10 +64,19 @@ export function QuestionnaireFlow() {
       cache: "no-store",
     })
       .then(async (response) => {
+        if ([401, 402].includes(response.status)) {
+          router.replace("/questionnaire/checkout");
+          throw new Error("Please complete checkout before starting your audit.");
+        }
         if (!response.ok) throw new Error("Questionnaire content could not be loaded.");
         return response.json() as Promise<QuestionnaireSnapshot>;
       })
       .then((loaded) => {
+        const restoredScreenId = useQuestionnaireStore.getState().restoredScreenId;
+        if (restoredScreenId) {
+          setCurrentIndex(Math.max(0, loaded.screens.findIndex((item) => item.id === restoredScreenId)));
+          useQuestionnaireStore.setState({ restoredScreenId: undefined });
+        }
         setSnapshot(loaded);
         setQuestionnaireVersionId(loaded.id);
         setLoadError(null);
@@ -77,7 +86,7 @@ export function QuestionnaireFlow() {
         setLoadError(error instanceof Error ? error.message : "Questionnaire content could not be loaded.");
       });
     return () => controller.abort();
-  }, [locale, mounted, sessionId, setQuestionnaireVersionId]);
+  }, [locale, mounted, sessionId, setQuestionnaireVersionId, setCurrentIndex, router]);
 
   const activeSnapshot = snapshot ?? bundledQuestionnaireSnapshot;
   const screens = activeSnapshot.screens;

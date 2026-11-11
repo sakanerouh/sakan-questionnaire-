@@ -11,6 +11,7 @@ type QuestionnaireState = {
   answers: Answers;
   currentIndex: number;
   questionnaireVersionId?: string;
+  restoredScreenId?: string;
   result?: SakanResult;
   setEmail: (email: string) => void;
   setAnswer: (id: string, value: string | string[]) => void;
@@ -48,6 +49,7 @@ export const useQuestionnaireStore = create<QuestionnaireState>()(
           answers: {},
           currentIndex: 0,
           questionnaireVersionId: undefined,
+          restoredScreenId: undefined,
           result: undefined,
         }),
     }),

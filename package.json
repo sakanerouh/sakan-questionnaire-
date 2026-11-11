@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:report-ui": "node scripts/check-report-loading.mjs"
+    "test:report-ui": "node scripts/check-report-loading.mjs",
+    "test:audit-db": "node scripts/check-audit-db.mjs"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",

@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { generateAiResult } from "@/lib/aiReportGenerator";
-import { calculateResult } from "@/lib/scoring";
 import { sessionPayloadSchema } from "@/lib/schemas";
-import { databaseErrorMessage, isSupabaseUnavailable } from "@/lib/supabase/errors";
+import { databaseErrorMessage } from "@/lib/supabase/errors";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { migrateLegacyAnswers } from "@/lib/questionnaireMigration";
 import { getQuestionnaireSnapshotForSession } from "@/lib/questionnaireRepository";
+import { requireAuditAccess, resultFromRow } from "@/lib/audit/access";
+import { auditErrorResponse, requireAuditOrigin } from "@/lib/audit/http";
 
 export async function POST(request: Request) {
-  const parsed = sessionPayloadSchema.safeParse(await request.json());
+  const parsed = sessionPayloadSchema.safeParse(await request.json().catch(() => null));
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -18,72 +19,42 @@ export async function POST(request: Request) {
   }
 
   const payload = parsed.data;
+  let access;
+  try {
+    requireAuditOrigin(request);
+    access = await requireAuditAccess(request, payload.sessionId);
+  } catch (error) { return auditErrorResponse(error); }
   const answers = migrateLegacyAnswers(payload.answers);
   const supabase = getSupabaseAdmin();
   const snapshot = await getQuestionnaireSnapshotForSession(payload.sessionId, payload.locale);
 
-  const localResponse = async () => {
-    if (!payload.completed && !payload.result) {
-      return NextResponse.json({ ok: true, persisted: false });
-    }
-
-    if (payload.result) {
-      return NextResponse.json({ ok: true, persisted: false, result: payload.result });
-    }
-
-    try {
-      const result = await generateAiResult({
-        sessionId: payload.sessionId,
-        answers,
-        locale: payload.locale,
-        snapshot,
-      });
-
-      return NextResponse.json({ ok: true, persisted: false, result });
-    } catch {
-      const result = calculateResult(payload.sessionId, answers, payload.locale, snapshot.screens);
-
-      return NextResponse.json({ ok: true, persisted: false, result });
-    }
-  };
-
-  if (!supabase) {
-    return localResponse();
-  }
+  if (!supabase) return NextResponse.json({ ok: false, error: "Audit storage is temporarily unavailable." }, { status: 503 });
   const now = new Date().toISOString();
 
   const { error: sessionError } = await supabase.from("anonymous_sessions").upsert({
     id: payload.sessionId,
-    email: payload.email || null,
+    email: payload.email || access.session.email || null,
     locale: payload.locale,
     questionnaire_version_id: snapshot.id,
     updated_at: now,
   });
 
-    if (sessionError) {
-      if (isSupabaseUnavailable(sessionError)) {
-        return localResponse();
-      }
-
-      return NextResponse.json(
-        { ok: false, error: databaseErrorMessage("Could not save questionnaire session.", sessionError) },
-        { status: 500 },
-      );
-    }
+  if (sessionError) {
+    return NextResponse.json(
+      { ok: false, error: databaseErrorMessage("Could not save questionnaire session.", sessionError) },
+      { status: 500 },
+    );
+  }
 
   const { data: existingResponse, error: responseLookupError } = await supabase
     .from("questionnaire_responses")
-    .select("id, completed")
+    .select("id, completed, answers")
     .eq("session_id", payload.sessionId)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
 
   if (responseLookupError) {
-    if (isSupabaseUnavailable(responseLookupError)) {
-      return localResponse();
-    }
-
     return NextResponse.json(
       {
         ok: false,
@@ -96,109 +67,43 @@ export async function POST(request: Request) {
     );
   }
 
-  const responseValues = {
-    session_id: payload.sessionId,
-    answers,
-    locale: payload.locale,
-    completed: payload.completed || existingResponse?.completed || false,
-    questionnaire_version_id: snapshot.id,
-    current_screen_id: payload.currentScreenId ?? null,
-    updated_at: now,
-  };
+  // Completion is committed atomically with its result/report. Autosaves cannot
+  // mutate the answers underlying an already completed report.
+  if (payload.completed || payload.result) {
+    if (existingResponse?.completed) {
+      const { data: savedReports, error: savedError } = await supabase.from("reports").select("result_id")
+        .eq("session_id", payload.sessionId).order("created_at", { ascending: false }).limit(1);
+      const canonical = (value: Record<string, unknown>) => JSON.stringify(Object.keys(value).sort().map((key) => [key, value[key]]));
+      if (!savedError && savedReports?.[0]?.result_id && canonical(existingResponse.answers) === canonical(answers)) {
+        const { data: savedResult, error } = await supabase.from("archetype_results").select("*").eq("id", savedReports[0].result_id).maybeSingle();
+        if (!error && savedResult) return NextResponse.json({ ok: true, persisted: true, result: resultFromRow(savedResult, payload.locale) });
+      }
+    }
+    try {
+      const result = await generateAiResult({ sessionId: payload.sessionId, answers, locale: payload.locale, snapshot });
+      const { data: savedResult, error } = await supabase.rpc("audit_save_completion", {
+        p_session_id: payload.sessionId, p_answers: answers, p_locale: payload.locale,
+        p_version: snapshot.id, p_screen: payload.currentScreenId ?? null, p_result: result,
+        p_demo: access.paymentStatus === "demo_unlocked",
+      });
+      if (error || !savedResult) return NextResponse.json({ ok: false, error: "Your result could not be saved. Please try again." }, { status: 503 });
+      return NextResponse.json({ ok: true, persisted: true, result: resultFromRow(savedResult, payload.locale) });
+    } catch (error) {
+      return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : "Audit analysis failed. Please try again." }, { status: 500 });
+    }
+  }
+  if (existingResponse?.completed) return NextResponse.json({ ok: true, persisted: true });
 
-  const responseWrite = existingResponse
-    ? supabase
-        .from("questionnaire_responses")
-        .update(responseValues)
-        .eq("id", existingResponse.id)
-    : supabase.from("questionnaire_responses").insert(responseValues);
-
-  const { error: responseError } = await responseWrite;
+  const { error: responseError } = await supabase.rpc("audit_save_progress", {
+    p_session_id: payload.sessionId, p_answers: answers, p_locale: payload.locale,
+    p_version: snapshot.id, p_screen: payload.currentScreenId ?? null,
+  });
 
   if (responseError) {
-    if (isSupabaseUnavailable(responseError)) {
-      return localResponse();
-    }
-
     return NextResponse.json(
       { ok: false, error: databaseErrorMessage("Could not save questionnaire response.", responseError) },
       { status: 500 },
     );
-  }
-
-  if (payload.completed || payload.result) {
-    let result = payload.completed ? undefined : payload.result;
-
-    if (!result) {
-      try {
-        result = await generateAiResult({
-          sessionId: payload.sessionId,
-          answers,
-          locale: payload.locale,
-          snapshot,
-        });
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "AI protective role analysis failed.";
-
-        return NextResponse.json(
-          { ok: false, error: message },
-          { status: 500 },
-        );
-      }
-    }
-
-    const { error: resultError } = await supabase.from("archetype_results").upsert({
-      id: result.id,
-      session_id: payload.sessionId,
-      dominant: result.dominant,
-      secondary: result.secondary,
-      scores: result.scores,
-      distribution: result.distribution,
-      key_patterns: result.keyPatterns,
-      shadow_themes: result.shadowThemes,
-      dream_sabotage_themes: result.dreamSabotageThemes,
-      protection_themes: result.protectionThemes,
-    });
-
-    if (resultError) {
-      if (isSupabaseUnavailable(resultError)) {
-        return NextResponse.json({ ok: true, persisted: false, result });
-      }
-
-      return NextResponse.json(
-        { ok: false, error: databaseErrorMessage("Could not save protective role result.", resultError) },
-        { status: 500 },
-      );
-    }
-
-    const { error: reportError } = await supabase.from("reports").upsert({
-      id: result.id,
-      session_id: payload.sessionId,
-      result_id: result.id,
-      payment_status: "locked",
-      content: {},
-      content_source: "ai",
-      generation_status: "not_started",
-      generated_at: null,
-      generation_error: null,
-      result_locale: payload.locale,
-      localized_content: {},
-      questionnaire_version_id: snapshot.id,
-      updated_at: now,
-    });
-
-    if (reportError) {
-      if (isSupabaseUnavailable(reportError)) {
-        return NextResponse.json({ ok: true, persisted: false, result });
-      }
-
-      return NextResponse.json(
-        { ok: false, error: databaseErrorMessage("Could not save report.", reportError) },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ ok: true, persisted: true, result });
   }
 
   return NextResponse.json({ ok: true, persisted: true });

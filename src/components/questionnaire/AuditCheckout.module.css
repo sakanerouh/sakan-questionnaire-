@@ -1,0 +1,72 @@
+.page { min-height: 100vh; background: #f4f1e8; color: #203e33; font-family: Arial, Helvetica, sans-serif; padding-bottom: 44px; }
+.header { position: relative; display: grid; place-items: center; min-height: 126px; padding: 22px 100px; background: #203e33; }
+.brand { display: grid; justify-items: center; gap: 12px; color: #f4f1e8; text-decoration: none; }
+.brand svg { width: 51px; height: 39px; color: #c9b080; }
+.brand span { font-size: 21px; letter-spacing: .24em; font-weight: 600; }
+.languages { position: absolute; inset-inline-end: 20px; top: 41px; }
+.content { max-width: 740px; margin-inline: auto; padding: 0 28px; }
+.steps { display: flex; justify-content: space-between; margin: 30px auto 38px; padding: 0; list-style: none; }
+.steps li { position: relative; display: grid; justify-items: center; gap: 10px; width: 33.333%; font-size: 17px; }
+.steps li + li::before { position: absolute; top: 18px; inset-inline-end: 60%; width: 80%; height: 1px; background: #cbd4c6; content: ''; }
+.circle { z-index: 1; display: grid; place-items: center; width: 37px; height: 37px; border-radius: 50%; background: #e7ede1; box-shadow: 0 0 0 10px #f4f1e8; font-size: 18px; font-weight: 700; }
+.active { font-weight: 700; }
+.active .circle { background: #203e33; color: #fff; }
+.intro { text-align: center; }
+.eyebrow { margin: 0 0 20px; color: #536056; font-size: 18px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+.title { margin: 0; font-family: var(--font-landing-serif), Georgia, serif; font-size: clamp(39px, 6vw, 59px); font-weight: 400; line-height: 1.18; text-wrap: balance; }
+.intro .title { max-width: 550px; margin-inline: auto; }
+.description { max-width: 665px; margin: 28px auto; font-size: 22px; line-height: 1.45; text-wrap: pretty; }
+.duration { display: inline-block; margin: 5px 0 36px; padding: 9px 20px; border-radius: 40px; background: #e8ede2; font-size: 17px; font-weight: 700; }
+.benefits, .method { border: 1px solid #d2d4c8; border-radius: 23px; background: #fcfbf5; text-align: start; }
+.benefits { padding: 27px 31px 23px; }
+.benefits h2 { margin: 0 0 23px; font-size: 16px; font-weight: 700; line-height: 1.5; }
+.benefits ul { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.benefits li { position: relative; padding-inline-start: 27px; font-size: 20px; line-height: 1.35; color: #344137; }
+.benefits li::before { position: absolute; top: 11px; inset-inline-start: 1px; width: 9px; height: 9px; border-radius: 2px; transform: rotate(45deg); background: #a08058; content: ''; }
+.price { margin: 23px 0; font-size: 21px; font-weight: 700; text-align: center; }
+.primary, .secondary { display: inline-flex; align-items: center; justify-content: center; gap: 16px; min-height: 63px; width: 100%; border: 1px solid #203e33; border-radius: 17px; padding: 14px 20px; font: inherit; font-size: 20px; font-weight: 700; line-height: 1.4; text-decoration: none; cursor: pointer; transition: background-color .15s; }
+.primary { background: #203e33; color: #fcfbf5; }
+.primary:hover { background: #2d5143; }
+.secondary { background: transparent; color: #203e33; }
+.secondary:hover { background: #e8ede2; }
+.primary:disabled, .secondary:disabled { opacity: .55; cursor: wait; }
+.page :is(a, button, input):focus-visible { outline: 3px solid #a08058; outline-offset: 4px; }
+.note { margin: 23px auto 0; max-width: 640px; font-size: 18px; line-height: 1.5; color: #5b655b; text-align: center; }
+.paymentTitle { text-align: center; margin-bottom: 37px; }
+.summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #e8ede2; border-radius: 19px; padding: 20px 28px; font-size: 21px; font-weight: 700; }
+.email { display: block; margin: 30px 32px 33px; font-size: 20px; font-weight: 700; }
+.email input { display: block; width: 100%; height: 61px; margin-top: 14px; border: 1px solid #cfd2c6; border-radius: 18px; padding: 12px 21px; font: inherit; font-weight: 400; color: #344137; background: #fcfbf5; text-align: start; }
+.email small { display: block; margin-top: 12px; font-size: 17px; line-height: 1.5; font-weight: 400; color: #5b655b; }
+.method { padding: 21px 31px; margin-top: 20px; }
+.method h2 { margin: 0 0 12px; font-size: 24px; font-weight: 700; }
+.method p { margin: 0 0 17px; font-size: 18px; line-height: 1.5; color: #5b655b; }
+.method strong { display: block; margin-bottom: 10px; font-size: 18px; }
+.method .secondary { margin-top: 13px; }
+.status { margin: 20px 0; padding: 18px 22px; border-radius: 16px; background: #e8ede2; font-size: 17px; line-height: 1.5; }
+.error { background: #f3e7dd; color: #723d26; }
+.status p { margin: 0 0 12px; }
+.textButton { padding: 8px 0; color: inherit; background: none; border: 0; font: inherit; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.footer { margin-top: 25px; text-align: center; font-size: 14px; color: #5b655b; }
+:global(html[lang="ar"]) .page { font-family: var(--font-amiri), Georgia, serif; }
+:global(html[lang="ar"]) .title { font-family: var(--font-amiri), Georgia, serif; font-weight: 700; }
+:global(html[lang="ar"]) .brand span { letter-spacing: 0; font-size: 27px; }
+:global(html[lang="ar"]) .eyebrow { letter-spacing: 0; }
+:global(html[lang="ar"]) .email input { text-align: right; }
+:global(html[lang="ar"]) .primary svg { transform: rotate(180deg); }
+@media (min-width: 1000px) { .content { padding-top: 4px; } .header { min-height: 132px; } }
+@media (max-width: 540px) {
+  .header { min-height: 109px; padding: 17px 75px; }
+  .brand { gap: 8px; } .brand span { font-size: 15px; letter-spacing: .2em; } .brand svg { width: 39px; height: 29px; }
+  .languages { inset-inline-end: 24px; top: 10px; transform: scale(.75); transform-origin: right center; }
+  :global(html[lang="ar"]) .languages { transform-origin: left center; }
+  .content { padding-inline: 22px; } .steps { margin: 26px -8px 32px; } .steps li { font-size: 14px; }
+  .circle { width: 32px; height: 32px; font-size: 16px; } .steps li + li::before { top: 16px; }
+  .eyebrow { font-size: 14px; margin-bottom: 18px; } .title { font-size: 41px; }
+  .description { font-size: 19px; margin: 24px 0; } .duration { font-size: 14px; margin-bottom: 29px; }
+  .benefits, .method { border-radius: 19px; padding: 22px 21px; }
+  .benefits h2 { font-size: 13px; margin-bottom: 20px; } .benefits li { font-size: 17px; padding-inline-start: 24px; } .benefits ul { gap: 13px; }
+  .price { font-size: 18px; margin-block: 24px; } .primary, .secondary { min-height: 56px; font-size: 17px; border-radius: 14px; gap: 10px; }
+  .note { font-size: 16px; } .summary { padding: 18px 20px; font-size: 17px; } .email { margin: 28px 12px; font-size: 17px; }
+  .email small { font-size: 15px; } .email input { height: 55px; font-size: 18px; padding-inline: 15px; }
+  .method h2 { font-size: 21px; } .method p, .method strong { font-size: 16px; } .paymentTitle { margin-bottom: 28px; }
+}
