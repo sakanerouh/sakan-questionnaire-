@@ -46,7 +46,7 @@ export function PaymentWall({ reportId }: { reportId: string }) {
       const data = (await response.json()) as { error?: string; url?: string; demo?: boolean };
 
       if (!response.ok || !data.url) {
-        throw new Error(t("checkoutError"));
+        throw new Error(data.error || t("checkoutError"));
       }
 
       if (data.demo) {

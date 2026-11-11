@@ -16,6 +16,10 @@ export function ResultPageClient() {
   const t = useTranslations("resultUi");
   const [mounted, setMounted] = useState(false);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState<boolean | null>(null);
+  const [accessError, setAccessError] = useState(false);
+  const [accessAttempt, setAccessAttempt] = useState(0);
+  const checkout = useTranslations("auditCheckout");
   const { sessionId, email, answers, result, setResult } = useQuestionnaireStore();
 
   useEffect(() => {
@@ -68,12 +72,28 @@ export function ResultPageClient() {
     };
   }, [answers, email, locale, mounted, result, router, sessionId, setResult, t]);
 
-  if (!mounted || !result) {
+  useEffect(() => {
+    if (!mounted || !result) return;
+    const controller = new AbortController();
+    fetch(`/api/report/${encodeURIComponent(result.id)}?locale=${locale}`, { cache: "no-store", signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Report access could not be checked.");
+        const data = await response.json();
+        if (!controller.signal.aborted) {
+          setUnlocked(["paid", "demo_unlocked"].includes(data.report.paymentStatus));
+          setAccessError(false);
+        }
+      }).catch(() => { if (!controller.signal.aborted) setAccessError(true); });
+    return () => controller.abort();
+  }, [mounted, result, locale, accessAttempt]);
+
+  if (!mounted || !result || unlocked === null) {
     return (
       <main className="min-h-screen bg-[#FBF9F8] px-5 py-10 text-[#28301C] sm:px-8">
         <div className="mx-auto grid min-h-[calc(100vh-5rem)] place-items-center">
           <p className="max-w-xl text-center text-lg leading-8 text-[#464840]">
-            {analysisError ?? t("preparing")}
+            {accessError ? checkout("accessError") : analysisError ?? t("preparing")}
+            {accessError && <button className="mt-4 block w-full underline" type="button" onClick={() => { setAccessError(false); setAccessAttempt((value) => value + 1); }}>{checkout("retry")}</button>}
           </p>
         </div>
       </main>
@@ -93,7 +113,7 @@ export function ResultPageClient() {
         </Link>
         <LanguageSwitcher theme="olive" />
       </div>
-      <ResultTeaser result={result} />
+      <ResultTeaser result={result} unlocked={unlocked} />
     </main>
   );
 }

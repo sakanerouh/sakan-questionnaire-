@@ -7,13 +7,17 @@ import type { SakanResult } from "@/lib/schemas";
 import { ArchetypeChart } from "./ArchetypeChart";
 import { LockedPreviewCard } from "./LockedPreviewCard";
 import { PaymentWall } from "./PaymentWall";
+import { Link } from "@/i18n/navigation";
 
 export function ResultTeaser({
   result,
+  unlocked = false,
 }: {
   result: SakanResult;
+  unlocked?: boolean;
 }) {
   const t = useTranslations("resultUi");
+  const checkout = useTranslations("auditCheckout");
   const roles = useTranslations("archetypes");
   const dominant = archetypes[result.dominant];
   const Icon = dominant.icon;
@@ -55,14 +59,20 @@ export function ResultTeaser({
             <p className="mt-3 text-base leading-8 text-[#464840]">{opening}</p>
           </div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        {!unlocked && <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {lockedSections.map((title) => (
             <LockedPreviewCard key={title} title={title} />
           ))}
-        </div>
+        </div>}
       </div>
       <div className="lg:sticky lg:top-6 lg:self-start">
-        <PaymentWall reportId={result.id} />
+        {unlocked ? <section className="rounded-2xl bg-[#203e33] p-7 text-[#fcfbf5] sm:p-9">
+          <h2 className="text-2xl font-semibold">{checkout("openReport")}</h2>
+          <p className="mt-4 text-base leading-7">{checkout("reportReady")}</p>
+          <p className="mt-7 text-sm font-semibold">{checkout("included")}</p>
+          <ul className="mt-3 list-inside list-disc space-y-3 text-sm leading-6">{lockedSections.map((title) => <li key={title}>{title}</li>)}</ul>
+          <Link href={`/report/${result.id}`} className="mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#fcfbf5] px-6 py-3 text-center font-semibold text-[#203e33] focus-visible:outline-2 focus-visible:outline-offset-4">{checkout("openReport")}</Link>
+        </section> : <PaymentWall reportId={result.id} />}
       </div>
     </motion.div>
   );

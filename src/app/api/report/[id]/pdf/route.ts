@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { requireReportAccess } from "@/lib/audit/access";
+import { auditErrorResponse } from "@/lib/audit/http";
 import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -293,7 +295,7 @@ export async function GET(
   const locale = localeSchema.catch("en").parse(new URL(request.url).searchParams.get("locale") ?? undefined);
   const { data: report, error: reportError } = await supabase
     .from("reports")
-    .select("id, result_id, payment_status, content, localized_content, result_locale, content_source, generation_status")
+    .select("id, session_id, result_id, payment_status, content, localized_content, result_locale, content_source, generation_status")
     .eq("id", id)
     .maybeSingle();
 
@@ -304,6 +306,8 @@ export async function GET(
     );
   }
 
+  try { await requireReportAccess(request, report.session_id, report.payment_status); }
+  catch (error) { return auditErrorResponse(error); }
   if (!unlockedStatuses.has(report.payment_status)) {
     return NextResponse.json(
       { ok: false, error: "Report is locked." },

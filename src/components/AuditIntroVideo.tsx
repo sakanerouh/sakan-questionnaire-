@@ -3,13 +3,18 @@
 import { ArrowRight, ExternalLink, Play, X } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import styles from "./AuditIntroVideo.module.css";
 
 const videoId = "i2loaCPP9MU";
 
-export function AuditIntroVideo({ preview = false, onContinue }: { preview?: boolean; onContinue?: () => void }) {
+export function AuditIntroVideo({ preview = false, onContinue, triggerContent, triggerClassName }: {
+  preview?: boolean;
+  onContinue?: () => void;
+  triggerContent?: ReactNode;
+  triggerClassName?: string;
+}) {
   const t = useTranslations("auditVideo");
   const locale = useLocale();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -27,12 +32,12 @@ export function AuditIntroVideo({ preview = false, onContinue }: { preview?: boo
   const close = () => dialogRef.current?.close();
 
   return (
-    <div className={styles.root}>
-      <button type="button" className={preview ? styles.preview : styles.trigger} aria-haspopup="dialog" onClick={() => {
+    <div className={triggerContent ? styles.ctaRoot : styles.root}>
+      <button type="button" className={triggerClassName ?? (preview ? styles.preview : styles.trigger)} aria-haspopup="dialog" onClick={() => {
         dialogRef.current?.showModal();
         setOpen(true);
       }}>
-        {preview ? <>
+        {triggerContent ?? (preview ? <>
           <span className={styles.thumbnail}>
             <Image src="/audit-introduction-preview-hd.jpg" alt="" fill sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1088px) calc(100vw - 48px), 1040px" />
             <span className={styles.previewPlay}><Play fill="currentColor" aria-hidden="true" /></span>
@@ -45,7 +50,7 @@ export function AuditIntroVideo({ preview = false, onContinue }: { preview?: boo
           <span className={styles.play}><Play size={15} fill="currentColor" aria-hidden="true" /></span>
           <span className={styles.triggerText}>{t("trigger")}</span>
           <span className={styles.optional}>{t("optional")}</span>
-        </>}
+        </>)}
       </button>
 
       <dialog ref={dialogRef} className={styles.dialog} aria-labelledby={titleId} aria-describedby={descriptionId}
@@ -56,14 +61,14 @@ export function AuditIntroVideo({ preview = false, onContinue }: { preview?: boo
         }}>
         <div className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>{t("optional")}</p>
+            <p className={styles.eyebrow}>{t("recommended")}</p>
             <h2 id={titleId} className={styles.title}>{t("title")}</h2>
           </div>
           <button type="button" className={styles.close} onClick={close} aria-label={t("close")} autoFocus>
             <X size={22} aria-hidden="true" />
           </button>
         </div>
-        <p id={descriptionId} className={styles.description}>{t("description")}</p>
+        <p id={descriptionId} className={styles.description}>{t(onContinue ? "description" : "recommendation")}</p>
         <div className={styles.player}>
           {open && <iframe
             src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&playsinline=1&hl=${encodeURIComponent(locale)}`}
@@ -85,8 +90,8 @@ export function AuditIntroVideo({ preview = false, onContinue }: { preview?: boo
               {t("continue")}<ArrowRight size={19} aria-hidden="true" />
             </button>
           ) : (
-            <Link href="/questionnaire/start" className={styles.continue} onClick={close}>
-              {t("start")}<ArrowRight size={19} aria-hidden="true" />
+            <Link href="/questionnaire/checkout" className={styles.continue} onClick={close}>
+              {t("checkout")}<ArrowRight size={19} aria-hidden="true" />
             </Link>
           )}
         </div>

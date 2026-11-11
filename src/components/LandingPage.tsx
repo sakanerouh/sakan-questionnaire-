@@ -44,17 +44,16 @@ function BotanicalBranch({ className = "" }: { className?: string }) {
 function AuditButton({ final = false }: { final?: boolean }) {
   const t = useTranslations("landing.reference");
   return (
-    <Link href="/questionnaire/start" className={`${styles.auditButton} ${final ? styles.finalButton : ""}`}>
-      <span>{t(final ? "finalCta" : "primaryCta")}</span>
-      <ArrowRight aria-hidden="true" strokeWidth={1.4} />
-    </Link>
+    <AuditIntroVideo
+      triggerClassName={`${styles.auditButton} ${final ? styles.finalButton : ""}`}
+      triggerContent={<><span>{t(final ? "finalCta" : "primaryCta")}</span><ArrowRight aria-hidden="true" strokeWidth={1.4} /></>}
+    />
   );
 }
 
 export function LandingPage() {
   const t = useTranslations("landing.reference");
   const original = useTranslations("landing");
-  const video = useTranslations("auditVideo");
   const patterns = t.raw("patterns") as { title: string; body: string }[];
   const steps = t.raw("steps") as string[];
   const pillars = t.raw("pillars") as string[];
@@ -76,15 +75,6 @@ export function LandingPage() {
           <AuditButton />
           <p className={styles.auditDetails}>{t("auditDetails")}</p>
         </div>
-      </section>
-
-      <section className={styles.videoSection} aria-labelledby="intro-video-title">
-        <div className={styles.videoHeading}>
-          <p className={styles.videoEyebrow}>{video("recommended")}</p>
-          <h2 id="intro-video-title">{video("title")}</h2>
-          <p className={styles.videoDescription}>{video("description")}</p>
-        </div>
-        <AuditIntroVideo preview />
       </section>
 
       <section className={styles.patterns} aria-labelledby="patterns-title">

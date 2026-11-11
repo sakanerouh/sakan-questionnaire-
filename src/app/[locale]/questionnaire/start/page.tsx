@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { QuestionnaireFlow } from "@/components/questionnaire/QuestionnaireFlow";
+import { AuditGate } from "@/components/questionnaire/AuditGate";
 import { localizedMetadata } from "@/i18n/metadata";
 import { normalizeLocale } from "@/i18n/routing";
 
@@ -15,5 +16,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function QuestionnaireStart({ params }: Props) {
   const locale = normalizeLocale((await params).locale);
   setRequestLocale(locale);
-  return <QuestionnaireFlow />;
+  return <AuditGate><QuestionnaireFlow /></AuditGate>;
 }

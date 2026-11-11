@@ -86,7 +86,7 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
   const [{ data: responses }, { data: payments }, { data: reports }, { data: results }] =
     await Promise.all([
       supabase.from("questionnaire_responses").select("session_id, completed, current_screen_id, updated_at").in("session_id", sessionIds).order("updated_at", { ascending: false }),
-      supabase.from("payments").select("session_id, status, amount_total, currency, created_at").in("session_id", sessionIds).order("created_at", { ascending: false }),
+      supabase.from("payments").select("session_id, status, amount_total, currency, created_at, grants_access").in("session_id", sessionIds).order("grants_access", { ascending: false }).order("created_at", { ascending: false }),
       supabase.from("reports").select("session_id, payment_status, generation_status, updated_at").in("session_id", sessionIds).order("updated_at", { ascending: false }),
       supabase.from("archetype_results").select("session_id, dominant, secondary, created_at").in("session_id", sessionIds).order("created_at", { ascending: false }),
     ]);
@@ -123,13 +123,14 @@ export async function getOperationsData(filters: OperationsFilters = {}) {
   });
 
   const completions = rows.filter((row) => row.completed).length;
-  const paidRows = rows.filter((row) => row.paymentStatus === "paid");
+  const paidRows = rows.filter((row) => ["paid", "no_payment_required"].includes(row.paymentStatus));
   const metric = Array.isArray(metricRows) ? metricRows[0] : metricRows;
   const starts = Number(metric?.starts ?? rows.length);
   const paid = Number(metric?.paid ?? paidRows.length);
   const metricCompletions = Number(metric?.completions ?? completions);
-  const revenue = Number(metric?.revenue ?? paidRows.reduce((sum, row) => sum + (row.amount ?? 0), 0));
-  const currency = metric?.currency ?? paidRows.find((row) => row.currency)?.currency ?? "eur";
+  const currencies = new Set(paidRows.map((row) => row.currency).filter(Boolean));
+  const currency = metric?.currency ?? (currencies.size > 1 ? "mixed" : paidRows.find((row) => row.currency)?.currency ?? "eur");
+  const revenue = currency === "mixed" ? 0 : Number(metric?.revenue ?? paidRows.reduce((sum, row) => sum + (row.amount ?? 0), 0));
   return {
     metrics: {
       starts,

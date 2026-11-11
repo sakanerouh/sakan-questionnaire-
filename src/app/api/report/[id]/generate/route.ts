@@ -6,6 +6,8 @@ import { answersSchema, localeSchema, resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { migrateLegacyAnswers } from "@/lib/questionnaireMigration";
 import { getQuestionnaireSnapshotById } from "@/lib/questionnaireRepository";
+import { requireReportAccess } from "@/lib/audit/access";
+import { auditErrorResponse } from "@/lib/audit/http";
 
 const unlockedStatuses = new Set(["paid", "demo_unlocked"]);
 
@@ -71,6 +73,8 @@ export async function POST(
     );
   }
 
+  try { await requireReportAccess(request, report.session_id, report.payment_status); }
+  catch (error) { return auditErrorResponse(error); }
   if (!unlockedStatuses.has(report.payment_status)) {
     return NextResponse.json(
       { ok: false, error: "Report is locked." },

@@ -4,6 +4,8 @@ import { reportContentSchema } from "@/lib/generatedReport";
 import { resultSchema } from "@/lib/schemas";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import { localeSchema } from "@/lib/schemas";
+import { requireReportAccess } from "@/lib/audit/access";
+import { auditErrorResponse } from "@/lib/audit/http";
 
 const resultRowSchema = z.object({
   id: z.string(),
@@ -55,6 +57,9 @@ export async function GET(
       { status: 404 },
     );
   }
+
+  try { await requireReportAccess(request, report.session_id, report.payment_status); }
+  catch (error) { return auditErrorResponse(error); }
 
   const { data: resultRow, error: resultError } = await supabase
     .from("archetype_results")
