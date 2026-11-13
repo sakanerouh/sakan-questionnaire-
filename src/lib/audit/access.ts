@@ -35,7 +35,9 @@ export async function findAuditSession(sessionId: string) {
 }
 
 export async function cookieSessionId(request: Request) {
-  const token = new NextRequest(request).cookies.get(AUDIT_COOKIE)?.value;
+  // Only copy cookie headers: POST handlers have already consumed the body,
+  // and Next.js may wrap the incoming Request in a proxy.
+  const token = new NextRequest(request.url, { headers: request.headers }).cookies.get(AUDIT_COOKIE)?.value;
   if (!token || !/^[a-f0-9]{64}$/.test(token)) return null;
   const { data, error } = await auditDatabase().from("audit_access_tokens").select("session_id")
     .eq("token_hash", tokenHash(token)).eq("purpose", "browser").gt("expires_at", new Date().toISOString()).maybeSingle();

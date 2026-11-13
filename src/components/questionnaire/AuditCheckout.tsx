@@ -150,6 +150,7 @@ export function AuditCheckout({ step, price, checkoutId, cancelled = false, demo
           {!price && !demoCheckout && <p className={styles.note}>{t("cardUnavailable")}</p>}
         </section>
         <section className={styles.method}><h2>{t("bankTitle")}</h2><strong>{t("moroccoOnly")}</strong><p>{t("bankBody")}<br />{t("bankConfirm")}</p><p>{t("bankAmount")}</p>
+          <p dir="ltr">+212 764 131 039</p>
           <button type="submit" name="method" value="transfer" className={styles.secondary} disabled={busy || submitting || !state}>{submitting ? t("opening") : t("whatsappCta")}</button>
         </section>
       </form>
