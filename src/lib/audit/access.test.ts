@@ -2,13 +2,24 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryResult } from "@/test/queryResult";
 const mocks = vi.hoisted(() => ({ from: vi.fn(), rpc: vi.fn(), db: vi.fn() }));
 vi.mock("@/lib/supabase/server", () => ({ getSupabaseAdmin: mocks.db }));
-import { AUDIT_COOKIE, initializeAudit, requireAuditAccess, requireReportAccess, tokenHash } from "./access";
+import { AUDIT_COOKIE, cookieSessionId, initializeAudit, requireAuditAccess, requireReportAccess, tokenHash } from "./access";
 
 const token = "a".repeat(64);
 const request = (credential = false) => new Request("https://example.com/api", { headers: credential ? { cookie: `${AUDIT_COOKIE}=${token}` } : {} });
 describe("server audit access", () => {
   beforeEach(() => { vi.resetAllMocks(); mocks.db.mockReturnValue({ from: mocks.from, rpc: mocks.rpc }); });
   afterEach(() => vi.unstubAllEnvs());
+  it.each([false, true])("reads cookies after a POST body was consumed (credential: %s)", async (credential) => {
+    const incoming = new Request("https://example.com/api/checkout", {
+      method: "POST", headers: credential ? { cookie: `${AUDIT_COOKIE}=${token}` } : {},
+      body: JSON.stringify({ sessionId: "audit" }),
+    });
+    await incoming.json();
+    mocks.from.mockReturnValue(queryResult({ session_id: "audit" }));
+    expect(await cookieSessionId(incoming)).toBe(credential ? "audit" : null);
+    if (credential) expect(mocks.from).toHaveBeenCalledWith("audit_access_tokens");
+    else expect(mocks.from).not.toHaveBeenCalled();
+  });
   it("fails closed when storage is missing", async () => {
     mocks.db.mockReturnValue(null); await expect(requireAuditAccess(request(), "audit")).rejects.toMatchObject({ status: 503 });
   });
